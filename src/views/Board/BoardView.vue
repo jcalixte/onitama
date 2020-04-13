@@ -1,22 +1,29 @@
 <template>
   <div class="board-view" v-if="board">
-    <BoardShare v-if="!playersSet" />
+    <div class="columns is-centered" v-if="!playersSet">
+      <div class="column is-half">
+        <BoardShare />
+      </div>
+    </div>
     <h1 v-if="winnerLabel" class="title is-1">{{ winnerLabel }} wins!</h1>
     <h4 v-else-if="turn" class="title is-4">
       You are {{ userPlayer }} | {{ turnLabel }} to play
     </h4>
     <br />
+    <h5 class="subtitle is-5 card-owner">Player 2's cards</h5>
     <BoardCard :player="player2" />
-    <br />
+    <hr />
     <div class="columns">
       <div class="column is-half">
         <BoardGrid />
       </div>
       <div class="column is-half neutral-card-column">
+        <h5 class="subtitle is-5 card-owner">Neutral card</h5>
         <BoardCard player="neutral" />
       </div>
     </div>
-    <br />
+    <hr />
+    <h5 class="subtitle is-5 card-owner">Player 1's cards</h5>
     <BoardCard :player="player1" />
   </div>
 </template>
@@ -107,7 +114,11 @@ export default class BoardView extends Vue {
 .board-view {
   .neutral-card-column {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .card-owner {
+    font-style: italic;
   }
 }
 </style>

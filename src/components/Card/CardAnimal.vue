@@ -4,10 +4,6 @@
     :class="{ selected, selectable }"
     @click="selectable && selectCard(card.animal)"
   >
-    <h3 class="subtitle is-3 neutral-title" v-if="player === 'neutral'">
-      neutral card
-    </h3>
-
     <div class="columns is-mobile">
       <div class="column is-one-third card-grid-move-container">
         <CardGridMove :moves="moves" />
