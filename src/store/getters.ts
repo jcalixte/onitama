@@ -13,6 +13,8 @@ export const getters: GetterTree<State, State> = {
   cards: ({ board }) => board?.animals ?? [],
   selectedCard: ({ board }) => board?.selectedCard ?? null,
   selectedCell: ({ board }) => board?.selectedCell ?? null,
+  playersSet: ({ board }) =>
+    Object.values(board?.users ?? {}).filter((user) => !!user).length === 2,
   isPlayer1: ({ user, board }) => {
     if (DEBUG && process.env.NODE_ENV === 'development') {
       return board?.turn === Player.Player1 ?? false

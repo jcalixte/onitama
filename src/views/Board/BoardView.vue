@@ -1,5 +1,6 @@
 <template>
   <div class="board-view" v-if="board">
+    <BoardShare v-if="!playersSet" />
     <h1 v-if="winnerLabel" class="title is-1">{{ winnerLabel }} wins!</h1>
     <h4 v-else-if="turn" class="title is-4">
       You are {{ userPlayer }} | {{ turnLabel }} to play
@@ -26,6 +27,7 @@ import { Getter, Action } from 'vuex-class'
 import BoardNew from '@/components/Board/BoardNew.vue'
 import BoardGrid from '@/components/Board/BoardGrid.vue'
 import BoardCard from '@/components/Board/BoardCard.vue'
+import BoardShare from '@/components/Board/BoardShare.vue'
 import { Board } from '@/models/Board'
 import { Player } from '@/enums/Player'
 import { players } from '@/data/players'
@@ -35,7 +37,8 @@ import { busService } from '@/services/bus.service'
   components: {
     BoardNew,
     BoardGrid,
-    BoardCard
+    BoardCard,
+    BoardShare
   }
 })
 export default class BoardView extends Vue {
@@ -47,6 +50,8 @@ export default class BoardView extends Vue {
   private winner!: Player | null
   @Getter
   private turn!: Player | null
+  @Getter
+  private playersSet!: boolean
   @Getter
   private isPlayer1!: boolean
   @Getter
