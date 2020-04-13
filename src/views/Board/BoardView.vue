@@ -1,6 +1,9 @@
 <template>
   <div class="board-view" v-if="board">
-    <h1 v-if="winnerLabel">{{ winnerLabel }} wins!</h1>
+    <h1 v-if="winnerLabel" class="title is-1">{{ winnerLabel }} wins!</h1>
+    <h4 v-else-if="turn" class="title is-4">
+      You are {{ userPlayer }} | {{ turnLabel }} to play
+    </h4>
     <br />
     <BoardCard :player="player2" />
     <br />
@@ -42,6 +45,12 @@ export default class BoardView extends Vue {
   private board!: Board | null
   @Getter
   private winner!: Player | null
+  @Getter
+  private turn!: Player | null
+  @Getter
+  private isPlayer1!: boolean
+  @Getter
+  private isPlayer2!: boolean
   @Action
   private joinBoard!: (id: string) => Promise<void>
   @Action
@@ -68,6 +77,23 @@ export default class BoardView extends Vue {
       return null
     }
     return players[this.winner]
+  }
+
+  private get userPlayer() {
+    if (this.isPlayer1) {
+      return players[Player.Player1]
+    }
+    if (this.isPlayer2) {
+      return players[Player.Player2]
+    }
+    return 'spectator'
+  }
+
+  private get turnLabel() {
+    if (!this.turn) {
+      return null
+    }
+    return players[this.turn]
   }
 }
 </script>

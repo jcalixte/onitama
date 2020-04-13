@@ -1,6 +1,6 @@
 <template>
   <div class="board-new">
-    <button @click="createBoard" class="button is-primary">nouveau jeu</button>
+    <button @click="createBoard" class="button is-primary">new play</button>
   </div>
 </template>
 
