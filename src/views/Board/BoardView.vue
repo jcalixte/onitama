@@ -26,6 +26,7 @@ import BoardCard from '@/components/Board/BoardCard.vue'
 import { Board } from '@/models/Board'
 import { Player } from '@/enums/Player'
 import { players } from '@/data/players'
+import { busService } from '@/services/bus.service'
 
 @Component({
   components: {
@@ -43,12 +44,23 @@ export default class BoardView extends Vue {
   private winner!: Player | null
   @Action
   private joinBoard!: (id: string) => Promise<void>
+  @Action
+  private updateBoard!: (board: Board) => Promise<void>
 
   private player1 = Player.Player1
   private player2 = Player.Player2
 
-  private mounted() {
-    this.joinBoard(this.id)
+  private async mounted() {
+    await this.joinBoard(this.id)
+    busService.on('update', this.update)
+  }
+
+  private beforeDestroy() {
+    busService.off('update', this.update)
+  }
+
+  private update(board: Board) {
+    this.updateBoard(board)
   }
 
   private get winnerLabel() {

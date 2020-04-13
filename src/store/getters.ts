@@ -4,7 +4,7 @@ import { Player } from '@/enums/Player'
 import { PieceType } from '@/enums/PieceType'
 import { Column } from '@/enums/Column'
 
-const DEBUG = true
+const DEBUG = false
 
 export const getters: GetterTree<State, State> = {
   board: ({ board }) => board,

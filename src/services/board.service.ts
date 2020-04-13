@@ -120,10 +120,17 @@ export const initBoard = async (user: string): Promise<Board | null> => {
 
 export const joinBoard = async (id: string, userId: string) => {
   try {
-    const board = await repository.get(id)
+    let board = await repository.getLocal(id)
+
+    if (!board) {
+      board = await repository.get(id)
+    }
+
     if (!board) {
       return null
     }
+
+    repository.initLive(id)
 
     if (
       !board.users[Player.Player2] &&

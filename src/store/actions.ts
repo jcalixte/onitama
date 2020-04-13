@@ -5,6 +5,7 @@ import { SELECT_CARD, SELECT_CELL, UPDATE_BOARD } from '@/store/mutations'
 import { State } from '@/store/state'
 import { ActionTree } from 'vuex'
 import { MovePiece } from '@/models/MovePiece'
+import { Board } from '@/models/Board'
 
 export const actions: ActionTree<State, State> = {
   async initNewBoard({ state, commit }) {
@@ -15,6 +16,9 @@ export const actions: ActionTree<State, State> = {
   },
   async joinBoard({ state, commit }, id: string) {
     const board = await joinBoard(id, state.user)
+    commit(UPDATE_BOARD, board)
+  },
+  updateBoard({ commit }, board: Board) {
     commit(UPDATE_BOARD, board)
   },
   selectCard({ commit }, card: Animal) {
