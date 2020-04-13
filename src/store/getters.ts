@@ -7,6 +7,7 @@ export const getters: GetterTree<State, State> = {
   turn: ({ board }) => board?.turn ?? null,
   cards: ({ board }) => board?.cards ?? [],
   selectedCard: ({ board }) => board?.selectedCard ?? null,
+  selectedCell: ({ board }) => board?.selectedCell ?? null,
   isPlayer1: ({ user, board }) =>
     board?.users[Player.Player1] === user ?? false,
   isPlayer2: ({ user, board }) =>

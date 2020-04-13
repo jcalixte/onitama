@@ -4,14 +4,21 @@
     :class="{ selected, selectable }"
     @click="selectable && selectCard(card.animal)"
   >
-    <div class="card-content">
-      <p class="title">
-        {{ card.animal }}
-        <i class="gg-profile player" :style="color"></i>
-      </p>
-      <p class="subtitle">
-        {{ card.description }}
-      </p>
+    <div class="columns is-mobile">
+      <div class="column is-one-third card-grid-move-container">
+        <CardGridMove :moves="card.moves" />
+      </div>
+      <div class="column">
+        <div class="card-content">
+          <p class="title">
+            {{ card.animal }}
+            <i class="gg-profile player" :style="color"></i>
+          </p>
+          <p class="subtitle">
+            {{ card.description }}
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -21,8 +28,13 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { Card } from '@/models/Card'
 import { Animal } from '@/enums/Animal'
+import CardGridMove from '@/components/Card/CardGridMove.vue'
 
-@Component
+@Component({
+  components: {
+    CardGridMove
+  }
+})
 export default class CardAnimal extends Vue {
   @Prop({ type: Object, required: true })
   private card!: Card
@@ -61,6 +73,11 @@ export default class CardAnimal extends Vue {
   }
   &.selected {
     background-color: $primary;
+  }
+  .card-grid-move-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }
 </style>

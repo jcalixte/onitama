@@ -1,17 +1,52 @@
 <template>
-  <div class="board-cell">
+  <div class="board-cell" :class="cellClass" @click="clickCell">
     <i v-if="cell && cell.piece" :class="piece" :style="color"></i>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Action, Getter } from 'vuex-class'
 import { Cell } from '@/models/Cell'
-import { PieceType } from '../../enums/PieceType'
+import { PieceType } from '@/enums/PieceType'
+import { Player } from '@/enums/Player'
 
 @Component
 export default class BoardCell extends Vue {
-  @Prop() private cell!: Cell
+  @Prop({ type: Object, required: true })
+  private cell!: Cell
+  @Prop({ type: Boolean, required: true })
+  private isValidMove!: boolean
+  @Getter
+  private selectedCell!: Cell | null
+  @Getter
+  private turn!: Player
+  @Getter
+  private isPlayer1!: boolean
+  @Getter
+  private isPlayer2!: boolean
+  @Action
+  private selectCell!: (cell: Cell) => void
+
+  private clickCell() {
+    if (this.canSelectPiece) {
+      this.selectCell(this.cell)
+      return
+    }
+    if (this.isValidMove) {
+      this.$emit('move', this.cell)
+    }
+  }
+
+  private get canSelectPiece(): boolean {
+    if (!this.cell.piece) {
+      return false
+    }
+    return (
+      (this.isPlayer1 && this.turn === Player.Player1) ||
+      (this.isPlayer2 && this.turn === Player.Player2)
+    )
+  }
 
   private get piece() {
     if (!this.cell?.piece?.player) {
@@ -31,6 +66,13 @@ export default class BoardCell extends Vue {
       color: this.cell.piece.player
     }
   }
+
+  private get cellClass() {
+    return {
+      'is-selected': this.cell === this.selectedCell,
+      'is-valid-move': this.isValidMove
+    }
+  }
 }
 </script>
 
@@ -43,5 +85,12 @@ $cell-size: 50px;
   display: flex;
   justify-content: center;
   align-items: center;
+
+  &.is-selected {
+    background-color: #6ab04c;
+  }
+  &.is-valid-move {
+    background-color: #ffbe76;
+  }
 }
 </style>

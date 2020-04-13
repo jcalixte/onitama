@@ -209,10 +209,6 @@ export const cards: Card[] = [
     moves: [
       {
         horizontal: -1,
-        vertical: -1
-      },
-      {
-        horizontal: -1,
         vertical: 1
       },
       {
@@ -220,7 +216,7 @@ export const cards: Card[] = [
         vertical: 1
       },
       {
-        horizontal: 1,
+        horizontal: 0,
         vertical: -1
       }
     ]
@@ -236,11 +232,11 @@ export const cards: Card[] = [
         vertical: 0
       },
       {
-        horizontal: 1,
+        horizontal: 0,
         vertical: 1
       },
       {
-        horizontal: -1,
+        horizontal: 0,
         vertical: -1
       }
     ]
@@ -252,15 +248,15 @@ export const cards: Card[] = [
     player: Player.Player1,
     moves: [
       {
+        horizontal: 0,
+        vertical: 1
+      },
+      {
         horizontal: 1,
         vertical: 0
       },
       {
-        horizontal: 1,
-        vertical: 1
-      },
-      {
-        horizontal: -1,
+        horizontal: 0,
         vertical: -1
       }
     ]
