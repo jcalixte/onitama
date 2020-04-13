@@ -26,13 +26,26 @@ class Repository {
     }
   }
 
-  public async save(board: Board): Promise<Board | null> {
+  public async saveLocal(board: Board): Promise<Board | null> {
     try {
       if (!board._id) {
         board._id = `board-${Date.now()}-${uuid()}`
       }
       const response = await this.local.put(board)
       return (await this.local.get(response.id)) as Board
+    } catch (error) {
+      console.error(error)
+      return null
+    }
+  }
+
+  public async save(board: Board): Promise<Board | null> {
+    try {
+      if (!board._id) {
+        board._id = `board-${Date.now()}-${uuid()}`
+      }
+      const response = await this.db.put(board)
+      return (await this.db.get(response.id)) as Board
     } catch (error) {
       console.error(error)
       return null

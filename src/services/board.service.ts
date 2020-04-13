@@ -115,7 +115,7 @@ export const initBoard = async (user: string): Promise<Board | null> => {
     },
     status: PlayStatus.Created
   }
-  return await repository.save(board)
+  return await repository.saveLocal(board)
 }
 
 export const joinBoard = async (id: string, userId: string) => {
@@ -124,10 +124,9 @@ export const joinBoard = async (id: string, userId: string) => {
 
     if (!board) {
       board = await repository.get(id)
-    }
-
-    if (!board) {
-      return null
+      if (!board) {
+        return null
+      }
     }
 
     repository.initLive(id)
@@ -270,5 +269,5 @@ export const movePiece = async (
   // other player turn
   board.turn = board.turn === Player.Player1 ? Player.Player2 : Player.Player1
 
-  return await repository.save(board)
+  return await repository.saveLocal(board)
 }

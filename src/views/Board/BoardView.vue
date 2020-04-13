@@ -4,7 +4,7 @@
     <br />
     <BoardCard :player="player2" />
     <br />
-    <div class="columns is-mobile">
+    <div class="columns">
       <div class="column is-half">
         <BoardGrid />
       </div>
