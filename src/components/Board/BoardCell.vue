@@ -1,6 +1,6 @@
 <template>
   <div class="board-cell" :class="cellClass" @click="clickCell">
-    <i v-if="cell && cell.piece" :class="piece" :style="color"></i>
+    <PieceImage v-if="cell && cell.piece" :piece="cell.piece" />
   </div>
 </template>
 
@@ -8,12 +8,16 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { Cell } from '@/models/Cell'
-import { PieceType } from '@/enums/PieceType'
 import { Player } from '@/enums/Player'
-import { Row } from '../../enums/Row'
-import { Column } from '../../enums/Column'
+import { Row } from '@/enums/Row'
+import { Column } from '@/enums/Column'
+import PieceImage from '@/components/PieceImage.vue'
 
-@Component
+@Component({
+  components: {
+    PieceImage
+  }
+})
 export default class BoardCell extends Vue {
   @Prop({ type: Object, required: true })
   private cell!: Cell
@@ -51,25 +55,6 @@ export default class BoardCell extends Vue {
       ((this.isPlayer1 && this.turn === Player.Player1) ||
         (this.isPlayer2 && this.turn === Player.Player2))
     )
-  }
-
-  private get piece() {
-    if (!this.cell?.piece?.player) {
-      return null
-    }
-    return {
-      'gg-hashtag': this.cell.piece.type === PieceType.Master,
-      'gg-pin-alt': this.cell.piece.type === PieceType.Student
-    }
-  }
-
-  private get color() {
-    if (!this.cell?.piece?.player) {
-      return null
-    }
-    return {
-      color: this.cell.piece.player
-    }
   }
 
   private get cellClass() {
