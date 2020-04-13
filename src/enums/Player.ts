@@ -1,4 +1,4 @@
 export enum Player {
-  Player1 = '#4b7bec',
-  Player2 = '#eb3b5a'
+  Player1 = '#130f40',
+  Player2 = '#b71540'
 }

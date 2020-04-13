@@ -10,6 +10,8 @@ import { Action, Getter } from 'vuex-class'
 import { Cell } from '@/models/Cell'
 import { PieceType } from '@/enums/PieceType'
 import { Player } from '@/enums/Player'
+import { Row } from '../../enums/Row'
+import { Column } from '../../enums/Column'
 
 @Component
 export default class BoardCell extends Vue {
@@ -19,6 +21,8 @@ export default class BoardCell extends Vue {
   private isValidMove!: boolean
   @Getter
   private selectedCell!: Cell | null
+  @Getter
+  private winner!: Player | null
   @Getter
   private turn!: Player
   @Getter
@@ -39,12 +43,13 @@ export default class BoardCell extends Vue {
   }
 
   private get canSelectPiece(): boolean {
-    if (!this.cell.piece) {
+    if (!this.cell.piece || this.winner) {
       return false
     }
     return (
-      (this.isPlayer1 && this.turn === Player.Player1) ||
-      (this.isPlayer2 && this.turn === Player.Player2)
+      this.cell.piece.player === this.turn &&
+      ((this.isPlayer1 && this.turn === Player.Player1) ||
+        (this.isPlayer2 && this.turn === Player.Player2))
     )
   }
 
@@ -70,8 +75,16 @@ export default class BoardCell extends Vue {
   private get cellClass() {
     return {
       'is-selected': this.cell === this.selectedCell,
-      'is-valid-move': this.isValidMove
+      'is-valid-move': this.isValidMove,
+      'is-stream-cell': this.isStreamCell
     }
+  }
+
+  private get isStreamCell() {
+    return (
+      (this.cell.row === Row.One || this.cell.row === Row.Five) &&
+      this.cell.column === Column.C
+    )
   }
 }
 </script>
@@ -91,6 +104,10 @@ $cell-size: 50px;
   }
   &.is-valid-move {
     background-color: #ffbe76;
+  }
+  &.is-stream-cell {
+    background-image: url('../../assets/bridge.png');
+    background-size: $cell-size;
   }
 }
 </style>

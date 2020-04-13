@@ -7,4 +7,12 @@ export interface Card {
   description: string
   player: Player
   moves: CardMove[]
+  reverseMoves: CardMove[]
+}
+
+export interface PartialCard {
+  animal: Animal
+  description: string
+  player: Player
+  moves: CardMove[]
 }

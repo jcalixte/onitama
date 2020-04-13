@@ -2,12 +2,14 @@ import { cards } from '@/data/cards'
 import { Column } from '@/enums/Column'
 import { PieceType } from '@/enums/PieceType'
 import { Player } from '@/enums/Player'
+import { PlayStatus } from '@/enums/PlayStatus'
 import { Row } from '@/enums/Row'
 import { Board } from '@/models/Board'
+import { CardMove } from '@/models/CardMove'
 import { Cell, Grid } from '@/models/Cell'
 import { Piece } from '@/models/Piece'
-import { CardMove } from '@/models/CardMove'
-import { Animal } from '@/enums/Animal'
+import { repository } from './repository'
+import { MovePiece } from '@/models/MovePiece'
 
 const newCell = (row: Row, column: Column, addPiece = true): Cell => {
   let piece: Piece | null = null
@@ -89,28 +91,51 @@ export const createGrid = (addPiece = true): Grid => {
   ]
 }
 
-export const initBoard = (user: string): Board => {
+export const initBoard = async (user: string): Promise<Board | null> => {
   const grid: Grid = createGrid()
 
   const cards = selectCards()
-  const [firstCard, secondCard, thirdCard, fourthCard, neutralCard] = cards
-  const player1Cards = [firstCard, secondCard]
-  const player2Cards = [thirdCard, fourthCard]
+  const [firstCard, secondCard, thirdCard, fourthCard, neutralAnimal] = cards
+  const player1Animals = [firstCard, secondCard].map((card) => card.animal)
+  const player2Animals = [thirdCard, fourthCard].map((card) => card.animal)
 
-  return {
+  const board: Board = {
     grid,
-    turn: neutralCard.player,
-    cards,
+    turn: neutralAnimal.player,
+    animals: cards.map((card) => card.animal),
     selectedCard: null,
     selectedCell: null,
-    playerCards: {
-      [Player.Player1]: player1Cards,
-      [Player.Player2]: player2Cards
+    playerAnimals: {
+      [Player.Player1]: player1Animals,
+      [Player.Player2]: player2Animals
     },
     users: {
       [Player.Player1]: user,
       [Player.Player2]: null
+    },
+    status: PlayStatus.Created
+  }
+  return await repository.save(board)
+}
+
+export const joinBoard = async (id: string, userId: string) => {
+  try {
+    const board = await repository.get(id)
+    if (!board) {
+      return null
     }
+
+    if (
+      !board.users[Player.Player2] &&
+      board.users[Player.Player1] !== userId
+    ) {
+      board.users[Player.Player2] = userId
+      board.status = PlayStatus.Playing
+      return await repository.save(board)
+    }
+    return board
+  } catch (error) {
+    return null
   }
 }
 
@@ -190,4 +215,53 @@ export const getCellFromGrid = (cell: Cell, grid: Grid) => {
   }
 
   return null
+}
+
+export const movePiece = async (
+  board: Board | null,
+  movePiece: MovePiece
+): Promise<Board | null> => {
+  if (!board || !movePiece.start.piece) {
+    return null
+  }
+  // if there is already a ally piece, we stop
+  if (movePiece.end.piece?.player === movePiece.start.piece.player) {
+    return null
+  }
+  // Otherwise we can move the piece and swap the player card with
+  // the neutral card
+  const startCellFromGrid = getCellFromGrid(movePiece.start, board.grid)
+  const endCellFromGrid = getCellFromGrid(movePiece.end, board.grid)
+
+  if (!startCellFromGrid || !endCellFromGrid) {
+    return null
+  }
+  endCellFromGrid.piece = startCellFromGrid.piece
+  startCellFromGrid.piece = null
+  const playersCards = Object.values(board.playerAnimals).flat()
+  const neutralAnimal = board.animals.find(
+    (card) => !playersCards.includes(card)
+  )
+
+  if (!neutralAnimal) {
+    return null
+  }
+  const playerCards = board.playerAnimals[movePiece.player]
+  const indexCard = playerCards.findIndex((card) => card === movePiece.card)
+  if (indexCard === 0) {
+    playerCards.shift()
+    playerCards.unshift(neutralAnimal)
+  } else if (indexCard === playerCards.length - 1) {
+    playerCards.pop()
+    playerCards.push(neutralAnimal)
+  }
+
+  // clear selections
+  board.selectedCard = null
+  board.selectedCell = null
+
+  // other player turn
+  board.turn = board.turn === Player.Player1 ? Player.Player2 : Player.Player1
+
+  return await repository.save(board)
 }

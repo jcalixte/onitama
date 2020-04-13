@@ -1,8 +1,9 @@
-import { Card } from '@/models/Card'
+import { Card, PartialCard } from '@/models/Card'
 import { Animal } from '@/enums/Animal'
 import { Player } from '@/enums/Player'
+import { CardMove } from '@/models/CardMove'
 
-export const cards: Card[] = [
+const partialCards: PartialCard[] = [
   {
     animal: Animal.Tiger,
     description: `The power of your Art projects itself like a shadow.
@@ -344,3 +345,13 @@ export const cards: Card[] = [
     ]
   }
 ]
+
+const reverseMove = (move: CardMove): CardMove => ({
+  horizontal: -1 * move.horizontal,
+  vertical: -1 * move.vertical
+})
+
+export const cards: Card[] = partialCards.map((partialCard) => ({
+  ...partialCard,
+  reverseMoves: partialCard.moves.map(reverseMove)
+}))

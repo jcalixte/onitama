@@ -68,7 +68,10 @@ export default class BoardGrid extends Vue {
     if (!this.selectedCell || !this.grid) {
       return []
     }
-    const moves = getMovesFromAnimal(this.selectedCard)
+    const moves = getMovesFromAnimal(
+      this.selectedCard,
+      this.turn === Player.Player1
+    )
     return getPossibleCellsFromMovesAndGrid(
       this.selectedCell,
       this.grid,

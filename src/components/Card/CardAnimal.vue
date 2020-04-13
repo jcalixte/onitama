@@ -6,7 +6,7 @@
   >
     <div class="columns is-mobile">
       <div class="column is-one-third card-grid-move-container">
-        <CardGridMove :moves="card.moves" />
+        <CardGridMove :moves="moves" />
       </div>
       <div class="column">
         <div class="card-content">
@@ -29,6 +29,7 @@ import { Action, Getter } from 'vuex-class'
 import { Card } from '@/models/Card'
 import { Animal } from '@/enums/Animal'
 import CardGridMove from '@/components/Card/CardGridMove.vue'
+import { Player } from '@/enums/Player'
 
 @Component({
   components: {
@@ -40,10 +41,18 @@ export default class CardAnimal extends Vue {
   private card!: Card
   @Prop({ type: Boolean, required: true })
   private selectable!: boolean
+  @Prop({ type: String, default: null })
+  private player!: Player | 'neutral' | null
   @Action
   private selectCard!: (card: Animal) => void
   @Getter
   private selectedCard!: Animal | null
+
+  private get moves() {
+    return this.player !== Player.Player2
+      ? this.card.moves
+      : this.card.reverseMoves
+  }
 
   private get color() {
     return {

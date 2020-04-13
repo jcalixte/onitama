@@ -11,6 +11,7 @@
           :class="isNeutral"
           :card="card"
           :selectable="isSelectable"
+          :player="player"
         />
       </div>
     </div>
@@ -20,8 +21,9 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-import { Card } from '@/models/Card'
 import { Player } from '@/enums/Player'
+import { Animal } from '@/enums/Animal'
+import { cards } from '@/data/cards'
 
 @Component({
   components: {
@@ -30,13 +32,17 @@ import { Player } from '@/enums/Player'
 })
 export default class BoardCard extends Vue {
   @Getter
-  private cards!: Card[]
+  private cards!: Animal[]
   @Getter
-  private player1Cards!: Card[]
+  private player1Animals!: Animal[]
   @Getter
-  private player2Cards!: Card[]
+  private player2Animals!: Animal[]
   @Getter
-  private neutralCard!: Card | null
+  private neutralAnimal!: Animal | null
+  @Getter
+  private winner!: Player | null
+  @Getter
+  private turn!: Player
   @Getter
   private isPlayer1!: boolean
   @Getter
@@ -48,17 +54,23 @@ export default class BoardCard extends Vue {
     if (!this.player) {
       return this.cards
     }
+    let animals: Animal[]
 
     switch (this.player) {
       case Player.Player1:
-        return this.player1Cards
+        animals = this.player1Animals
+        break
       case Player.Player2:
-        return this.player2Cards
+        animals = this.player2Animals
+        break
       case 'neutral':
-        return this.neutralCard ? [this.neutralCard] : []
+        animals = this.neutralAnimal ? [this.neutralAnimal] : []
+        break
       default:
-        return []
+        animals = []
+        break
     }
+    return cards.filter((card) => animals.includes(card.animal))
   }
 
   private get isNeutral() {
@@ -66,9 +78,16 @@ export default class BoardCard extends Vue {
   }
 
   private get isSelectable() {
+    if (this.winner) {
+      return false
+    }
     return (
-      (this.isPlayer1 && this.player === Player.Player1) ||
-      (this.isPlayer2 && this.player === Player.Player2)
+      (this.isPlayer1 &&
+        this.player === Player.Player1 &&
+        this.player === this.turn) ||
+      (this.isPlayer2 &&
+        this.player === Player.Player2 &&
+        this.player === this.turn)
     )
   }
 }
