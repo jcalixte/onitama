@@ -18,6 +18,7 @@
         <h3 v-else-if="turn" class="subtitle is-4">
           You are {{ userPlayer }} | {{ turnLabel }}'s turn
         </h3>
+        <BoardHistory />
         <BoardGrid />
       </div>
       <div class="column is-half neutral-card-column">
@@ -36,6 +37,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Getter, Action } from 'vuex-class'
 import BoardNew from '@/components/Board/BoardNew.vue'
+import BoardHistory from '@/components/Board/BoardHistory.vue'
 import BoardGrid from '@/components/Board/BoardGrid.vue'
 import BoardCard from '@/components/Board/BoardCard.vue'
 import BoardShare from '@/components/Board/BoardShare.vue'
@@ -48,6 +50,7 @@ import { busService } from '@/services/bus.service'
 @Component({
   components: {
     BoardNew,
+    BoardHistory,
     BoardGrid,
     BoardCard,
     BoardShare,

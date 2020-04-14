@@ -104,8 +104,6 @@ export const initBoard = async (user: string): Promise<Board | null> => {
     turn: neutralAnimal.player,
     turns: [],
     animals: cards.map((card) => card.animal),
-    selectedCard: null,
-    selectedCell: null,
     playerAnimals: {
       [Player.Player1]: player1Animals,
       [Player.Player2]: player2Animals
@@ -262,10 +260,6 @@ export const movePiece = async (
     playerCards.pop()
     playerCards.push(neutralAnimal)
   }
-
-  // clear selections
-  board.selectedCard = null
-  board.selectedCell = null
 
   // other player turn
   board.turn = board.turn === Player.Player1 ? Player.Player2 : Player.Player1

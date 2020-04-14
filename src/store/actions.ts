@@ -1,17 +1,17 @@
 import { Animal } from '@/enums/Animal'
+import { Board } from '@/models/Board'
 import { Cell } from '@/models/Cell'
+import { MovePiece } from '@/models/MovePiece'
 import { initBoard, joinBoard, movePiece } from '@/services/board.service'
 import {
+  INIT_USER,
   SELECT_CARD,
   SELECT_CELL,
-  UPDATE_BOARD,
-  INIT_USER
+  UPDATE_BOARD
 } from '@/store/mutations'
 import { State } from '@/store/state'
-import { ActionTree } from 'vuex'
-import { MovePiece } from '@/models/MovePiece'
-import { Board } from '@/models/Board'
 import { v4 as uuid } from 'uuid'
+import { ActionTree } from 'vuex'
 
 export const actions: ActionTree<State, State> = {
   async initNewBoard({ state, commit }) {

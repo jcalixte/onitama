@@ -7,12 +7,13 @@ import { Column } from '@/enums/Column'
 const DEBUG = true
 
 export const getters: GetterTree<State, State> = {
+  selectedCard: ({ selectedCard }) => selectedCard ?? null,
+  selectedCell: ({ selectedCell }) => selectedCell ?? null,
   board: ({ board }) => board,
   grid: ({ board }) => board?.grid ?? null,
   turn: ({ board }) => board?.turn ?? null,
+  turns: ({ board }) => board?.turns ?? [],
   cards: ({ board }) => board?.animals ?? [],
-  selectedCard: ({ board }) => board?.selectedCard ?? null,
-  selectedCell: ({ board }) => board?.selectedCell ?? null,
   playersSet: ({ board }) =>
     Object.values(board?.users ?? {}).filter((user) => !!user).length === 2,
   isPlayer1: ({ user, board }) => {

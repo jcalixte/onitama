@@ -1,7 +1,7 @@
 <template>
-  <div class="board-new">
-    <button @click="createBoard" class="button is-primary">new play</button>
-  </div>
+  <button @click="createBoard" class="board-new button is-primary">
+    new play
+  </button>
 </template>
 
 <script lang="ts">
@@ -30,8 +30,3 @@ export default class BoardNew extends Vue {
   }
 }
 </script>
-
-<style scoped lang="scss">
-.board-new {
-}
-</style>

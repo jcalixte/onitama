@@ -15,25 +15,24 @@ export const mutations: MutationTree<State> = {
     state.user = user
   },
   [UPDATE_BOARD](state, board: Board) {
+    state.selectedCell = null
+    state.selectedCard = null
     state.board = board
   },
   [SELECT_CARD](state, card: Animal) {
     if (!state.board) {
       return
     }
-    state.board.selectedCard = card
+    state.selectedCard = card
   },
   [SELECT_CELL](state, cell: Cell) {
     if (!state.board || !cell.piece) {
       return
     }
-    if (
-      !state.board.selectedCell ||
-      !areCellEquals(state.board.selectedCell, cell)
-    ) {
-      state.board.selectedCell = cell
+    if (!state.selectedCell || !areCellEquals(state.selectedCell, cell)) {
+      state.selectedCell = cell
     } else {
-      state.board.selectedCell = null
+      state.selectedCell = null
     }
   }
 }

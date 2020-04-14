@@ -21,13 +21,9 @@
 
         <footer v-if="userPlayer" class="modal-card-foot">
           <BoardNew />
+          <button @click="openModal = false" class="button">ok</button>
         </footer>
       </div>
-      <button
-        class="modal-close is-large"
-        aria-label="close"
-        @click="openModal = false"
-      ></button>
     </div>
   </div>
 </template>

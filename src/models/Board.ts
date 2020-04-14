@@ -11,12 +11,10 @@ export interface Board extends EntityDocument {
   turn: Player
   turns: MovePiece[]
   animals: Animal[]
-  selectedCell: Cell | null
   playerAnimals: {
     [Player.Player1]: Animal[]
     [Player.Player2]: Animal[]
   }
-  selectedCard: Animal | null
   status: PlayStatus
   users: {
     [Player.Player1]: string
