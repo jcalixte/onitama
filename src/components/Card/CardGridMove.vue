@@ -66,6 +66,8 @@ $cell-size: 20px;
     border-collapse: collapse;
 
     td {
+      min-width: $cell-size;
+      min-height: $cell-size;
       width: $cell-size;
       height: $cell-size;
       border: 1px solid #130f40;

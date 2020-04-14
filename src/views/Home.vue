@@ -1,5 +1,6 @@
 <template>
   <div class="home">
+    <h1 class="title is-1">onitama</h1>
     <BoardNew />
   </div>
 </template>

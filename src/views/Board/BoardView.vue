@@ -7,7 +7,7 @@
       </div>
     </div>
     <br />
-    <div class="colums card-board">
+    <div class="columns card-board">
       <div class="column">
         <h5 class="subtitle is-5 card-owner">Player 2's cards</h5>
         <BoardCard :player="player2" />

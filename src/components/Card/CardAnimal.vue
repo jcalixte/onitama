@@ -4,20 +4,18 @@
     :class="{ selected, selectable }"
     @click="selectable && selectCard(card.animal)"
   >
-    <div class="columns is-mobile">
-      <div class="column is-one-third card-grid-move-container">
+    <div class="row">
+      <div class="card-grid-move-container">
         <CardGridMove :moves="moves" />
       </div>
-      <div class="column">
-        <div class="card-content">
-          <p class="title">
-            {{ card.animal }}
-            <i class="gg-profile player" :style="color"></i>
-          </p>
-          <p class="subtitle card-description">
-            {{ card.description }}
-          </p>
-        </div>
+      <div class="card-content">
+        <p class="title is-4">
+          {{ card.animal }}
+          <i class="gg-profile player" :style="color"></i>
+        </p>
+        <p class="subtitle card-description">
+          {{ card.description }}
+        </p>
       </div>
     </div>
   </div>
@@ -69,7 +67,7 @@ export default class CardAnimal extends Vue {
 <style scoped lang="scss">
 @import '@/styles/variables';
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 768px) {
   .card-description {
     visibility: hidden;
     display: none;
@@ -77,6 +75,11 @@ export default class CardAnimal extends Vue {
 }
 
 .card-animal {
+  .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
   p.title {
     display: flex;
     justify-content: space-between;
@@ -84,8 +87,13 @@ export default class CardAnimal extends Vue {
   }
   .card-content {
     display: flex;
+    flex: 1;
     flex-direction: column;
     justify-content: center;
+    padding: 0 1rem;
+  }
+  .card-description {
+    padding-bottom: 6px;
   }
   .subtitle {
     font-family: 'Charmonman', cursive;

@@ -78,9 +78,9 @@ export default class BoardEffect extends Vue {
   private get intro() {
     switch (true) {
       case this.isPlayer1:
-        return `You are the Player 1. The old and wise emperor.`
+        return `You are player 1. You are an old wise emperor with his blue soldiers.`
       case this.isPlayer2:
-        return `You are the Player 2. The young and vigorous emperor.`
+        return `You are player 2. You are a young vigorous emperor with his red soldiers.`
       default:
         return `you are a spectator in this game.`
     }
