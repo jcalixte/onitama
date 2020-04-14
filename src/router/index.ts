@@ -21,6 +21,12 @@ const routes: Array<RouteConfig> = [
     path: '/about',
     name: 'About',
     component: () => import(/* webpackChunkName: "about" */ '@/views/About.vue')
+  },
+  {
+    path: '/rules',
+    name: 'PlayRules',
+    component: () =>
+      import(/* webpackChunkName: "play-rules" */ '@/views/PlayRules.vue')
   }
 ]
 
