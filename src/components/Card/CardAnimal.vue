@@ -14,7 +14,7 @@
             {{ card.animal }}
             <i class="gg-profile player" :style="color"></i>
           </p>
-          <p class="subtitle">
+          <p class="subtitle card-description">
             {{ card.description }}
           </p>
         </div>
@@ -69,9 +69,23 @@ export default class CardAnimal extends Vue {
 <style scoped lang="scss">
 @import '@/styles/variables';
 
+@media screen and (max-width: 600px) {
+  .card-description {
+    visibility: hidden;
+    display: none;
+  }
+}
+
 .card-animal {
-  .player {
-    float: right;
+  p.title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .card-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
   .subtitle {
     font-family: 'Charmonman', cursive;
