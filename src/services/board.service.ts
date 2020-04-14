@@ -102,6 +102,7 @@ export const initBoard = async (user: string): Promise<Board | null> => {
   const board: Board = {
     grid,
     turn: neutralAnimal.player,
+    turns: [],
     animals: cards.map((card) => card.animal),
     selectedCard: null,
     selectedCell: null,
@@ -268,6 +269,9 @@ export const movePiece = async (
 
   // other player turn
   board.turn = board.turn === Player.Player1 ? Player.Player2 : Player.Player1
+
+  // save the turn
+  board.turns.push(movePiece)
 
   return await repository.saveLocal(board)
 }
