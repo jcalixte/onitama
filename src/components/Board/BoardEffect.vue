@@ -1,5 +1,15 @@
 <template>
   <div class="board-effect">
+    <div class="modal" :class="{ 'is-active': openIntroModal && isFirstTurn }">
+      <div class="modal-background"></div>
+      <div class="modal-card">
+        <section class="modal-card-body intro-body">{{ intro }}</section>
+
+        <footer class="modal-card-foot">
+          <button @click="openIntroModal = false" class="button">ok</button>
+        </footer>
+      </div>
+    </div>
     <div class="modal" :class="{ 'is-active': openModal }">
       <div class="modal-background"></div>
       <div class="modal-card">
@@ -34,6 +44,7 @@ import { Getter } from 'vuex-class'
 import { Player } from '@/enums/Player'
 import { players } from '@/data/players'
 import BoardNew from '@/components/Board/BoardNew.vue'
+import { MovePiece } from '../../models/MovePiece'
 
 @Component({
   components: {
@@ -42,15 +53,38 @@ import BoardNew from '@/components/Board/BoardNew.vue'
 })
 export default class BoardEffect extends Vue {
   @Getter
+  private turns!: MovePiece[]
+  @Getter
   private turn!: Player
   @Getter
   private userPlayer!: Player | null
+  @Getter
+  private isPlayer1!: boolean
+  @Getter
+  private isPlayer2!: boolean
   @Getter
   private winner!: Player | null
   private moveSound = new Audio(require('@/assets/sounds/move.mp3'))
   private victorySound = new Audio(require('@/assets/sounds/victory.mp3'))
   private defaultSound = new Audio(require('@/assets/sounds/default.mp3'))
+  private openIntroModal = true
   private openModal = false
+
+  private get isFirstTurn() {
+    const firstTurns = [0, 1]
+    return firstTurns.includes(this.turns.length)
+  }
+
+  private get intro() {
+    switch (true) {
+      case this.isPlayer1:
+        return `You are the Player 1. The old and wise emperor.`
+      case this.isPlayer2:
+        return `You are the Player 2. The young and vigorous emperor.`
+      default:
+        return `you are a spectator in this game.`
+    }
+  }
 
   private get won() {
     return this.winner && this.winner === this.userPlayer
@@ -95,6 +129,9 @@ export default class BoardEffect extends Vue {
 @import '../../styles/variables';
 
 .modal {
+  .intro-body {
+    font-family: 'Charmonman', cursive;
+  }
   .modal-card-body {
     display: flex;
     align-items: center;
