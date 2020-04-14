@@ -11,6 +11,7 @@ export interface Board extends EntityDocument {
   turn: Player
   turns: MovePiece[]
   animals: Animal[]
+  date: Date
   playerAnimals: {
     [Player.Player1]: Animal[]
     [Player.Player2]: Animal[]

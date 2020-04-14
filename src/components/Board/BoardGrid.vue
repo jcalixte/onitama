@@ -88,7 +88,7 @@ export default class BoardGrid extends Vue {
     border-collapse: collapse;
 
     td {
-      border: 1px solid black;
+      border: 2px solid #2f3640;
     }
   }
 }

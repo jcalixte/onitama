@@ -74,6 +74,11 @@ export default class CardAnimal extends Vue {
   }
 }
 
+.card {
+  padding: 5px;
+  border-radius: 5px;
+}
+
 .card-animal {
   .row {
     display: flex;

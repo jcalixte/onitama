@@ -9,6 +9,7 @@ const DEBUG = true
 export const getters: GetterTree<State, State> = {
   selectedCard: ({ selectedCard }) => selectedCard ?? null,
   selectedCell: ({ selectedCell }) => selectedCell ?? null,
+  user: ({ user }) => user,
   board: ({ board }) => board,
   grid: ({ board }) => board?.grid ?? null,
   turn: ({ board }) => board?.turn ?? null,

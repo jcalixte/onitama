@@ -70,10 +70,10 @@ $cell-size: 20px;
       min-height: $cell-size;
       width: $cell-size;
       height: $cell-size;
-      border: 1px solid #130f40;
+      border: 2px solid #2f3640;
 
       &.is-center {
-        background-color: #130f40;
+        background-color: #2f3640;
       }
       &.is-possible-cell {
         background-color: #95afc0;

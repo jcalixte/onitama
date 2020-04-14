@@ -101,6 +101,7 @@ export const initBoard = async (user: string): Promise<Board | null> => {
 
   const board: Board = {
     grid,
+    date: new Date(),
     turn: neutralAnimal.player,
     turns: [],
     animals: cards.map((card) => card.animal),

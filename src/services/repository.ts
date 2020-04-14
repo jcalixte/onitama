@@ -52,6 +52,19 @@ class Repository {
     }
   }
 
+  public async getUserDocument(userId: string): Promise<Board[]> {
+    try {
+      const result = await this.db.query('board-view/user-board', {
+        key: userId,
+        include_docs: true
+      })
+      return result.rows.map((row) => row.doc) as Board[]
+    } catch (error) {
+      console.error(error)
+      return []
+    }
+  }
+
   public initLive(id: string) {
     if (this.live) {
       this.resetLive()
