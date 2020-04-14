@@ -5,7 +5,8 @@ import { MovePiece } from '@/models/MovePiece'
 import {
   initBoard,
   joinBoard,
-  movePieceAndSave
+  movePieceAndSave,
+  exchangeCardAndSave
 } from '@/services/board.service'
 import {
   INIT_USER,
@@ -16,6 +17,8 @@ import {
 import { State } from '@/store/state'
 import { v4 as uuid } from 'uuid'
 import { ActionTree } from 'vuex'
+
+type MovePieceProps = {}
 
 export const actions: ActionTree<State, State> = {
   async initNewBoard({ state, commit }) {
@@ -49,7 +52,10 @@ export const actions: ActionTree<State, State> = {
     commit(SELECT_CELL, cell)
   },
   async movePiece({ state, commit }, pieceToMove: MovePiece) {
-    const board = await movePieceAndSave(state.board, pieceToMove)
+    const board =
+      !pieceToMove.start || !pieceToMove.end
+        ? await exchangeCardAndSave(state.board, pieceToMove)
+        : await movePieceAndSave(state.board, pieceToMove)
     if (board) {
       commit(UPDATE_BOARD, board)
     }

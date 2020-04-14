@@ -16,6 +16,9 @@
         <p class="subtitle card-description">
           {{ card.description }}
         </p>
+        <button v-if="skipable" class="button is-warning" @click.prevent="skip">
+          skip
+        </button>
       </div>
     </div>
   </div>
@@ -39,12 +42,18 @@ export default class CardAnimal extends Vue {
   private card!: Card
   @Prop({ type: Boolean, required: true })
   private selectable!: boolean
+  @Prop({ type: Boolean, required: true })
+  private skipable!: boolean
   @Prop({ type: String, default: null })
   private player!: Player | 'neutral' | null
   @Action
   private selectAnimal!: (card: Animal) => void
   @Getter
   private selectedAnimal!: Animal | null
+
+  private skip() {
+    this.$emit('skip', this.card.animal)
+  }
 
   private get moves() {
     return this.player !== Player.Player2

@@ -19,11 +19,9 @@ import { Component, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { Grid, Cell } from '@/models/Cell'
 import BoardCell from '@/components/Board/BoardCell.vue'
-import {
-  getPossibleCellsFromMovesAndGrid,
-  areCellEquals
-} from '@/services/board.service'
+import { getPossibleCellsFromMovesAndGrid } from '@/services/board.service'
 import { getMovesFromAnimal } from '@/services/card.service'
+import { areCellEquals } from '@/services/grid.service'
 import { Animal } from '@/enums/Animal'
 import { MovePiece } from '@/models/MovePiece'
 import { Player } from '@/enums/Player'
@@ -43,19 +41,19 @@ export default class BoardGrid extends Vue {
   @Getter
   private selectedCell!: Cell | null
   @Action
-  private movePiece!: (movePiece: MovePiece) => void
+  private movePiece!: (props: MovePiece) => void
 
   private callToMovePiece(end: Cell) {
     if (!this.selectedCell || !this.selectedAnimal) {
       return
     }
-    const movePiece: MovePiece = {
+    const pieceToMove: MovePiece = {
       start: this.selectedCell,
       end,
       player: this.turn,
       animal: this.selectedAnimal
     }
-    this.movePiece(movePiece)
+    this.movePiece(pieceToMove)
   }
 
   private isValidMove(cell: Cell): boolean {

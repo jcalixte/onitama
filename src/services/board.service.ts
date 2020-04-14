@@ -8,7 +8,11 @@ import { CardMove } from '@/models/CardMove'
 import { Cell, Grid } from '@/models/Cell'
 import { MovePiece } from '@/models/MovePiece'
 import { getCardFromAnimal, selectAnimals } from '@/services/card.service'
-import { createGrid } from '@/services/grid.service'
+import {
+  createGrid,
+  getPieceFromGrid,
+  getCellFromGrid
+} from '@/services/grid.service'
 import { repository } from '@/services/repository'
 
 export const initFromBoard = (board: Board): Board => {
@@ -90,6 +94,42 @@ const isInBoard = (cell: Cell) => {
   )
 }
 
+const exchangeCard = (
+  board: Board | null,
+  movePiece: MovePiece,
+  force = false
+): Board | null => {
+  if (!board) {
+    return null
+  }
+  const playersCards = Object.values(board.playerAnimals).flat()
+  const neutralAnimal = board.animals.find(
+    (card) => !playersCards.includes(card)
+  )
+
+  if (!neutralAnimal) {
+    return null
+  }
+  const playerCards = board.playerAnimals[movePiece.player]
+  const indexCard = playerCards.findIndex((card) => card === movePiece.animal)
+  if (indexCard === 0) {
+    playerCards.shift()
+    playerCards.unshift(neutralAnimal)
+  } else if (indexCard === playerCards.length - 1) {
+    playerCards.pop()
+    playerCards.push(neutralAnimal)
+  }
+
+  // other player turn
+  board.turn = board.turn === Player.Player1 ? Player.Player2 : Player.Player1
+
+  if (!force) {
+    // save the turn
+    board.turns.push(movePiece)
+  }
+  return board
+}
+
 export const getPossibleCellsFromMovesAndGrid = (
   startCell: Cell,
   grid: Grid,
@@ -143,89 +183,52 @@ export const getPossibleCellsFromMoves = (
   return possibleCells
 }
 
-export const areCellEquals = (a: Cell, b: Cell) => {
-  return a.row === b.row && a.column === b.column
-}
-
-export const getCellFromGrid = (cell: Cell, grid: Grid) => {
-  for (const row of grid) {
-    for (const c of row) {
-      if (areCellEquals(cell, c)) {
-        return c
-      }
-    }
-  }
-
-  return null
-}
-
-const getPieceFromBoard = (row: Row, column: Column, board: Board) => {
-  const cell =
-    board.grid
-      .flat()
-      .find((cell) => cell.row === row && cell.column === column) ?? null
-  if (!cell) {
-    return null
-  }
-  return cell.piece
-}
-
+/**
+ * Move piece in the board givent in parameters,
+ * handles all side effects.
+ * @param board board of the play
+ * @param movePiece desired move to do
+ * @param force useful when the player is forced to skip. Also for rewind.
+ */
 const movePieceInBoard = (
   board: Board,
   movePiece: MovePiece,
-  rewind = false
+  force = false
 ) => {
-  if (!movePiece.start.piece) {
-    const piece = getPieceFromBoard(
-      movePiece.start.row,
-      movePiece.start.column,
-      board
-    )
-    if (piece) {
-      movePiece.start.piece = piece
-    } else {
+  if (movePiece.start && movePiece.end) {
+    if (!movePiece.start.piece) {
+      const piece = getPieceFromGrid(
+        movePiece.start.row,
+        movePiece.start.column,
+        board.grid
+      )
+      if (piece) {
+        movePiece.start.piece = piece
+      } else {
+        return null
+      }
+    }
+    // if there is already a ally piece, we stop
+    if (
+      !force &&
+      movePiece.end.piece?.player === movePiece.start.piece?.player
+    ) {
       return null
     }
-  }
-  // if there is already a ally piece, we stop
-  if (!rewind && movePiece.end.piece?.player === movePiece.start.piece.player) {
-    return null
-  }
-  // Otherwise we can move the piece and swap the player card with
-  // the neutral card
-  const startCellFromGrid = getCellFromGrid(movePiece.start, board.grid)
-  const endCellFromGrid = getCellFromGrid(movePiece.end, board.grid)
+    // Otherwise we can move the piece and swap the player card with
+    // the neutral card
+    const startCellFromGrid = getCellFromGrid(movePiece.start, board.grid)
+    const endCellFromGrid = getCellFromGrid(movePiece.end, board.grid)
 
-  if (!startCellFromGrid || !endCellFromGrid) {
-    return null
-  }
-  endCellFromGrid.piece = startCellFromGrid.piece
-  startCellFromGrid.piece = null
-  const playersCards = Object.values(board.playerAnimals).flat()
-  const neutralAnimal = board.animals.find(
-    (card) => !playersCards.includes(card)
-  )
-
-  if (!neutralAnimal) {
-    return null
-  }
-  const playerCards = board.playerAnimals[movePiece.player]
-  const indexCard = playerCards.findIndex((card) => card === movePiece.animal)
-  if (indexCard === 0) {
-    playerCards.shift()
-    playerCards.unshift(neutralAnimal)
-  } else if (indexCard === playerCards.length - 1) {
-    playerCards.pop()
-    playerCards.push(neutralAnimal)
+    if (!startCellFromGrid || !endCellFromGrid) {
+      return null
+    }
+    endCellFromGrid.piece = startCellFromGrid.piece
+    startCellFromGrid.piece = null
   }
 
-  // other player turn
-  board.turn = board.turn === Player.Player1 ? Player.Player2 : Player.Player1
+  exchangeCard(board, movePiece, force)
 
-  if (!rewind) {
-    // save the turn
-    board.turns.push(movePiece)
-  }
   return board
 }
 
@@ -258,12 +261,27 @@ export const rewindMovePiece = (
 
 export const movePieceAndSave = async (
   board: Board | null,
+  movePiece: MovePiece,
+  force = false
+): Promise<Board | null> => {
+  if (!board) {
+    return null
+  }
+  const newBoard = movePieceInBoard(board, movePiece, force)
+  if (!newBoard) {
+    return null
+  }
+  return await repository.saveLocal(newBoard)
+}
+
+export const exchangeCardAndSave = async (
+  board: Board | null,
   movePiece: MovePiece
 ): Promise<Board | null> => {
   if (!board) {
     return null
   }
-  const newBoard = movePieceInBoard(board, movePiece)
+  const newBoard = exchangeCard(board, movePiece)
   if (!newBoard) {
     return null
   }

@@ -4,7 +4,7 @@ import { Cell } from '@/models/Cell'
 
 export interface MovePiece {
   player: Player
-  start: Cell
-  end: Cell
+  start: Cell | null
+  end: Cell | null
   animal: Animal
 }

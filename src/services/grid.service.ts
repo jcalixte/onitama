@@ -66,3 +66,33 @@ export const createGrid = (addPiece = true): Grid => {
     ]
   ]
 }
+
+export const getPieceFromGrid = (row: Row, column: Column, grid: Grid) => {
+  const cell =
+    grid.flat().find((cell) => cell.row === row && cell.column === column) ??
+    null
+  if (!cell) {
+    return null
+  }
+  return cell.piece
+}
+
+export const areCellEquals = (a: Cell, b: Cell) => {
+  return a.row === b.row && a.column === b.column
+}
+
+export const getCellFromGrid = (cell: Cell, grid: Grid) => {
+  for (const row of grid) {
+    for (const c of row) {
+      if (areCellEquals(cell, c)) {
+        return c
+      }
+    }
+  }
+
+  return null
+}
+
+export const getPlayerCells = (player: Player, grid: Grid) => {
+  return grid.flat().filter((cell) => cell.piece?.player === player)
+}

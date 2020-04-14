@@ -1,9 +1,9 @@
 import { GetterTree } from 'vuex'
 import { State } from './state'
 import { Player } from '@/enums/Player'
-import { PieceType } from '@/enums/PieceType'
-import { Column } from '@/enums/Column'
-import { getWinner } from '@/services/board.service'
+import { getWinner, getPossibleCellsFromMoves } from '@/services/board.service'
+import { getPlayerCells } from '@/services/grid.service'
+import { getCardFromAnimal, getMovesFromAnimal } from '@/services/card.service'
 
 const DEBUG = true
 
@@ -50,5 +50,27 @@ export const getters: GetterTree<State, State> = {
       board.animals.find((animal) => !animalPlayers.includes(animal)) ?? null
     )
   },
-  winner: ({ board }): Player | null => getWinner(board)
+  winner: ({ board }): Player | null => getWinner(board),
+  mustSkipTurn: (
+    { board },
+    { userPlayer }: { userPlayer: Player | null }
+  ): boolean => {
+    if (!board || userPlayer !== board.turn) {
+      return false
+    }
+    const animals = board.playerAnimals[userPlayer]
+    const moves = animals
+      .map((animal) =>
+        getMovesFromAnimal(animal, userPlayer === Player.Player1)
+      )
+      .flat()
+    const pieces = getPlayerCells(userPlayer, board.grid)
+    for (const piece of pieces) {
+      const possibleMoves = getPossibleCellsFromMoves(piece, ...moves)
+      if (possibleMoves.length) {
+        return false
+      }
+    }
+    return true
+  }
 }

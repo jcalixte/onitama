@@ -1,6 +1,10 @@
 <template>
   <div class="board-effect">
-    <div class="modal" :class="{ 'is-active': openIntroModal && isFirstTurn }">
+    <div
+      v-if="displayModal"
+      class="modal"
+      :class="{ 'is-active': openIntroModal && isFirstTurn }"
+    >
       <div class="modal-background"></div>
       <div class="modal-card">
         <section class="modal-card-body intro-body">{{ intro }}</section>
@@ -9,7 +13,7 @@
         </footer>
       </div>
     </div>
-    <div class="modal" :class="{ 'is-active': openModal }">
+    <div v-if="displayModal" class="modal" :class="{ 'is-active': openModal }">
       <div class="modal-background"></div>
       <div class="modal-card">
         <section
@@ -38,7 +42,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from 'vue-property-decorator'
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { Player } from '@/enums/Player'
 import { players } from '@/data/players'
@@ -51,6 +55,8 @@ import { MovePiece } from '@/models/MovePiece'
   }
 })
 export default class BoardEffect extends Vue {
+  @Prop({ type: Boolean, default: true })
+  private displayModal!: boolean
   @Getter
   private turns!: MovePiece[]
   @Getter

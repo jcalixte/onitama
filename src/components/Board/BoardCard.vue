@@ -8,9 +8,11 @@
       >
         <CardAnimal
           class="card-animal"
-          :class="isNeutral"
+          :class="isNeutralClass"
           :card="card"
           :selectable="isSelectable"
+          :skipable="isNeutral && mustSkipTurn"
+          @skip="skip"
           :player="player"
         />
       </div>
@@ -20,10 +22,11 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+import { Action, Getter } from 'vuex-class'
 import { Player } from '@/enums/Player'
 import { Animal } from '@/enums/Animal'
 import { cards } from '@/data/cards'
+import { MovePiece } from '@/models/MovePiece'
 
 @Component({
   components: {
@@ -31,6 +34,8 @@ import { cards } from '@/data/cards'
   }
 })
 export default class BoardCard extends Vue {
+  @Prop({ type: String, default: null })
+  private player!: Player | 'neutral' | null
   @Getter
   private cards!: Animal[]
   @Getter
@@ -47,8 +52,20 @@ export default class BoardCard extends Vue {
   private isPlayer1!: boolean
   @Getter
   private isPlayer2!: boolean
-  @Prop({ type: String, default: null })
-  private player!: Player | 'neutral' | null
+  @Getter
+  private mustSkipTurn!: boolean
+  @Action
+  private movePiece!: (props: MovePiece) => void
+
+  private skip(animal: Animal) {
+    const pieceToMove: MovePiece = {
+      start: null,
+      end: null,
+      player: this.turn,
+      animal: animal
+    }
+    this.movePiece(pieceToMove)
+  }
 
   private get localCards() {
     if (!this.player) {
@@ -74,7 +91,11 @@ export default class BoardCard extends Vue {
   }
 
   private get isNeutral() {
-    return this.player === 'neutral' ? 'neutral-card' : ''
+    return this.player === 'neutral'
+  }
+
+  private get isNeutralClass() {
+    return this.isNeutral ? 'neutral-card' : ''
   }
 
   private get isSelectable() {

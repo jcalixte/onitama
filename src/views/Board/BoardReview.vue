@@ -52,6 +52,7 @@
         </nav>
       </div>
     </div>
+    <BoardEffect :display-modal="false" />
   </div>
 </template>
 
@@ -68,10 +69,12 @@ import {
   getWinner
 } from '@/services/board.service'
 import BoardGrid from '@/components/Board/BoardGrid.vue'
+import BoardEffect from '@/components/Board/BoardEffect.vue'
 
 @Component({
   components: {
-    BoardGrid
+    BoardGrid,
+    BoardEffect
   }
 })
 export default class BoardReview extends Vue {

@@ -19,11 +19,8 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { CardMove } from '@/models/CardMove'
 import { Grid, Cell } from '@/models/Cell'
-import {
-  getPossibleCellsFromMoves,
-  areCellEquals
-} from '@/services/board.service'
-import { createGrid } from '@/services/grid.service'
+import { getPossibleCellsFromMoves } from '@/services/board.service'
+import { createGrid, areCellEquals } from '@/services/grid.service'
 import { Row } from '@/enums/Row'
 import { Column } from '@/enums/Column'
 
