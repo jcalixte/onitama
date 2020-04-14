@@ -5,6 +5,7 @@
     <ul class="board-user-list">
       <li v-for="board in boards" :key="board._id">
         <router-link :to="{ name: 'BoardReview', params: { id: board._id } }">
+          {{ new Date(board.date).toLocaleDateString() }} –
           {{ board.animals.join(', ') }}
         </router-link>
       </li>

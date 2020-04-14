@@ -1,0 +1,9 @@
+{
+  "_id": "_design/board-view",
+  "views": {
+    "user-board": {
+      "map": "function (doc) {\n  if (doc._id.indexOf('board') === 0) {\n    for (var i in doc.users) {\n      if (doc.users[i]) {\n        emit(doc.users[i], 1);\n      }\n    }\n  }\n}"
+    }
+  },
+  "language": "javascript"
+}

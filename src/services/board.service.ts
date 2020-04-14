@@ -1,14 +1,15 @@
 import { Column } from '@/enums/Column'
+import { PieceType } from '@/enums/PieceType'
 import { Player } from '@/enums/Player'
 import { Row } from '@/enums/Row'
 import { Board } from '@/models/Board'
+import { Card } from '@/models/Card'
 import { CardMove } from '@/models/CardMove'
 import { Cell, Grid } from '@/models/Cell'
 import { MovePiece } from '@/models/MovePiece'
-import { selectAnimals, getCardFromAnimal } from '@/services/card.service'
-import { repository } from '@/services/repository'
+import { getCardFromAnimal, selectAnimals } from '@/services/card.service'
 import { createGrid } from '@/services/grid.service'
-import { Card } from '@/models/Card'
+import { repository } from '@/services/repository'
 
 export const initFromBoard = (board: Board): Board => {
   const grid = createGrid()
@@ -158,12 +159,36 @@ export const getCellFromGrid = (cell: Cell, grid: Grid) => {
   return null
 }
 
-const movePieceInBoard = (board: Board, movePiece: MovePiece) => {
-  if (!movePiece.start.piece) {
+const getPieceFromBoard = (row: Row, column: Column, board: Board) => {
+  const cell =
+    board.grid
+      .flat()
+      .find((cell) => cell.row === row && cell.column === column) ?? null
+  if (!cell) {
     return null
   }
+  return cell.piece
+}
+
+const movePieceInBoard = (
+  board: Board,
+  movePiece: MovePiece,
+  rewind = false
+) => {
+  if (!movePiece.start.piece) {
+    const piece = getPieceFromBoard(
+      movePiece.start.row,
+      movePiece.start.column,
+      board
+    )
+    if (piece) {
+      movePiece.start.piece = piece
+    } else {
+      return null
+    }
+  }
   // if there is already a ally piece, we stop
-  if (movePiece.end.piece?.player === movePiece.start.piece.player) {
+  if (!rewind && movePiece.end.piece?.player === movePiece.start.piece.player) {
     return null
   }
   // Otherwise we can move the piece and swap the player card with
@@ -197,8 +222,10 @@ const movePieceInBoard = (board: Board, movePiece: MovePiece) => {
   // other player turn
   board.turn = board.turn === Player.Player1 ? Player.Player2 : Player.Player1
 
-  // save the turn
-  board.turns.push(movePiece)
+  if (!rewind) {
+    // save the turn
+    board.turns.push(movePiece)
+  }
   return board
 }
 
@@ -209,17 +236,18 @@ export const rewindMovePiece = (
 ) => {
   // some validation
   if (fromTurn > toTurn) {
-    fromTurn = 0
+    fromTurn = -1
+    boardFromTurn = initFromBoard(boardFromTurn)
   }
 
-  if (!boardFromTurn.turns[fromTurn] || !boardFromTurn.turns[toTurn]) {
+  if (!boardFromTurn.turns[toTurn]) {
     return boardFromTurn
   }
 
   let boardToTurn = boardFromTurn
 
   for (let turn = fromTurn + 1; turn <= toTurn; turn++) {
-    const board = movePieceInBoard(boardToTurn, boardFromTurn.turns[turn])
+    const board = movePieceInBoard(boardToTurn, boardFromTurn.turns[turn], true)
     if (board) {
       boardToTurn = board
     }
@@ -240,4 +268,42 @@ export const movePieceAndSave = async (
     return null
   }
   return await repository.saveLocal(newBoard)
+}
+
+export const getWinner = (board: Board | null) => {
+  if (!board) {
+    return null
+  }
+  const player1WayoftheStone = !board.grid.some((row) =>
+    row.some(
+      (cell) =>
+        cell.piece?.player === Player.Player2 &&
+        cell.piece.type === PieceType.Master
+    )
+  )
+  const player1WayoftheStream =
+    board.grid[0][Column.C].piece?.player === Player.Player1 &&
+    board.grid[0][Column.C].piece?.type === PieceType.Master
+  const hasPlayer1Won = player1WayoftheStone || player1WayoftheStream
+  if (hasPlayer1Won) {
+    return Player.Player1
+  }
+
+  const player2WayoftheStone = !board.grid.some((row) =>
+    row.some(
+      (cell) =>
+        cell.piece?.player === Player.Player1 &&
+        cell.piece.type === PieceType.Master
+    )
+  )
+  const player2WayoftheStream =
+    board.grid[board.grid.length - 1][Column.C].piece?.player ===
+      Player.Player2 &&
+    board.grid[board.grid.length - 1][Column.C].piece?.type === PieceType.Master
+  const hasPlayer2Won = player2WayoftheStone || player2WayoftheStream
+  if (hasPlayer2Won) {
+    return Player.Player2
+  }
+
+  return null
 }
