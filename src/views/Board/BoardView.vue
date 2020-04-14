@@ -7,28 +7,36 @@
       </div>
     </div>
     <br />
-    <h5 class="subtitle is-5 card-owner">Player 2's cards</h5>
-    <BoardCard :player="player2" />
-    <hr />
-    <div class="columns">
+    <div class="colums card-board">
+      <div class="column">
+        <h5 class="subtitle is-5 card-owner">Player 2's cards</h5>
+        <BoardCard :player="player2" />
+      </div>
+    </div>
+    <div class="columns play-board">
+      <div class="column is-half neutral-card-column" v-if="isPlayer1">
+        <h5 class="subtitle is-5 card-owner">Neutral card</h5>
+        <BoardCard player="neutral" />
+      </div>
       <div class="column is-half">
         <h3 v-if="winnerLabel" class="subtitle is-3">
           {{ winnerLabel }} wins!
         </h3>
-        <h3 v-else-if="turn" class="subtitle is-4">
-          You are {{ userPlayer }} | {{ turnLabel }}'s turn
-        </h3>
+        <h3 v-else-if="turn" class="subtitle is-4">{{ turnLabel }}'s turn</h3>
         <BoardHistory />
         <BoardGrid />
       </div>
-      <div class="column is-half neutral-card-column">
+      <div class="column is-half neutral-card-column" v-if="!isPlayer1">
         <h5 class="subtitle is-5 card-owner">Neutral card</h5>
         <BoardCard player="neutral" />
       </div>
     </div>
-    <hr />
-    <h5 class="subtitle is-5 card-owner">Player 1's cards</h5>
-    <BoardCard :player="player1" />
+    <div class="columns card-board">
+      <div class="column">
+        <h5 class="subtitle is-5 card-owner">Player 1's cards</h5>
+        <BoardCard :player="player1" />
+      </div>
+    </div>
     <BoardEffect />
   </div>
 </template>
@@ -120,6 +128,8 @@ export default class BoardView extends Vue {
 </script>
 
 <style scoped lang="scss">
+@import '@/styles/variables';
+
 .board-view {
   .neutral-card-column {
     display: flex;
@@ -128,6 +138,13 @@ export default class BoardView extends Vue {
   }
   .card-owner {
     font-style: italic;
+    text-align: left;
+    text-decoration: underline;
+    color: $primary;
+  }
+  .play-board {
+    margin: 15px 0;
+    background-color: #d7ccc8;
   }
 }
 </style>

@@ -88,7 +88,7 @@ $cell-size: 50px;
     background-color: #6ab04c;
   }
   &.is-valid-move {
-    background-color: #ffbe76;
+    background-color: #079992;
   }
   &.is-stream-cell {
     background-image: url('../../assets/bridge.png');

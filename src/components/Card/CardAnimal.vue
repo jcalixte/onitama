@@ -100,7 +100,7 @@ export default class CardAnimal extends Vue {
     cursor: pointer;
   }
   &.selected {
-    background-color: $primary;
+    background-color: #6ab04c;
   }
   .card-grid-move-container {
     display: flex;

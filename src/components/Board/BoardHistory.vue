@@ -1,5 +1,5 @@
 <template>
-  <div class="board-history">turn {{ turns.length }}</div>
+  <div class="board-history" v-if="turns.length">turn {{ turns.length }}</div>
 </template>
 
 <script lang="ts">
