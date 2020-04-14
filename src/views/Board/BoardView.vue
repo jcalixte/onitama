@@ -1,20 +1,23 @@
 <template>
   <div class="board-view" v-if="board">
+    <hr v-if="!playersSet" />
     <div class="columns is-centered" v-if="!playersSet">
       <div class="column is-half">
         <BoardShare />
       </div>
     </div>
-    <h1 v-if="winnerLabel" class="title is-1">{{ winnerLabel }} wins!</h1>
-    <h4 v-else-if="turn" class="title is-4">
-      You are {{ userPlayer }} | {{ turnLabel }} to play
-    </h4>
     <br />
     <h5 class="subtitle is-5 card-owner">Player 2's cards</h5>
     <BoardCard :player="player2" />
     <hr />
     <div class="columns">
       <div class="column is-half">
+        <h3 v-if="winnerLabel" class="subtitle is-3">
+          {{ winnerLabel }} wins!
+        </h3>
+        <h3 v-else-if="turn" class="subtitle is-4">
+          You are {{ userPlayer }} | {{ turnLabel }}'s turn
+        </h3>
         <BoardGrid />
       </div>
       <div class="column is-half neutral-card-column">
@@ -25,6 +28,7 @@
     <hr />
     <h5 class="subtitle is-5 card-owner">Player 1's cards</h5>
     <BoardCard :player="player1" />
+    <BoardEffect />
   </div>
 </template>
 
@@ -35,6 +39,7 @@ import BoardNew from '@/components/Board/BoardNew.vue'
 import BoardGrid from '@/components/Board/BoardGrid.vue'
 import BoardCard from '@/components/Board/BoardCard.vue'
 import BoardShare from '@/components/Board/BoardShare.vue'
+import BoardEffect from '@/components/Board/BoardEffect.vue'
 import { Board } from '@/models/Board'
 import { Player } from '@/enums/Player'
 import { players } from '@/data/players'
@@ -45,7 +50,8 @@ import { busService } from '@/services/bus.service'
     BoardNew,
     BoardGrid,
     BoardCard,
-    BoardShare
+    BoardShare,
+    BoardEffect
   }
 })
 export default class BoardView extends Vue {
