@@ -3,7 +3,7 @@ import { State } from './state'
 import { Player } from '@/enums/Player'
 import { getWinner, getPossibleCellsFromMoves } from '@/services/board.service'
 import { getPlayerCells } from '@/services/grid.service'
-import { getCardFromAnimal, getMovesFromAnimal } from '@/services/card.service'
+import { getMovesFromAnimal } from '@/services/card.service'
 
 const DEBUG = true
 
