@@ -1,108 +1,45 @@
-import { cards } from '@/data/cards'
 import { Column } from '@/enums/Column'
-import { PieceType } from '@/enums/PieceType'
 import { Player } from '@/enums/Player'
-import { PlayStatus } from '@/enums/PlayStatus'
 import { Row } from '@/enums/Row'
 import { Board } from '@/models/Board'
 import { CardMove } from '@/models/CardMove'
 import { Cell, Grid } from '@/models/Cell'
-import { Piece } from '@/models/Piece'
-import { repository } from './repository'
 import { MovePiece } from '@/models/MovePiece'
+import { selectAnimals, getCardFromAnimal } from '@/services/card.service'
+import { repository } from '@/services/repository'
+import { createGrid } from '@/services/grid.service'
+import { Card } from '@/models/Card'
 
-const newCell = (row: Row, column: Column, addPiece = true): Cell => {
-  let piece: Piece | null = null
-  if (addPiece) {
-    switch (row) {
-      case Row.One:
-        piece = {
-          player: Player.Player1,
-          type: column === Column.C ? PieceType.Master : PieceType.Student
-        }
-        break
-      case Row.Five:
-        piece = {
-          player: Player.Player2,
-          type: column === Column.C ? PieceType.Master : PieceType.Student
-        }
-        break
-    }
+export const initFromBoard = (board: Board): Board => {
+  const grid = createGrid()
+  const cards = board.animals.map(getCardFromAnimal) as Card[]
+  const [firstCard, secondCard, thirdCard, fourthCard, neutralCard] = cards
+  const player1Animals = [firstCard, secondCard].map((card) => card.animal)
+  const player2Animals = [thirdCard, fourthCard].map((card) => card.animal)
+
+  return {
+    ...board,
+    turn: neutralCard.player,
+    playerAnimals: {
+      [Player.Player1]: player1Animals,
+      [Player.Player2]: player2Animals
+    },
+    grid
   }
-
-  return { row, column, piece, selected: false }
-}
-
-const selectCards = () => {
-  const shuffledCards = [...cards]
-  for (let i = shuffledCards.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * i)
-    const temp = shuffledCards[i]
-    shuffledCards[i] = shuffledCards[j]
-    shuffledCards[j] = temp
-  }
-  const [
-    firstCard,
-    secondCard,
-    thirdCard,
-    fourthCard,
-    fifthCard
-  ] = shuffledCards
-  return [firstCard, secondCard, thirdCard, fourthCard, fifthCard]
-}
-
-export const createGrid = (addPiece = true): Grid => {
-  return [
-    [
-      newCell(Row.Five, Column.A, addPiece),
-      newCell(Row.Five, Column.B, addPiece),
-      newCell(Row.Five, Column.C, addPiece),
-      newCell(Row.Five, Column.D, addPiece),
-      newCell(Row.Five, Column.E, addPiece)
-    ],
-    [
-      newCell(Row.Four, Column.A, addPiece),
-      newCell(Row.Four, Column.B, addPiece),
-      newCell(Row.Four, Column.C, addPiece),
-      newCell(Row.Four, Column.D, addPiece),
-      newCell(Row.Four, Column.E, addPiece)
-    ],
-    [
-      newCell(Row.Three, Column.A, addPiece),
-      newCell(Row.Three, Column.B, addPiece),
-      newCell(Row.Three, Column.C, addPiece),
-      newCell(Row.Three, Column.D, addPiece),
-      newCell(Row.Three, Column.E, addPiece)
-    ],
-    [
-      newCell(Row.Two, Column.A, addPiece),
-      newCell(Row.Two, Column.B, addPiece),
-      newCell(Row.Two, Column.C, addPiece),
-      newCell(Row.Two, Column.D, addPiece),
-      newCell(Row.Two, Column.E, addPiece)
-    ],
-    [
-      newCell(Row.One, Column.A, addPiece),
-      newCell(Row.One, Column.B, addPiece),
-      newCell(Row.One, Column.C, addPiece),
-      newCell(Row.One, Column.D, addPiece),
-      newCell(Row.One, Column.E, addPiece)
-    ]
-  ]
 }
 
 export const initBoard = async (user: string): Promise<Board | null> => {
-  const grid: Grid = createGrid()
+  const grid = createGrid()
 
-  const cards = selectCards()
-  const [firstCard, secondCard, thirdCard, fourthCard, neutralAnimal] = cards
+  const cards = selectAnimals()
+  const [firstCard, secondCard, thirdCard, fourthCard, neutralCard] = cards
   const player1Animals = [firstCard, secondCard].map((card) => card.animal)
   const player2Animals = [thirdCard, fourthCard].map((card) => card.animal)
 
   const board: Board = {
     grid,
     date: new Date(),
-    turn: neutralAnimal.player,
+    turn: neutralCard.player,
     turns: [],
     animals: cards.map((card) => card.animal),
     playerAnimals: {
@@ -112,8 +49,7 @@ export const initBoard = async (user: string): Promise<Board | null> => {
     users: {
       [Player.Player1]: user,
       [Player.Player2]: null
-    },
-    status: PlayStatus.Created
+    }
   }
   return await repository.saveLocal(board)
 }
@@ -136,7 +72,6 @@ export const joinBoard = async (id: string, userId: string) => {
       board.users[Player.Player1] !== userId
     ) {
       board.users[Player.Player2] = userId
-      board.status = PlayStatus.Playing
       return await repository.save(board)
     }
     return board
@@ -223,11 +158,8 @@ export const getCellFromGrid = (cell: Cell, grid: Grid) => {
   return null
 }
 
-export const movePiece = async (
-  board: Board | null,
-  movePiece: MovePiece
-): Promise<Board | null> => {
-  if (!board || !movePiece.start.piece) {
+const movePieceInBoard = (board: Board, movePiece: MovePiece) => {
+  if (!movePiece.start.piece) {
     return null
   }
   // if there is already a ally piece, we stop
@@ -253,7 +185,7 @@ export const movePiece = async (
     return null
   }
   const playerCards = board.playerAnimals[movePiece.player]
-  const indexCard = playerCards.findIndex((card) => card === movePiece.card)
+  const indexCard = playerCards.findIndex((card) => card === movePiece.animal)
   if (indexCard === 0) {
     playerCards.shift()
     playerCards.unshift(neutralAnimal)
@@ -267,6 +199,45 @@ export const movePiece = async (
 
   // save the turn
   board.turns.push(movePiece)
+  return board
+}
 
-  return await repository.saveLocal(board)
+export const rewindMovePiece = (
+  fromTurn: number,
+  toTurn: number,
+  boardFromTurn: Board
+) => {
+  // some validation
+  if (fromTurn > toTurn) {
+    fromTurn = 0
+  }
+
+  if (!boardFromTurn.turns[fromTurn] || !boardFromTurn.turns[toTurn]) {
+    return boardFromTurn
+  }
+
+  let boardToTurn = boardFromTurn
+
+  for (let turn = fromTurn + 1; turn <= toTurn; turn++) {
+    const board = movePieceInBoard(boardToTurn, boardFromTurn.turns[turn])
+    if (board) {
+      boardToTurn = board
+    }
+  }
+
+  return boardToTurn
+}
+
+export const movePieceAndSave = async (
+  board: Board | null,
+  movePiece: MovePiece
+): Promise<Board | null> => {
+  if (!board) {
+    return null
+  }
+  const newBoard = movePieceInBoard(board, movePiece)
+  if (!newBoard) {
+    return null
+  }
+  return await repository.saveLocal(newBoard)
 }

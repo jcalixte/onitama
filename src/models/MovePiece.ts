@@ -6,5 +6,5 @@ export interface MovePiece {
   player: Player
   start: Cell
   end: Cell
-  card: Animal
+  animal: Animal
 }

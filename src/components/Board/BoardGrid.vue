@@ -39,21 +39,21 @@ export default class BoardGrid extends Vue {
   @Getter
   private turn!: Player
   @Getter
-  private selectedCard!: Animal | null
+  private selectedAnimal!: Animal | null
   @Getter
   private selectedCell!: Cell | null
   @Action
   private movePiece!: (movePiece: MovePiece) => void
 
   private callToMovePiece(end: Cell) {
-    if (!this.selectedCell || !this.selectedCard) {
+    if (!this.selectedCell || !this.selectedAnimal) {
       return
     }
     const movePiece: MovePiece = {
       start: this.selectedCell,
       end,
       player: this.turn,
-      card: this.selectedCard
+      animal: this.selectedAnimal
     }
     this.movePiece(movePiece)
   }
@@ -69,7 +69,7 @@ export default class BoardGrid extends Vue {
       return []
     }
     const moves = getMovesFromAnimal(
-      this.selectedCard,
+      this.selectedAnimal,
       this.turn === Player.Player1
     )
     return getPossibleCellsFromMovesAndGrid(

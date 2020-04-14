@@ -4,7 +4,7 @@
     <h3 class="subtitle is-3">boards played</h3>
     <ul class="board-user-list">
       <li v-for="board in boards" :key="board._id">
-        <router-link :to="{ name: 'Board', params: { id: board._id } }">
+        <router-link :to="{ name: 'BoardReview', params: { id: board._id } }">
           {{ board.animals.join(', ') }}
         </router-link>
       </li>

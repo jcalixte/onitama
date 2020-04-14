@@ -2,7 +2,7 @@
   <div
     class="card-animal card"
     :class="{ selected, selectable }"
-    @click="selectable && selectCard(card.animal)"
+    @click="selectable && selectAnimal(card.animal)"
   >
     <div class="row">
       <div class="card-grid-move-container">
@@ -42,9 +42,9 @@ export default class CardAnimal extends Vue {
   @Prop({ type: String, default: null })
   private player!: Player | 'neutral' | null
   @Action
-  private selectCard!: (card: Animal) => void
+  private selectAnimal!: (card: Animal) => void
   @Getter
-  private selectedCard!: Animal | null
+  private selectedAnimal!: Animal | null
 
   private get moves() {
     return this.player !== Player.Player2
@@ -59,7 +59,7 @@ export default class CardAnimal extends Vue {
   }
 
   private get selected() {
-    return this.card.animal === this.selectedCard
+    return this.card.animal === this.selectedAnimal
   }
 }
 </script>

@@ -18,6 +18,15 @@ const routes: Array<RouteConfig> = [
       import(/* webpackChunkName: "board" */ '@/views/Board/BoardView.vue')
   },
   {
+    path: '/board-review/:id',
+    name: 'BoardReview',
+    props: true,
+    component: () =>
+      import(
+        /* webpackChunkName: "board-review" */ '@/views/Board/BoardReview.vue'
+      )
+  },
+  {
     path: '/about',
     name: 'About',
     component: () => import(/* webpackChunkName: "about" */ '@/views/About.vue')

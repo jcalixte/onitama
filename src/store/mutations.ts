@@ -7,7 +7,7 @@ import { areCellEquals } from '@/services/board.service'
 
 export const INIT_USER = 'INIT_USER'
 export const UPDATE_BOARD = 'UPDATE_BOARD'
-export const SELECT_CARD = 'SELECT_CARD'
+export const SELECT_ANIMAL = 'SELECT_ANIMAL'
 export const SELECT_CELL = 'SELECT_CELL'
 
 export const mutations: MutationTree<State> = {
@@ -16,14 +16,14 @@ export const mutations: MutationTree<State> = {
   },
   [UPDATE_BOARD](state, board: Board) {
     state.selectedCell = null
-    state.selectedCard = null
+    state.selectedAnimal = null
     state.board = board
   },
-  [SELECT_CARD](state, card: Animal) {
+  [SELECT_ANIMAL](state, animal: Animal) {
     if (!state.board) {
       return
     }
-    state.selectedCard = card
+    state.selectedAnimal = animal
   },
   [SELECT_CELL](state, cell: Cell) {
     if (!state.board || !cell.piece) {

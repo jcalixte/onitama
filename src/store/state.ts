@@ -6,13 +6,13 @@ import { Animal } from '@/enums/Animal'
 export interface State {
   board: Board | null
   selectedCell: Cell | null
-  selectedCard: Animal | null
+  selectedAnimal: Animal | null
   user: string
 }
 
 export const state: State = {
   board: null,
   selectedCell: null,
-  selectedCard: null,
+  selectedAnimal: null,
   user: uuid()
 }

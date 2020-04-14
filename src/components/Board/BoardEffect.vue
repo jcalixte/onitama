@@ -4,7 +4,6 @@
       <div class="modal-background"></div>
       <div class="modal-card">
         <section class="modal-card-body intro-body">{{ intro }}</section>
-
         <footer class="modal-card-foot">
           <button @click="openIntroModal = false" class="button">ok</button>
         </footer>
@@ -44,7 +43,7 @@ import { Getter } from 'vuex-class'
 import { Player } from '@/enums/Player'
 import { players } from '@/data/players'
 import BoardNew from '@/components/Board/BoardNew.vue'
-import { MovePiece } from '../../models/MovePiece'
+import { MovePiece } from '@/models/MovePiece'
 
 @Component({
   components: {

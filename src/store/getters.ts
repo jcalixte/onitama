@@ -7,7 +7,7 @@ import { Column } from '@/enums/Column'
 const DEBUG = true
 
 export const getters: GetterTree<State, State> = {
-  selectedCard: ({ selectedCard }) => selectedCard ?? null,
+  selectedAnimal: ({ selectedAnimal }) => selectedAnimal ?? null,
   selectedCell: ({ selectedCell }) => selectedCell ?? null,
   user: ({ user }) => user,
   board: ({ board }) => board,

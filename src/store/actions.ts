@@ -2,10 +2,14 @@ import { Animal } from '@/enums/Animal'
 import { Board } from '@/models/Board'
 import { Cell } from '@/models/Cell'
 import { MovePiece } from '@/models/MovePiece'
-import { initBoard, joinBoard, movePiece } from '@/services/board.service'
+import {
+  initBoard,
+  joinBoard,
+  movePieceAndSave
+} from '@/services/board.service'
 import {
   INIT_USER,
-  SELECT_CARD,
+  SELECT_ANIMAL,
   SELECT_CELL,
   UPDATE_BOARD
 } from '@/store/mutations'
@@ -24,6 +28,9 @@ export const actions: ActionTree<State, State> = {
       commit(UPDATE_BOARD, board)
     }
   },
+  async reviewBoard({ commit }, board) {
+    commit(UPDATE_BOARD, board)
+  },
   async joinBoard({ state, commit }, id: string) {
     const userId = state.user || uuid()
     if (!state.user) {
@@ -35,14 +42,14 @@ export const actions: ActionTree<State, State> = {
   updateBoard({ commit }, board: Board) {
     commit(UPDATE_BOARD, board)
   },
-  selectCard({ commit }, card: Animal) {
-    commit(SELECT_CARD, card)
+  selectAnimal({ commit }, animal: Animal) {
+    commit(SELECT_ANIMAL, animal)
   },
   selectCell({ commit }, cell: Cell) {
     commit(SELECT_CELL, cell)
   },
   async movePiece({ state, commit }, pieceToMove: MovePiece) {
-    const board = await movePiece(state.board, pieceToMove)
+    const board = await movePieceAndSave(state.board, pieceToMove)
     if (board) {
       commit(UPDATE_BOARD, board)
     }
