@@ -10,7 +10,7 @@
           @click="share"
           v-if="canShareAPI"
         >
-          Partager
+          share
         </button>
         <div class="field is-grouped is-grouped-centered" v-else>
           <div class="field" :class="{ 'has-addons': canClipboard }">
@@ -19,13 +19,13 @@
             </div>
             <div class="control" if="canClipboard">
               <a href="#" class="button is-primary" @click.prevent="copy"
-                >Copier</a
+                >copy</a
               >
             </div>
           </div>
         </div>
         <div class="qr-code">
-          <p>ou via ce QR code :</p>
+          <p>or with this QR code:</p>
           <qrcode :value="boardUrl" />
         </div>
       </div>
