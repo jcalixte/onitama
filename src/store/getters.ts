@@ -1,11 +1,12 @@
+import { Player } from '@/enums/Player'
+import { Revenge } from '@/models/Revenge'
+import { getPossibleCellsFromMoves, getWinner } from '@/services/board.service'
+import { getMovesFromAnimal } from '@/services/card.service'
+import { getPlayerCells } from '@/services/grid.service'
 import { GetterTree } from 'vuex'
 import { State } from './state'
-import { Player } from '@/enums/Player'
-import { getWinner, getPossibleCellsFromMoves } from '@/services/board.service'
-import { getPlayerCells } from '@/services/grid.service'
-import { getMovesFromAnimal } from '@/services/card.service'
 
-const DEBUG = true
+const DEBUG = false
 
 export const getters: GetterTree<State, State> = {
   selectedAnimal: ({ selectedAnimal }) => selectedAnimal ?? null,
@@ -72,5 +73,7 @@ export const getters: GetterTree<State, State> = {
       }
     }
     return true
-  }
+  },
+  revenge: ({ board }): Revenge | null => board?.revenge ?? null,
+  nextBoardId: ({ board }): string | null => board?.revenge.nextBoardId ?? null
 }

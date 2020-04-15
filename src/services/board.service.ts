@@ -15,6 +15,13 @@ import {
 } from '@/services/grid.service'
 import { repository } from '@/services/repository'
 
+export const cloneBoard = (board: Board | null): Board | null => {
+  if (!board) {
+    return null
+  }
+  return JSON.parse(JSON.stringify(board))
+}
+
 export const initFromBoard = (board: Board): Board => {
   const grid = createGrid()
   const cards = board.animals.map(getCardFromAnimal) as Card[]
@@ -33,7 +40,7 @@ export const initFromBoard = (board: Board): Board => {
   }
 }
 
-export const initBoard = async (user: string): Promise<Board | null> => {
+export const initBoard = (user: string): Board => {
   const grid = createGrid()
 
   const cards = selectAnimals()
@@ -54,9 +61,24 @@ export const initBoard = async (user: string): Promise<Board | null> => {
     users: {
       [Player.Player1]: user,
       [Player.Player2]: null
+    },
+    revenge: {
+      ask: null,
+      answer: null,
+      nextBoardId: null
     }
   }
-  return await repository.saveLocal(board)
+  return board
+}
+
+export const initBoardAndLocalSave = async (
+  user: string
+): Promise<Board | null> => {
+  return await repository.saveLocal(initBoard(user))
+}
+
+export const initBoardAndSave = async (user: string): Promise<Board | null> => {
+  return await repository.save(initBoard(user))
 }
 
 export const joinBoard = async (id: string, userId: string) => {
@@ -259,6 +281,14 @@ export const rewindMovePiece = (
   return boardToTurn
 }
 
+export const saveBoard = async (board: Board) => {
+  return await repository.save(board)
+}
+
+export const saveLocalBoard = async (board: Board) => {
+  return await repository.saveLocal(board)
+}
+
 export const movePieceAndSave = async (
   board: Board | null,
   movePiece: MovePiece,
@@ -271,7 +301,7 @@ export const movePieceAndSave = async (
   if (!newBoard) {
     return null
   }
-  return await repository.saveLocal(newBoard)
+  return await saveLocalBoard(newBoard)
 }
 
 export const exchangeCardAndSave = async (

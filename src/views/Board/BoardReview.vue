@@ -2,6 +2,9 @@
   <div class="board-review" v-if="board">
     <h1 class="title is-1">{{ name }}</h1>
     <h2 class="subtitle is-2" v-if="winnerLabel">{{ winnerLabel }} wins</h2>
+    <router-link v-else :to="{ name: 'Board', params: { id } }">
+      play
+    </router-link>
     <h3 class="subtitle is-3">
       {{ new Date(board.date).toLocaleDateString() }}
     </h3>
@@ -16,16 +19,32 @@
         >
           <a
             class="pagination-previous"
+            @click="goTo(-1)"
+            :disabled="current === -1"
+          >
+            <i class="gg-arrow-long-left-l"></i>
+          </a>
+          <a
+            class="pagination-previous"
             @click="goTo(current - 1)"
             :disabled="current === -1"
-            >previous</a
           >
+            <i class="gg-arrow-long-left"></i>
+          </a>
           <a
             class="pagination-next"
             @click="goTo(current + 1)"
             :disabled="current === board.turns.length - 1"
-            >next</a
           >
+            <i class="gg-arrow-long-right"></i>
+          </a>
+          <a
+            class="pagination-next"
+            @click="goTo(board ? board.turns.length - 1 : 0)"
+            :disabled="current === board.turns.length - 1"
+          >
+            <i class="gg-arrow-long-right-l"></i>
+          </a>
           <ul class="pagination-list">
             <li>
               <a
@@ -52,7 +71,7 @@
         </nav>
       </div>
     </div>
-    <BoardEffect :display-modal="false" />
+    <BoardEffect :display-modal="false" :end-sound="false" />
   </div>
 </template>
 
@@ -120,7 +139,7 @@ export default class BoardReview extends Vue {
     if (!this.board) {
       return null
     }
-    return this.board.animals.join(', ')
+    return this.board.animals.sort().join(', ')
   }
 }
 </script>

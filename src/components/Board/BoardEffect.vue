@@ -21,11 +21,17 @@
           class="modal-card-body win-content"
           :style="winStyle"
         >
-          You win!
+          <div>
+            You win!
+          </div>
+          <BoardRevenge />
         </section>
 
         <section v-else-if="lost" class="modal-card-body">
-          You lose.
+          <div>
+            You lose.
+          </div>
+          <BoardRevenge />
         </section>
 
         <section v-else class="modal-card-body">
@@ -47,28 +53,34 @@ import { Getter } from 'vuex-class'
 import { Player } from '@/enums/Player'
 import { players } from '@/data/players'
 import BoardNew from '@/components/Board/BoardNew.vue'
+import BoardRevenge from '@/components/Board/BoardRevenge.vue'
 import { MovePiece } from '@/models/MovePiece'
 
 @Component({
   components: {
-    BoardNew
+    BoardNew,
+    BoardRevenge
   }
 })
 export default class BoardEffect extends Vue {
   @Prop({ type: Boolean, default: true })
-  private displayModal!: boolean
+  private readonly displayModal!: boolean
+  @Prop({ type: Boolean, default: true })
+  private readonly endSound!: boolean
   @Getter
-  private turns!: MovePiece[]
+  private readonly turns!: MovePiece[]
   @Getter
-  private turn!: Player
+  private readonly turn!: Player
   @Getter
-  private userPlayer!: Player | null
+  private readonly userPlayer!: Player | null
   @Getter
-  private isPlayer1!: boolean
+  private readonly isPlayer1!: boolean
   @Getter
-  private isPlayer2!: boolean
+  private readonly isPlayer2!: boolean
   @Getter
-  private winner!: Player | null
+  private readonly winner!: Player | null
+  @Getter
+  private readonly nextBoardId!: string | null
   private moveSound = new Audio(require('@/assets/sounds/move.mp3'))
   private victorySound = new Audio(require('@/assets/sounds/victory.mp3'))
   private defaultSound = new Audio(require('@/assets/sounds/default.mp3'))
@@ -117,7 +129,7 @@ export default class BoardEffect extends Vue {
 
   @Watch('winner')
   private onWinnerChange(winner: Player | null) {
-    if (!winner) {
+    if (!this.endSound || !winner) {
       return
     }
     this.openModal = true
@@ -125,6 +137,12 @@ export default class BoardEffect extends Vue {
       this.victorySound.play()
     } else {
       this.defaultSound.play()
+    }
+  }
+  @Watch('nextBoardId')
+  private onNextBoardIdChange(nextBoardId: string | null) {
+    if (nextBoardId) {
+      this.openModal = false
     }
   }
 }
@@ -139,6 +157,7 @@ export default class BoardEffect extends Vue {
   }
   .modal-card-body {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     min-height: 300px;

@@ -6,6 +6,11 @@
         <BoardShare />
       </div>
     </div>
+    <div class="columns is-centered" v-if="winner">
+      <div class="column is-half">
+        <BoardRevenge />
+      </div>
+    </div>
     <br />
     <div class="columns card-board">
       <div class="column">
@@ -42,13 +47,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Getter, Action } from 'vuex-class'
 import BoardNew from '@/components/Board/BoardNew.vue'
 import BoardHistory from '@/components/Board/BoardHistory.vue'
 import BoardGrid from '@/components/Board/BoardGrid.vue'
 import BoardCard from '@/components/Board/BoardCard.vue'
 import BoardShare from '@/components/Board/BoardShare.vue'
+import BoardRevenge from '@/components/Board/BoardRevenge.vue'
 import BoardEffect from '@/components/Board/BoardEffect.vue'
 import { Board } from '@/models/Board'
 import { Player } from '@/enums/Player'
@@ -62,6 +68,7 @@ import { busService } from '@/services/bus.service'
     BoardGrid,
     BoardCard,
     BoardShare,
+    BoardRevenge,
     BoardEffect
   }
 })
@@ -69,17 +76,17 @@ export default class BoardView extends Vue {
   @Prop({ type: String, required: true })
   private id!: string
   @Getter
-  private board!: Board | null
+  private readonly board!: Board | null
   @Getter
-  private winner!: Player | null
+  private readonly winner!: Player | null
   @Getter
-  private turn!: Player | null
+  private readonly turn!: Player | null
   @Getter
-  private playersSet!: boolean
+  private readonly playersSet!: boolean
   @Getter
-  private isPlayer1!: boolean
+  private readonly isPlayer1!: boolean
   @Getter
-  private isPlayer2!: boolean
+  private readonly isPlayer2!: boolean
   @Action
   private joinBoard!: (id: string) => Promise<void>
   @Action
@@ -123,6 +130,11 @@ export default class BoardView extends Vue {
       return null
     }
     return players[this.turn]
+  }
+
+  @Watch('id')
+  private onIdChange(id: string) {
+    this.joinBoard(id)
   }
 }
 </script>

@@ -1,8 +1,9 @@
+import { Animal } from '@/enums/Animal'
 import { Player } from '@/enums/Player'
 import { Grid } from '@/models/Cell'
 import { EntityDocument } from '@/models/EntityDocument'
-import { Animal } from '@/enums/Animal'
-import { MovePiece } from './MovePiece'
+import { MovePiece } from '@/models/MovePiece'
+import { Revenge } from '@/models/Revenge'
 
 export interface Board extends EntityDocument {
   grid: Grid
@@ -18,4 +19,5 @@ export interface Board extends EntityDocument {
     [Player.Player1]: string
     [Player.Player2]: string | null
   }
+  revenge: Revenge
 }

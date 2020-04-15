@@ -4,10 +4,7 @@
     <h3 class="subtitle is-3">boards played</h3>
     <ul class="board-user-list">
       <li v-for="board in boards" :key="board._id">
-        <router-link :to="{ name: 'BoardReview', params: { id: board._id } }">
-          {{ new Date(board.date).toLocaleDateString() }} –
-          {{ board.animals.join(', ') }}
-        </router-link>
+        <BoardUserListItem :board="board" />
       </li>
     </ul>
   </div>
@@ -19,7 +16,11 @@ import { Getter } from 'vuex-class'
 import { repository } from '@/services/repository'
 import { Board } from '@/models/Board'
 
-@Component
+@Component({
+  components: {
+    BoardUserListItem: () => import('@/components/Board/BoardUserListItem.vue')
+  }
+})
 export default class BoardUserList extends Vue {
   @Getter
   private user!: string

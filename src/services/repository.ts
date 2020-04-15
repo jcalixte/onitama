@@ -56,7 +56,8 @@ class Repository {
     try {
       const result = await this.db.query('board-view/user-board', {
         key: userId,
-        include_docs: true
+        include_docs: true,
+        descending: true
       })
       return result.rows.map((row) => row.doc) as Board[]
     } catch (error) {
