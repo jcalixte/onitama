@@ -1,7 +1,7 @@
 <template>
   <router-link :to="{ name: 'BoardReview', params: { id: board._id } }">
-    {{ new Date(board.date).toLocaleDateString() }} –
-    {{ name }}
+    {{ new Date(board.date).toLocaleDateString() }} – {{ name }}
+    <span v-if="board.turns.length"> – {{ board.turns.length }} turns </span>
   </router-link>
 </template>
 
