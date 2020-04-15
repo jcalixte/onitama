@@ -119,6 +119,22 @@ export default class BoardReview extends Vue {
       this.winner = getWinner(board)
       this.reviewBoard(initFromBoard(board))
     }
+    window.addEventListener('keydown', this.changeTurn)
+  }
+
+  private beforeDestroy() {
+    window.removeEventListener('keydown', this.changeTurn)
+  }
+
+  private changeTurn(e: KeyboardEvent) {
+    switch (e.keyCode) {
+      case 37: // left arrow
+        this.goTo(this.current - 1)
+        break
+      case 39: // right arrow
+        this.goTo(this.current + 1)
+        break
+    }
   }
 
   private goTo(toTurn: number) {
