@@ -1,5 +1,5 @@
 <template>
-  <div class="board-view" v-if="board">
+  <div class="board-view" v-if="board" :key="id">
     <hr v-if="!playersSet" />
     <div class="columns is-centered" v-if="!playersSet">
       <div class="column is-half">
@@ -130,11 +130,6 @@ export default class BoardView extends Vue {
       return null
     }
     return players[this.turn]
-  }
-
-  @Watch('id')
-  private onIdChange(id: string) {
-    this.joinBoard(id)
   }
 }
 </script>
