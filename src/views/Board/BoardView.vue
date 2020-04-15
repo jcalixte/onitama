@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Getter, Action } from 'vuex-class'
 import BoardNew from '@/components/Board/BoardNew.vue'
 import BoardHistory from '@/components/Board/BoardHistory.vue'
