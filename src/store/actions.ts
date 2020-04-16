@@ -61,6 +61,15 @@ export const actions: ActionTree<State, State> = {
       commit(UPDATE_BOARD, board)
     }
   },
+  async trainingData({ state, commit }) {
+    const board = cloneBoard(state.board)
+    if (!board) {
+      return
+    }
+    board.training = true
+    const newBoard = await saveLocalBoard(board)
+    commit(UPDATE_BOARD, newBoard)
+  },
   async askRevenge({ state, commit }, ask: boolean) {
     const board = cloneBoard(state.board)
     if (!board) {

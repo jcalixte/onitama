@@ -1,7 +1,12 @@
 <template>
   <div class="home">
     <h1 class="title is-1">onitama</h1>
-    <BoardNew />
+    <div class="buttons is-centered">
+      <BoardNew />
+      <router-link class="button is-primary is-light" to="/board-training"
+        >display training</router-link
+      >
+    </div>
     <BoardUserList />
   </div>
 </template>

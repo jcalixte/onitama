@@ -116,7 +116,7 @@ const isInBoard = (cell: Cell) => {
   )
 }
 
-const exchangeCard = (
+export const exchangeCard = (
   board: Board | null,
   movePiece: MovePiece,
   force = false
@@ -212,7 +212,7 @@ export const getPossibleCellsFromMoves = (
  * @param movePiece desired move to do
  * @param force useful when the player is forced to skip. Also for rewind.
  */
-const movePieceInBoard = (
+export const movePieceInBoard = (
   board: Board,
   movePiece: MovePiece,
   force = false

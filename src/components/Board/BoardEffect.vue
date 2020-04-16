@@ -1,18 +1,5 @@
 <template>
   <div class="board-effect">
-    <div
-      v-if="displayModal"
-      class="modal"
-      :class="{ 'is-active': openIntroModal && isFirstTurn }"
-    >
-      <div class="modal-background"></div>
-      <div class="modal-card">
-        <section class="modal-card-body intro-body">{{ intro }}</section>
-        <footer class="modal-card-foot">
-          <button @click="openIntroModal = false" class="button">ok</button>
-        </footer>
-      </div>
-    </div>
     <div v-if="displayModal" class="modal" :class="{ 'is-active': openModal }">
       <div class="modal-background"></div>
       <div class="modal-card">
@@ -84,24 +71,7 @@ export default class BoardEffect extends Vue {
   private moveSound = new Audio(require('@/assets/sounds/move.mp3'))
   private victorySound = new Audio(require('@/assets/sounds/victory.mp3'))
   private defaultSound = new Audio(require('@/assets/sounds/default.mp3'))
-  private openIntroModal = true
   private openModal = false
-
-  private get isFirstTurn() {
-    const firstTurns = [0, 1]
-    return firstTurns.includes(this.turns.length)
-  }
-
-  private get intro() {
-    switch (true) {
-      case this.isPlayer1:
-        return `You are player 1. You are an old wise emperor with his blue soldiers.`
-      case this.isPlayer2:
-        return `You are player 2. You are a young vigorous emperor with his red soldiers.`
-      default:
-        return `you are a spectator in this game.`
-    }
-  }
 
   private get won() {
     return this.winner && this.winner === this.userPlayer

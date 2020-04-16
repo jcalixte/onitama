@@ -34,8 +34,10 @@ import { Board } from '@/models/Board'
   }
 })
 export default class BoardGrid extends Vue {
-  @Prop({ type: Boolean, required: true })
+  @Prop({ type: Boolean, default: false })
   private playAgainstAI!: boolean
+  @Prop({ type: Boolean, default: false })
+  private trainAI!: boolean
   @Getter
   private board!: Board | null
   @Getter
@@ -52,6 +54,8 @@ export default class BoardGrid extends Vue {
   private selectedCell!: Cell | null
   @Action
   private movePiece!: (props: MovePiece) => Promise<void>
+  @Action
+  private trainingData!: () => Promise<void>
 
   private async callToMovePiece(end: Cell) {
     if (!this.selectedCell || !this.selectedAnimal || !this.turn) {
@@ -94,6 +98,17 @@ export default class BoardGrid extends Vue {
     }
     if (playAgainstAI && this.turn !== this.userPlayer) {
       await this.movePiece(giveMove(this.turn, this.board))
+    }
+  }
+
+  @Watch('trainAI')
+  private async onTrainAIChange(trainAI: boolean) {
+    if (trainAI && this.board && this.turn) {
+      await this.trainingData()
+
+      while (!this.winner) {
+        await this.movePiece(giveMove(this.turn, this.board))
+      }
     }
   }
 }

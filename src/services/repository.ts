@@ -52,6 +52,18 @@ class Repository {
     }
   }
 
+  public async getTrainingDocuments(): Promise<Board[]> {
+    try {
+      const result = await this.db.query('board-view/training-data', {
+        include_docs: true,
+        descending: true
+      })
+      return result.rows.map((row) => row.doc) as Board[]
+    } catch (error) {
+      console.error(error)
+      return []
+    }
+  }
   public async getUserDocument(userId: string): Promise<Board[]> {
     try {
       const result = await this.db.query('board-view/user-board', {
@@ -64,6 +76,12 @@ class Repository {
       console.error(error)
       return []
     }
+  }
+
+  public async sync(id: string) {
+    await this.local.sync(this.db, {
+      doc_ids: [id]
+    })
   }
 
   public initLive(id: string) {

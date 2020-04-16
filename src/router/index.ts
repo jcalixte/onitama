@@ -27,6 +27,15 @@ const routes: Array<RouteConfig> = [
       )
   },
   {
+    path: '/board-training',
+    name: 'BoardTraining',
+    props: true,
+    component: () =>
+      import(
+        /* webpackChunkName: "board-training" */ '@/views/Board/BoardTraining.vue'
+      )
+  },
+  {
     path: '/about',
     name: 'About',
     component: () => import(/* webpackChunkName: "about" */ '@/views/About.vue')

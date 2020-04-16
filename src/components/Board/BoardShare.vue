@@ -34,6 +34,12 @@
             play against AI
           </button>
         </div>
+        <div>
+          Or train AI
+          <button class="button is-light" @click="$emit('train-ai')">
+            train AI
+          </button>
+        </div>
       </div>
     </article>
   </div>

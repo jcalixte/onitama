@@ -20,4 +20,5 @@ export interface Board extends EntityDocument {
     [Player.Player2]: string | null
   }
   revenge: Revenge
+  training?: boolean
 }
