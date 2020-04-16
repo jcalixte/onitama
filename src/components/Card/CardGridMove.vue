@@ -56,6 +56,7 @@ export default class CardGridMove extends Vue {
 
 <style scoped lang="scss">
 $cell-size: 20px;
+$mobile-cell-size: $cell-size / 1.5;
 
 .card-grid-move {
   table {
@@ -74,6 +75,19 @@ $cell-size: 20px;
       }
       &.is-possible-cell {
         background-color: #95afc0;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .card-grid-move {
+    table {
+      td {
+        min-width: $mobile-cell-size;
+        min-height: $mobile-cell-size;
+        width: $mobile-cell-size;
+        height: $mobile-cell-size;
       }
     }
   }
