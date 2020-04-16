@@ -67,6 +67,10 @@ export const createGrid = (addPiece = true): Grid => {
   ]
 }
 
+export const getPlayerPieces = (player: Player, grid: Grid): Cell[] => {
+  return grid.flat().filter((cell) => cell.piece?.player === player)
+}
+
 export const getPieceFromGrid = (row: Row, column: Column, grid: Grid) => {
   const cell =
     grid.flat().find((cell) => cell.row === row && cell.column === column) ??

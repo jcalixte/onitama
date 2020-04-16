@@ -1,12 +1,12 @@
 <template>
   <div class="board-view" v-if="board" :key="id">
-    <hr v-if="!playersSet" />
-    <div class="columns is-centered" v-if="!playersSet">
+    <hr v-if="!playersSet && !playAgainstAI" />
+    <div class="columns is-centered" v-if="!playersSet && !playAgainstAI">
       <div class="column is-half">
-        <BoardShare />
+        <BoardShare @play-against-ai="playAgainstAI = true" />
       </div>
     </div>
-    <div class="columns is-centered" v-if="winner">
+    <div class="columns is-centered" v-if="winner && !playAgainstAI">
       <div class="column is-half">
         <BoardRevenge />
       </div>
@@ -14,13 +14,11 @@
     <br />
     <div class="columns card-board">
       <div class="column">
-        <h5 class="subtitle is-5 card-owner">Player 2's cards</h5>
         <BoardCard :player="player2" />
       </div>
     </div>
     <div class="columns play-board">
       <div class="column is-half neutral-card-column" v-if="isPlayer1">
-        <h5 class="subtitle is-5 card-owner">Neutral card</h5>
         <BoardCard player="neutral" />
       </div>
       <div class="column is-half">
@@ -29,7 +27,7 @@
         </h3>
         <h3 v-else-if="turn" class="subtitle is-4">{{ turnLabel }}'s turn</h3>
         <BoardHistory />
-        <BoardGrid />
+        <BoardGrid :play-against-a-i="playAgainstAI" :key="id" />
       </div>
       <div class="column is-half neutral-card-column" v-if="!isPlayer1">
         <h5 class="subtitle is-5 card-owner">Neutral card</h5>
@@ -38,7 +36,6 @@
     </div>
     <div class="columns card-board">
       <div class="column">
-        <h5 class="subtitle is-5 card-owner">Player 1's cards</h5>
         <BoardCard :player="player1" />
       </div>
     </div>
@@ -92,6 +89,8 @@ export default class BoardView extends Vue {
   @Action
   private updateBoard!: (board: Board) => Promise<void>
 
+  private playAgainstAI = false
+
   private player1 = Player.Player1
   private player2 = Player.Player2
 
@@ -135,19 +134,11 @@ export default class BoardView extends Vue {
 </script>
 
 <style scoped lang="scss">
-@import '@/styles/variables';
-
 .board-view {
   .neutral-card-column {
     display: flex;
     flex-direction: column;
     justify-content: center;
-  }
-  .card-owner {
-    font-style: italic;
-    text-align: left;
-    text-decoration: underline;
-    color: $primary;
   }
   .play-board {
     margin: 15px 0;

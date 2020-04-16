@@ -15,16 +15,18 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { Grid, Cell } from '@/models/Cell'
 import BoardCell from '@/components/Board/BoardCell.vue'
+import { giveMove } from '@/services/dumbai.service'
 import { getPossibleCellsFromMovesAndGrid } from '@/services/board.service'
 import { getMovesFromAnimal } from '@/services/card.service'
 import { areCellEquals } from '@/services/grid.service'
 import { Animal } from '@/enums/Animal'
 import { MovePiece } from '@/models/MovePiece'
 import { Player } from '@/enums/Player'
+import { Board } from '@/models/Board'
 
 @Component({
   components: {
@@ -32,19 +34,27 @@ import { Player } from '@/enums/Player'
   }
 })
 export default class BoardGrid extends Vue {
+  @Prop({ type: Boolean, required: true })
+  private playAgainstAI!: boolean
+  @Getter
+  private board!: Board | null
   @Getter
   private grid!: Grid | null
   @Getter
-  private turn!: Player
+  private userPlayer!: Player | null
+  @Getter
+  private turn!: Player | null
+  @Getter
+  private winner!: Player | null
   @Getter
   private selectedAnimal!: Animal | null
   @Getter
   private selectedCell!: Cell | null
   @Action
-  private movePiece!: (props: MovePiece) => void
+  private movePiece!: (props: MovePiece) => Promise<void>
 
-  private callToMovePiece(end: Cell) {
-    if (!this.selectedCell || !this.selectedAnimal) {
+  private async callToMovePiece(end: Cell) {
+    if (!this.selectedCell || !this.selectedAnimal || !this.turn) {
       return
     }
     const pieceToMove: MovePiece = {
@@ -53,7 +63,10 @@ export default class BoardGrid extends Vue {
       player: this.turn,
       animal: this.selectedAnimal
     }
-    this.movePiece(pieceToMove)
+    await this.movePiece(pieceToMove)
+    if (!this.winner && this.playAgainstAI && this.board) {
+      await this.movePiece(giveMove(this.turn, this.board))
+    }
   }
 
   private isValidMove(cell: Cell): boolean {
@@ -63,18 +76,25 @@ export default class BoardGrid extends Vue {
   }
 
   private get validCellMoves(): Cell[] {
-    if (!this.selectedCell || !this.grid) {
+    if (!this.selectedCell || !this.grid || !this.turn) {
       return []
     }
-    const moves = getMovesFromAnimal(
-      this.selectedAnimal,
-      this.turn === Player.Player1
-    )
+    const moves = getMovesFromAnimal(this.selectedAnimal, this.turn)
     return getPossibleCellsFromMovesAndGrid(
       this.selectedCell,
       this.grid,
       ...moves
     )
+  }
+
+  @Watch('playAgainstAI')
+  private async onPlayAgainstAIChange(playAgainstAI: boolean) {
+    if (!this.board || !this.turn || !this.userPlayer) {
+      return
+    }
+    if (playAgainstAI && this.turn !== this.userPlayer) {
+      await this.movePiece(giveMove(this.turn, this.board))
+    }
   }
 }
 </script>

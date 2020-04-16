@@ -1,5 +1,6 @@
 import { cards } from '@/data/cards'
 import { Animal } from '@/enums/Animal'
+import { Player } from '@/enums/Player'
 import { CardMove } from '@/models/CardMove'
 
 export const getCardFromAnimal = (animal: Animal) => {
@@ -8,13 +9,15 @@ export const getCardFromAnimal = (animal: Animal) => {
 
 export const getMovesFromAnimal = (
   animal: Animal | null,
-  defaultMoves: boolean
+  player: Player
 ): CardMove[] => {
   if (!animal) {
     return []
   }
   const card = cards.find((card) => card.animal === animal)
-  return defaultMoves ? card?.moves || [] : card?.reverseMoves || []
+  return player === Player.Player1
+    ? card?.moves || []
+    : card?.reverseMoves || []
 }
 
 export const selectAnimals = () => {

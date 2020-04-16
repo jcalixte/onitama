@@ -28,6 +28,12 @@
           <p>or with this QR code:</p>
           <qrcode :value="boardUrl" />
         </div>
+        <div>
+          you can also play against an super AI!
+          <button class="button is-light" @click="$emit('play-against-ai')">
+            play against AI
+          </button>
+        </div>
       </div>
     </article>
   </div>

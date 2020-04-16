@@ -61,9 +61,7 @@ export const getters: GetterTree<State, State> = {
     }
     const animals = board.playerAnimals[userPlayer]
     const moves = animals
-      .map((animal) =>
-        getMovesFromAnimal(animal, userPlayer === Player.Player1)
-      )
+      .map((animal) => getMovesFromAnimal(animal, userPlayer))
       .flat()
     const pieces = getPlayerCells(userPlayer, board.grid)
     for (const piece of pieces) {

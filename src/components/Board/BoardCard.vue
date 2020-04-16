@@ -1,6 +1,11 @@
 <template>
   <div class="board-card">
-    <div class="columns is-centered is-multiline">
+    <h5 class="subtitle is-5 card-owner">
+      <span :class="{ 'is-player-cards': player === userPlayer }">
+        {{ players[player || ''] || 'Neutral' }} card
+      </span>
+    </h5>
+    <div class="columns is-centered is-mobile">
       <div
         class="column card-animal-column"
         v-for="card in localCards"
@@ -27,6 +32,7 @@ import { Player } from '@/enums/Player'
 import { Animal } from '@/enums/Animal'
 import { cards } from '@/data/cards'
 import { MovePiece } from '@/models/MovePiece'
+import { players } from '@/data/players'
 
 @Component({
   components: {
@@ -45,6 +51,8 @@ export default class BoardCard extends Vue {
   @Getter
   private neutralAnimal!: Animal | null
   @Getter
+  private userPlayer!: Player | null
+  @Getter
   private winner!: Player | null
   @Getter
   private turn!: Player
@@ -56,6 +64,7 @@ export default class BoardCard extends Vue {
   private mustSkipTurn!: boolean
   @Action
   private movePiece!: (props: MovePiece) => void
+  private players = players
 
   private skip(animal: Animal) {
     const pieceToMove: MovePiece = {
@@ -115,6 +124,8 @@ export default class BoardCard extends Vue {
 </script>
 
 <style scoped lang="scss">
+@import '@/styles/variables';
+
 .board-card {
   .card-animal-column {
     display: flex;
@@ -122,8 +133,16 @@ export default class BoardCard extends Vue {
   .card-animal {
     flex: 1;
   }
-  // .neutral-card {
-  //   transform: rotate(-90deg);
-  // }
+  .card-owner {
+    font-style: italic;
+    text-align: left;
+    text-decoration: underline;
+    color: $primary;
+  }
+  .is-player-cards {
+    background-color: $primary;
+    color: white;
+    padding: 0 5px;
+  }
 }
 </style>
