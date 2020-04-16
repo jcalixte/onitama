@@ -9,10 +9,16 @@
         <CardGridMove :moves="moves" />
       </div>
       <div class="card-content">
-        <p class="title is-4">
-          {{ card.animal }}
-          <i class="gg-profile player" :style="color"></i>
-        </p>
+        <div class="columns">
+          <div class="column">
+            <p class="animal">
+              {{ card.animal }}
+            </p>
+          </div>
+          <div class="column">
+            <i class="gg-profile player" :style="color"></i>
+          </div>
+        </div>
         <p class="subtitle card-description">
           {{ card.description }}
         </p>
@@ -94,10 +100,15 @@ export default class CardAnimal extends Vue {
     justify-content: space-between;
     align-items: center;
   }
-  p.title {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  .card-content {
+    .column {
+      display: flex;
+      align-items: center;
+    }
+  }
+  .animal {
+    font-size: 2rem;
+    text-align: left;
   }
   .card-content {
     display: flex;
@@ -107,7 +118,7 @@ export default class CardAnimal extends Vue {
     padding: 0 1rem;
   }
   .card-description {
-    padding-bottom: 6px;
+    padding: 6px 0;
   }
   .subtitle {
     font-family: 'Charmonman', cursive;
