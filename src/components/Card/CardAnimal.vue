@@ -5,19 +5,15 @@
     @click="selectable && selectAnimal(card.animal)"
   >
     <div class="row">
-      <div class="card-grid-move-container">
-        <CardGridMove :moves="moves" />
-      </div>
       <div class="card-content">
-        <div class="columns">
-          <div class="column">
+        <div class="card-grid-move-container">
+          <div class="row">
             <p class="animal">
               {{ card.animal }}
             </p>
-          </div>
-          <div class="column">
             <i class="gg-profile player" :style="color"></i>
           </div>
+          <CardGridMove :moves="moves" />
         </div>
         <p class="subtitle card-description">
           {{ card.description }}
@@ -113,21 +109,14 @@ export default class CardAnimal extends Vue {
   .card-content {
     display: flex;
     flex: 1;
-    flex-direction: column;
     justify-content: center;
+    align-items: flex-end;
     padding: 0 1rem;
   }
   .card-description {
-    padding: 6px 0;
-  }
-  .subtitle {
+    padding: 6px;
     font-family: 'Charmonman', cursive;
     text-align: justify;
-    &.neutral-title {
-      margin-top: 15px;
-      margin-bottom: 0;
-      text-align: center;
-    }
   }
   &.selectable:hover {
     cursor: pointer;
@@ -139,6 +128,7 @@ export default class CardAnimal extends Vue {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
   }
 }
 </style>
