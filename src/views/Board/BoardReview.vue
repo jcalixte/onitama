@@ -8,7 +8,24 @@
     <h3 class="subtitle is-3">
       {{ new Date(board.date).toLocaleDateString() }}
     </h3>
-    <BoardGrid />
+    <div class="columns is-centered is-vcentered">
+      <div class="column">
+        <BoardCard :player="player2" :full="false" />
+      </div>
+      <div class="column">
+        <div class="columns is-gapless is-centered is-vcentered">
+          <div class="column">
+            <BoardCard player="neutral" :full="false" />
+          </div>
+          <div class="column">
+            <BoardGrid />
+          </div>
+        </div>
+      </div>
+      <div class="column">
+        <BoardCard :player="player1" :full="false" />
+      </div>
+    </div>
     <hr />
     <div class="columns">
       <div class="column">
@@ -88,11 +105,13 @@ import {
   getWinner
 } from '@/services/board.service'
 import BoardGrid from '@/components/Board/BoardGrid.vue'
+import BoardCard from '@/components/Board/BoardCard.vue'
 import BoardEffect from '@/components/Board/BoardEffect.vue'
 
 @Component({
   components: {
     BoardGrid,
+    BoardCard,
     BoardEffect
   }
 })
@@ -105,6 +124,8 @@ export default class BoardReview extends Vue {
   private board!: Board | null
   private current = -1
   private winner: Player | null = null
+  private player1 = Player.Player1
+  private player2 = Player.Player2
 
   private get winnerLabel() {
     if (!this.winner) {
@@ -117,7 +138,8 @@ export default class BoardReview extends Vue {
     const board = await repository.get(this.id)
     if (board) {
       this.winner = getWinner(board)
-      this.reviewBoard(initFromBoard(board))
+      const initialBoard = initFromBoard(board)
+      this.reviewBoard(initialBoard)
     }
     window.addEventListener('keydown', this.changeTurn)
   }
@@ -155,7 +177,7 @@ export default class BoardReview extends Vue {
     if (!this.board) {
       return null
     }
-    return this.board.animals.sort().join(', ')
+    return [...this.board.animals].sort().join(', ')
   }
 }
 </script>

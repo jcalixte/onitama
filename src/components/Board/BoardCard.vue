@@ -19,6 +19,7 @@
           :skipable="isNeutral && mustSkipTurn"
           @skip="skip"
           :player="player"
+          :full="full"
         />
       </div>
     </div>
@@ -42,6 +43,8 @@ import { players } from '@/data/players'
 export default class BoardCard extends Vue {
   @Prop({ type: String, default: null })
   private player!: Player | 'neutral' | null
+  @Prop({ type: Boolean, default: true })
+  private full!: boolean
   @Getter
   private cards!: Animal[]
   @Getter

@@ -18,7 +18,7 @@ export default class BoardUserListItem extends Vue {
   private readonly board!: Board
 
   private get name() {
-    return this.board.animals.sort().join(', ')
+    return [...this.board.animals].sort().join(', ')
   }
 }
 </script>

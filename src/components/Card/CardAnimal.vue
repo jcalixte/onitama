@@ -15,7 +15,7 @@
           </div>
           <CardGridMove :moves="moves" />
         </div>
-        <p class="subtitle card-description">
+        <p class="subtitle card-description" v-if="full">
           {{ card.description }}
         </p>
         <button v-if="skipable" class="button is-warning" @click.prevent="skip">
@@ -46,6 +46,8 @@ export default class CardAnimal extends Vue {
   private selectable!: boolean
   @Prop({ type: Boolean, required: true })
   private skipable!: boolean
+  @Prop({ type: Boolean, default: true })
+  private full!: boolean
   @Prop({ type: String, default: null })
   private player!: Player | 'neutral' | null
   @Action
@@ -129,6 +131,7 @@ export default class CardAnimal extends Vue {
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    flex: 1;
   }
 }
 </style>
