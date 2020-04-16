@@ -19,7 +19,7 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { Grid, Cell } from '@/models/Cell'
 import BoardCell from '@/components/Board/BoardCell.vue'
-import { giveMove } from '@/services/dumbai.service'
+import { giveHuntMove } from '@/ais/hunt.ai'
 import { getPossibleCellsFromMovesAndGrid } from '@/services/board.service'
 import { getMovesFromAnimal } from '@/services/card.service'
 import { areCellEquals } from '@/services/grid.service'
@@ -69,7 +69,8 @@ export default class BoardGrid extends Vue {
     }
     await this.movePiece(pieceToMove)
     if (!this.winner && this.playAgainstAI && this.board) {
-      await this.movePiece(giveMove(this.turn, this.board))
+      const nextMove = giveHuntMove(this.turn, this.board)
+      await this.movePiece(nextMove)
     }
   }
 
@@ -97,7 +98,7 @@ export default class BoardGrid extends Vue {
       return
     }
     if (playAgainstAI && this.turn !== this.userPlayer) {
-      await this.movePiece(giveMove(this.turn, this.board))
+      await this.movePiece(giveHuntMove(this.turn, this.board))
     }
   }
 
@@ -107,7 +108,7 @@ export default class BoardGrid extends Vue {
       await this.trainingData()
 
       while (!this.winner) {
-        await this.movePiece(giveMove(this.turn, this.board))
+        await this.movePiece(giveHuntMove(this.turn, this.board))
       }
     }
   }

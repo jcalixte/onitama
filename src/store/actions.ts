@@ -66,7 +66,7 @@ export const actions: ActionTree<State, State> = {
     if (!board) {
       return
     }
-    board.training = true
+    board.training = 'hunt'
     const newBoard = await saveLocalBoard(board)
     commit(UPDATE_BOARD, newBoard)
   },

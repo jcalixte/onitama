@@ -1,15 +1,10 @@
-import { Board } from '@/models/Board'
 import { Player } from '@/enums/Player'
+import { Board } from '@/models/Board'
 import { MovePiece } from '@/models/MovePiece'
-import { getPlayerPieces } from './grid.service'
-import { getMovesFromAnimal } from './card.service'
-import { getPossibleCellsFromMovesAndGrid } from './board.service'
-
-const getRandomItemFromArray = <T>(array: T[]): [T, T[]] => {
-  const item = array[Math.floor(Math.random() * array.length)]
-  const arrayFiltered = array.filter((i) => i !== item)
-  return [item, arrayFiltered]
-}
+import { getPossibleCellsFromMovesAndGrid } from '@/services/board.service'
+import { getMovesFromAnimal } from '@/services/card.service'
+import { getPlayerPieces } from '@/services/grid.service'
+import { getRandomItemFromArray } from './utils'
 
 export const giveMove = (player: Player, board: Board): MovePiece => {
   let animals = [...board.playerAnimals[player]]

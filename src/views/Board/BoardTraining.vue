@@ -45,7 +45,7 @@ import {
   exchangeCard,
   movePieceInBoard
 } from '@/services/board.service'
-import { giveMove } from '@/services/dumbai.service'
+import { giveHuntMove } from '@/ais/hunt.ai'
 import { repository } from '@/services/repository'
 import { Board } from '@/models/Board'
 
@@ -85,13 +85,13 @@ export default class BoardTraining extends Vue {
     if (!board) {
       return
     }
-    board.training = true
+    board.training = 'hunt'
 
     while (!getWinner(board)) {
       if (!board) {
         break
       }
-      const pieceToMove = giveMove(board.turn, board)
+      const pieceToMove = giveHuntMove(board.turn, board)
       board =
         !pieceToMove.start || !pieceToMove.end
           ? exchangeCard(board, pieceToMove)
