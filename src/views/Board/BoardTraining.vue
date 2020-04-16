@@ -1,25 +1,30 @@
 <template>
   <div class="board-training">
+    <hr />
     <div class="columns is-centered">
       <div class="column is-half">
         <h2 class="subtitle is-2">Train AI</h2>
         <div v-if="!training">
-          <label for="iterations" class="label">number of iterations</label>
-          <div class="field has-addons">
-            <div class="control">
-              <input
-                id="iterations"
-                class="input"
-                type="number"
-                placeholder="iterations"
-                v-model="numberOfIterations"
-                min="1"
-              />
+          <div class="field is-horizontal">
+            <div class="field-label is-normal">
+              <label for="iterations" class="label">number of iterations</label>
             </div>
-            <div class="control">
-              <a class="button is-info" @click.prevent="train">
-                train!
-              </a>
+            <div class="field-body field has-addons">
+              <div class="control">
+                <input
+                  id="iterations"
+                  class="input"
+                  type="number"
+                  placeholder="iterations"
+                  v-model.number="numberOfIterations"
+                  min="1"
+                />
+              </div>
+              <div class="control">
+                <a class="button is-primary" @click.prevent="train">
+                  train!
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -98,3 +103,9 @@ export default class BoardTraining extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.field-body {
+  flex-grow: 2;
+}
+</style>

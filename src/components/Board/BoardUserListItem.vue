@@ -1,5 +1,8 @@
 <template>
-  <router-link :to="{ name: 'BoardReview', params: { id: board._id } }">
+  <router-link
+    class="button is-text"
+    :to="{ name: 'BoardReview', params: { id: board._id } }"
+  >
     {{ name }}
     <span v-if="board.turns.length"> – {{ board.turns.length }} turns </span>
   </router-link>
