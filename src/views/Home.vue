@@ -3,9 +3,6 @@
     <h1 class="title is-1">onitama</h1>
     <div class="buttons is-centered">
       <BoardNew />
-      <router-link class="button is-primary is-light" to="/board-training"
-        >display training</router-link
-      >
     </div>
     <section class="hero is-primary is-bold">
       <div class="hero-body">
@@ -14,7 +11,12 @@
             Play against Zhuge Liang?
           </h1>
           <!-- <img src="../assets/zhuge-liang.jpg" alt="" /> -->
-          <BoardNew :play-against-a-i="true" />
+          <div class="buttons is-centered">
+            <BoardNew :play-against-a-i="true" />
+            <router-link class="button is-primary is-light" to="/board-training"
+              >display training</router-link
+            >
+          </div>
         </div>
       </div>
     </section>

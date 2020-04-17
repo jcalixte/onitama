@@ -1,14 +1,15 @@
 import { PieceType } from '@/enums/PieceType'
 import { Player } from '@/enums/Player'
 import { Board } from '@/models/Board'
+import { CardMove } from '@/models/CardMove'
 import { DecisionTree } from '@/models/DecisionTree'
 import { MovePiece } from '@/models/MovePiece'
 import {
   exchangeCard,
   getCellStream,
   getPossibleCellsFromMovesAndGrid,
-  movePieceInBoard,
-  getWinner
+  getWinner,
+  movePieceInBoard
 } from '@/services/board.service'
 import { getMovesFromAnimal } from '@/services/card.service'
 import { areCellEquals, getPlayerPieces } from '@/services/grid.service'
@@ -24,14 +25,21 @@ interface MoveScore {
   score: number
 }
 
+const cardMovesFromAnimals: { [key: string]: CardMove[] } = {}
+
 const getPlayerMoves = (player: Player, board: Board): MovePiece[] => {
-  const animals = [...board.playerAnimals[player]]
-  const pieces = [...getPlayerPieces(player, board.grid)]
+  const animals = board.playerAnimals[player]
+  const pieces = getPlayerPieces(player, board.grid)
 
   const playerMoves: MovePiece[] = []
 
   for (const animal of animals) {
-    const moves = getMovesFromAnimal(animal, player)
+    let moves = cardMovesFromAnimals[animal + player]
+
+    if (!moves) {
+      moves = getMovesFromAnimal(animal, player)
+      cardMovesFromAnimals[animal + player] = moves
+    }
 
     for (const piece of pieces) {
       const possibleCells = getPossibleCellsFromMovesAndGrid(
@@ -136,15 +144,17 @@ const buildDecisionTrees = (
     }
 
     const score = getMoveScore(player, move)
+    const needNodeComputation = !(
+      getWinner(newBoard.grid) || score === VICTORY_SCORE
+    )
 
     const decisionTree: DecisionTree = {
       depth,
       score,
       move,
-      nodes:
-        getWinner(newBoard.grid) || score === VICTORY_SCORE
-          ? []
-          : buildDecisionTrees(newBoard.turn, newBoard, depth + 1)
+      nodes: needNodeComputation
+        ? buildDecisionTrees(newBoard.turn, newBoard, depth + 1)
+        : []
     }
     decisionTrees.push(decisionTree)
   }
@@ -156,7 +166,7 @@ export const ZhugeMove = async (
   player: Player,
   board: Board
 ): Promise<MovePiece> => {
-  const decisionTrees = [...buildDecisionTrees(player, board)]
+  const decisionTrees = buildDecisionTrees(player, board)
 
   const decisions: MoveScore[] = decisionTrees
     .map((tree) => ({
@@ -164,10 +174,10 @@ export const ZhugeMove = async (
       score: getBestScore(player, tree),
       move: tree.move
     }))
-    .sort((a, b) => (a.score < b.score ? -1 : 1))
+    .sort((a, b) => (a.score > b.score ? -1 : 1))
 
   console.table(decisions)
 
-  const bestDecision = decisions.pop()
+  const bestDecision = decisions[0]
   return bestDecision?.move || (await randomMove(player, board))
 }

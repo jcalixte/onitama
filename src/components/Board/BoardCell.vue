@@ -12,6 +12,8 @@ import { Player } from '@/enums/Player'
 import { Row } from '@/enums/Row'
 import { Column } from '@/enums/Column'
 import PieceImage from '@/components/PieceImage.vue'
+import { MovePiece } from '@/models/MovePiece'
+import { areCellEquals } from '@/services/grid.service'
 
 @Component({
   components: {
@@ -29,6 +31,8 @@ export default class BoardCell extends Vue {
   private winner!: Player | null
   @Getter
   private turn!: Player
+  @Getter
+  private turns!: MovePiece[]
   @Getter
   private isPlayer1!: boolean
   @Getter
@@ -61,8 +65,26 @@ export default class BoardCell extends Vue {
     return {
       'is-selected': this.cell === this.selectedCell,
       'is-valid-move': this.isValidMove,
-      'is-stream-cell': this.isStreamCell
+      'is-stream-cell': this.isStreamCell,
+      'is-start-last-turn': this.isStartLastTurn,
+      'is-end-last-turn': this.isEndLastTurn
     }
+  }
+
+  private get isStartLastTurn() {
+    const lastTurn = [...this.turns].pop()
+    if (!lastTurn || !lastTurn.start) {
+      return false
+    }
+    return areCellEquals(this.cell, lastTurn.start)
+  }
+
+  private get isEndLastTurn() {
+    const lastTurn = [...this.turns].pop()
+    if (!lastTurn || !lastTurn.end) {
+      return false
+    }
+    return areCellEquals(this.cell, lastTurn.end)
   }
 
   private get isStreamCell() {
@@ -84,6 +106,12 @@ $cell-size: 50px;
   justify-content: center;
   align-items: center;
 
+  &.is-start-last-turn {
+    background-color: #c6c6d1;
+  }
+  &.is-end-last-turn {
+    background-color: #cae3f3;
+  }
   &.is-selected {
     background-color: #6ab04c;
   }
