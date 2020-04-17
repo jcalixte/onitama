@@ -1,4 +1,20 @@
 module.exports = {
+  configureWebpack: (config) => {
+    config.module.rules = [
+      {
+        test: /\.bot\.ts$/i,
+        use: [
+          {
+            loader: 'comlink-loader',
+            options: {
+              singleton: true
+            }
+          }
+        ]
+      },
+      ...config.module.rules
+    ]
+  },
   pwa: {
     themeColor: '#130f40',
     msTileColor: '#130f40',

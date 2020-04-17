@@ -7,10 +7,10 @@
     >
       review
     </router-link>
-    <hr v-if="!playersSet && !playAgainstAI && !trainAI" />
+    <hr v-if="!playersSet && !(playAgainstAI || trainAI)" />
     <div
       class="columns is-centered"
-      v-if="!playersSet && !playAgainstAI && !trainAI"
+      v-if="!playersSet && !(playAgainstAI || trainAI)"
     >
       <div class="column is-half">
         <BoardShare
@@ -21,7 +21,7 @@
     </div>
     <div
       class="columns is-centered"
-      v-if="winner && !playAgainstAI && !trainAI"
+      v-if="winner && !(playAgainstAI || trainAI)"
     >
       <div class="column is-half">
         <BoardRevenge />
@@ -59,7 +59,7 @@
         <BoardCard :player="player1" />
       </div>
     </div>
-    <BoardEffect :display-modal="!(playAgainstAI || trainAI)" />
+    <BoardEffect :display-modal="!trainAI" />
   </div>
 </template>
 

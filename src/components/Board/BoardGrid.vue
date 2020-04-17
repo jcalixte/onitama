@@ -1,13 +1,25 @@
 <template>
   <div class="board-grid" v-if="grid">
+    <div v-if="zhugeThinking" class="loading">
+      <i class="gg-loadbar-alt"></i>
+    </div>
     <table>
       <tr v-for="(row, r) in grid" :key="r">
+        <td v-if="true" class="cell-number">
+          {{ row[0].row + 1 }}
+        </td>
         <td v-for="(cell, c) in row" :key="c">
           <BoardCell
             :cell="cell"
             :is-valid-move="isValidMove(cell)"
             @move="callToMovePiece"
           />
+        </td>
+      </tr>
+      <tr v-if="true">
+        <td></td>
+        <td v-for="(cell, c) in grid[0]" :key="c" class="cell-number">
+          {{ column[cell.column] }}
         </td>
       </tr>
     </table>
@@ -19,14 +31,15 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { Grid, Cell } from '@/models/Cell'
 import BoardCell from '@/components/Board/BoardCell.vue'
-import { giveHuntMove } from '@/ais/hunt.ai'
 import { getPossibleCellsFromMovesAndGrid } from '@/services/board.service'
 import { getMovesFromAnimal } from '@/services/card.service'
 import { areCellEquals } from '@/services/grid.service'
 import { Animal } from '@/enums/Animal'
 import { MovePiece } from '@/models/MovePiece'
+import { Column } from '@/enums/Column'
 import { Player } from '@/enums/Player'
 import { Board } from '@/models/Board'
+import { ZhugeMove } from '@/bots/zhuge-liang.bot'
 
 @Component({
   components: {
@@ -38,6 +51,8 @@ export default class BoardGrid extends Vue {
   private playAgainstAI!: boolean
   @Prop({ type: Boolean, default: false })
   private trainAI!: boolean
+  @Prop({ type: Boolean, default: false })
+  private displayNumbers!: boolean
   @Getter
   private board!: Board | null
   @Getter
@@ -56,6 +71,17 @@ export default class BoardGrid extends Vue {
   private movePiece!: (props: MovePiece) => Promise<void>
   @Action
   private trainingData!: () => Promise<void>
+  private zhugeThinking = false
+  private column = Column
+
+  private async zhuge() {
+    this.zhugeThinking = true
+    if (!this.winner && this.turn && this.board) {
+      const nextMove = await ZhugeMove(this.turn, this.board)
+      await this.movePiece(nextMove)
+    }
+    this.zhugeThinking = false
+  }
 
   private async callToMovePiece(end: Cell) {
     if (!this.selectedCell || !this.selectedAnimal || !this.turn) {
@@ -68,9 +94,8 @@ export default class BoardGrid extends Vue {
       animal: this.selectedAnimal
     }
     await this.movePiece(pieceToMove)
-    if (!this.winner && this.playAgainstAI && this.board) {
-      const nextMove = giveHuntMove(this.turn, this.board)
-      await this.movePiece(nextMove)
+    if (this.playAgainstAI) {
+      await this.zhuge()
     }
   }
 
@@ -98,7 +123,7 @@ export default class BoardGrid extends Vue {
       return
     }
     if (playAgainstAI && this.turn !== this.userPlayer) {
-      await this.movePiece(giveHuntMove(this.turn, this.board))
+      this.zhuge()
     }
   }
 
@@ -108,7 +133,7 @@ export default class BoardGrid extends Vue {
       await this.trainingData()
 
       while (!this.winner) {
-        await this.movePiece(giveHuntMove(this.turn, this.board))
+        await this.zhuge()
       }
     }
   }
@@ -117,13 +142,27 @@ export default class BoardGrid extends Vue {
 
 <style scoped lang="scss">
 .board-grid {
+  display: flex;
+  flex-direction: column;
   table {
     margin: auto;
     border-collapse: collapse;
 
     td {
       border: 2px solid #2f3640;
+      &.cell-number {
+        text-align: center;
+        vertical-align: middle;
+        min-width: 30px;
+      }
     }
+  }
+
+  .loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0;
   }
 }
 </style>

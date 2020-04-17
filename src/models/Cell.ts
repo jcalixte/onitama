@@ -8,5 +8,4 @@ export interface Cell {
   row: Row
   column: Column
   piece: Piece | null
-  selected: boolean
 }

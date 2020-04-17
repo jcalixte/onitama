@@ -1,19 +1,15 @@
 import { Player } from '@/enums/Player'
 import { Board } from '@/models/Board'
-import { Cell } from '@/models/Cell'
 import { MovePiece } from '@/models/MovePiece'
 import { getPossibleCellsFromMovesAndGrid } from '@/services/board.service'
 import { getMovesFromAnimal } from '@/services/card.service'
 import { getPlayerPieces } from '@/services/grid.service'
-import { giveMove } from './dumb.ai'
 import { getRandomItemFromArray } from './utils'
-import { PieceType } from '@/enums/PieceType'
 
-const isOpponentEmperorPosition = (player: Player, cell: Cell) => {
-  return cell.piece?.type === PieceType.Master && cell.piece.player !== player
-}
-
-export const giveHuntMove = (player: Player, board: Board): MovePiece => {
+export const giveMove = async (
+  player: Player,
+  board: Board
+): Promise<MovePiece> => {
   let animals = [...board.playerAnimals[player]]
 
   while (animals.length) {
@@ -27,24 +23,30 @@ export const giveHuntMove = (player: Player, board: Board): MovePiece => {
       const [start, newPlayerPieces] = getRandomItemFromArray(playerPieces)
       playerPieces = newPlayerPieces
 
-      const possibleCells = getPossibleCellsFromMovesAndGrid(
+      const possibleMoves = getPossibleCellsFromMovesAndGrid(
         start,
         board.grid,
         ...playerMoves
       )
-
-      for (const possibleCell of possibleCells) {
-        if (isOpponentEmperorPosition(player, possibleCell)) {
-          return {
-            animal,
-            start,
-            end: possibleCell,
-            player
-          }
-        }
+      if (!possibleMoves.length) {
+        continue
+      }
+      const [end] = getRandomItemFromArray(possibleMoves)
+      return {
+        animal,
+        start,
+        end,
+        player
       }
     }
   }
 
-  return giveMove(player, board)
+  const [skipAnimal] = getRandomItemFromArray(board.playerAnimals[player])
+
+  return {
+    animal: skipAnimal,
+    start: null,
+    end: null,
+    player
+  }
 }

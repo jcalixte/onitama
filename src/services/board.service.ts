@@ -121,6 +121,7 @@ export const exchangeCard = (
   movePiece: MovePiece,
   force = false
 ): Board | null => {
+  board = cloneBoard(board)
   if (!board) {
     return null
   }
@@ -149,6 +150,7 @@ export const exchangeCard = (
     // save the turn
     board.turns.push(movePiece)
   }
+
   return board
 }
 
@@ -189,8 +191,7 @@ export const getPossibleCellsFromMoves = (
     const possibleCell: Cell = {
       column: startCell.column + move.horizontal,
       row: startCell.row + move.vertical,
-      piece: null,
-      selected: false
+      piece: null
     }
 
     const isCellFreeToGo =
@@ -217,6 +218,7 @@ export const movePieceInBoard = (
   movePiece: MovePiece,
   force = false
 ) => {
+  board = cloneBoard(board) as Board
   if (movePiece.start && movePiece.end) {
     if (!movePiece.start.piece) {
       const piece = getPieceFromGrid(
@@ -249,9 +251,7 @@ export const movePieceInBoard = (
     startCellFromGrid.piece = null
   }
 
-  exchangeCard(board, movePiece, force)
-
-  return board
+  return exchangeCard(board, movePiece, force)
 }
 
 export const rewindMovePiece = (
@@ -354,4 +354,21 @@ export const getWinner = (board: Board | null) => {
   }
 
   return null
+}
+
+export const getCellStream = (player: Player): Cell => {
+  switch (player) {
+    case Player.Player1:
+      return {
+        column: Column.C,
+        row: Row.Five,
+        piece: null
+      }
+    case Player.Player2:
+      return {
+        column: Column.C,
+        row: Row.One,
+        piece: null
+      }
+  }
 }

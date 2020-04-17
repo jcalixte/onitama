@@ -45,8 +45,7 @@ export default class CardGridMove extends Vue {
       {
         row: Row.Three,
         column: Column.C,
-        piece: null,
-        selected: false
+        piece: null
       },
       ...this.moves
     )

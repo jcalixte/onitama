@@ -55,8 +55,9 @@ export const actions: ActionTree<State, State> = {
   async movePiece({ state, commit }, pieceToMove: MovePiece) {
     const board =
       !pieceToMove.start || !pieceToMove.end
-        ? await exchangeCardAndSave(cloneBoard(state.board), pieceToMove)
-        : await movePieceAndSave(cloneBoard(state.board), pieceToMove)
+        ? await exchangeCardAndSave(state.board, pieceToMove)
+        : await movePieceAndSave(state.board, pieceToMove)
+
     if (board) {
       commit(UPDATE_BOARD, board)
     }

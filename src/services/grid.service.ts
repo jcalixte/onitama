@@ -24,7 +24,7 @@ const newCell = (row: Row, column: Column, addPiece = true): Cell => {
     }
   }
 
-  return { row, column, piece, selected: false }
+  return { row, column, piece }
 }
 
 export const createGrid = (addPiece = true): Grid => {
