@@ -86,7 +86,6 @@ const getBestScore = (player: Player, tree: DecisionTree): number => {
 
       for (const node of tree.nodes) {
         const nodeScore = getBestScore(player, node)
-        // console.log('node score', nodeScore)
         if (nodeScore < worstNodeScore) {
           worstNodeScore = nodeScore
         }
@@ -94,23 +93,18 @@ const getBestScore = (player: Player, tree: DecisionTree): number => {
 
       const best = mul * tree.score + malus + worstNodeScore
 
-      // console.log(best, mul * tree.score + malus, worstNodeScore)
-
       return best
     } else {
       let bestNodeScore = -Infinity
 
       for (const node of tree.nodes) {
         const nodeScore = getBestScore(player, node)
-        // console.log('node score', nodeScore)
         if (nodeScore > bestNodeScore) {
           bestNodeScore = nodeScore
         }
       }
 
       const best = mul * tree.score + malus + bestNodeScore
-
-      // console.log(best, mul * tree.score + malus, bestNodeScore)
 
       return best
     }
@@ -157,9 +151,7 @@ export const ZhugeMove = async (
   player: Player,
   board: Board
 ): Promise<MovePiece> => {
-  const decisionTrees = [...buildDecisionTrees(player, board)].sort((a, b) =>
-    a.score < b.score ? -1 : 1
-  )
+  const decisionTrees = [...buildDecisionTrees(player, board)]
 
   const decisions: MoveScore[] = decisionTrees
     .map((tree) => ({
@@ -170,8 +162,6 @@ export const ZhugeMove = async (
     .sort((a, b) => (a.score < b.score ? -1 : 1))
 
   console.table(decisions)
-  const bestTree = decisionTrees.pop()
-  console.log(bestTree)
 
   const bestDecision = decisions.pop()
   return bestDecision?.move || (await randomMove(player, board))
