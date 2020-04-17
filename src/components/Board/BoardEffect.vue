@@ -18,7 +18,7 @@
           <div>
             You lose.
           </div>
-          <BoardRevenge />
+          <BoardRevenge v-if="!bot" />
         </section>
 
         <section v-else class="modal-card-body">
@@ -26,7 +26,7 @@
         </section>
 
         <footer v-if="userPlayer" class="modal-card-foot">
-          <BoardNew />
+          <BoardNew :play-against-a-i="bot" />
           <button @click="openModal = false" class="button">ok</button>
         </footer>
       </div>
@@ -54,6 +54,8 @@ export default class BoardEffect extends Vue {
   private readonly displayModal!: boolean
   @Prop({ type: Boolean, default: true })
   private readonly endSound!: boolean
+  @Prop({ type: Boolean, default: false })
+  private readonly bot!: boolean
   @Getter
   private readonly turns!: MovePiece[]
   @Getter

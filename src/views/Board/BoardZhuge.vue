@@ -1,5 +1,5 @@
 <template>
-  <div class="board-view" v-if="board" :key="id">
+  <div class="board-zhuge" v-if="board" :key="id">
     <router-link
       v-if="winner"
       class="button is-primary is-light"
@@ -7,21 +7,10 @@
     >
       review
     </router-link>
-    <hr v-if="!playersSet && !trainAI" />
-    <div class="columns is-centered" v-if="!playersSet && !trainAI">
-      <div class="column is-half">
-        <BoardShare @train-ai="trainAI = true" />
-      </div>
-    </div>
-    <div class="columns is-centered" v-if="winner && !trainAI">
-      <div class="column is-half">
-        <BoardRevenge />
-      </div>
-    </div>
     <br />
     <div class="columns card-board">
       <div class="column">
-        <BoardCard :player="player2" />
+        <BoardCard :player="player2" label="Zhuge Liang's" />
       </div>
     </div>
     <div class="columns play-board">
@@ -34,7 +23,7 @@
         </h3>
         <h3 v-else-if="turn" class="subtitle is-4">{{ turnLabel }}'s turn</h3>
         <BoardHistory />
-        <BoardGrid :train-a-i="trainAI" :key="id" />
+        <BoardGrid :play-against-a-i="true" :key="id" />
       </div>
       <div class="column is-half neutral-card-column" v-if="!isPlayer1">
         <h5 class="subtitle is-5 card-owner">Neutral card</h5>
@@ -46,7 +35,7 @@
         <BoardCard :player="player1" />
       </div>
     </div>
-    <BoardEffect :display-modal="!trainAI" />
+    <BoardEffect :bot="true" />
   </div>
 </template>
 
@@ -57,8 +46,6 @@ import BoardNew from '@/components/Board/BoardNew.vue'
 import BoardHistory from '@/components/Board/BoardHistory.vue'
 import BoardGrid from '@/components/Board/BoardGrid.vue'
 import BoardCard from '@/components/Board/BoardCard.vue'
-import BoardShare from '@/components/Board/BoardShare.vue'
-import BoardRevenge from '@/components/Board/BoardRevenge.vue'
 import BoardEffect from '@/components/Board/BoardEffect.vue'
 import { Board } from '@/models/Board'
 import { Player } from '@/enums/Player'
@@ -71,12 +58,10 @@ import { busService } from '@/services/bus.service'
     BoardHistory,
     BoardGrid,
     BoardCard,
-    BoardShare,
-    BoardRevenge,
     BoardEffect
   }
 })
-export default class BoardView extends Vue {
+export default class BoardZhuge extends Vue {
   @Prop({ type: String, required: true })
   private id!: string
   @Getter
@@ -96,6 +81,7 @@ export default class BoardView extends Vue {
   @Action
   private updateBoard!: (board: Board) => Promise<void>
 
+  private playAgainstAI = false
   private trainAI = false
 
   private player1 = Player.Player1
@@ -119,16 +105,6 @@ export default class BoardView extends Vue {
       return null
     }
     return players[this.winner]
-  }
-
-  private get userPlayer() {
-    if (this.isPlayer1) {
-      return players[Player.Player1]
-    }
-    if (this.isPlayer2) {
-      return players[Player.Player2]
-    }
-    return 'spectator'
   }
 
   private get turnLabel() {

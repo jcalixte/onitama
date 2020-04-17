@@ -2,7 +2,7 @@
   <div class="board-card">
     <h5 class="subtitle is-5 card-owner">
       <span :class="{ 'is-player-cards': player === userPlayer }">
-        {{ players[player || ''] || 'Neutral' }} card
+        {{ label || players[player || ''] || 'Neutral' }} card
       </span>
     </h5>
     <div class="columns is-centered is-mobile">
@@ -45,6 +45,8 @@ export default class BoardCard extends Vue {
   private player!: Player | 'neutral' | null
   @Prop({ type: Boolean, default: true })
   private full!: boolean
+  @Prop({ type: String, default: '' })
+  private label!: string
   @Getter
   private cards!: Animal[]
   @Getter

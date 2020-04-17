@@ -117,7 +117,7 @@ export default class BoardGrid extends Vue {
     )
   }
 
-  @Watch('playAgainstAI')
+  @Watch('playAgainstAI', { immediate: true })
   private async onPlayAgainstAIChange(playAgainstAI: boolean) {
     if (!this.board || !this.turn || !this.userPlayer) {
       return

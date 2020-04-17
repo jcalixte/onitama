@@ -74,7 +74,9 @@ const getMoveScore = (player: Player, move: MovePiece) => {
     }
   }
 
-  return 0
+  // it costs to move so the best way to end
+  // a play it's to win not to wait for a draw
+  return -1
 }
 
 const getBestScore = (player: Player, tree: DecisionTree): number => {

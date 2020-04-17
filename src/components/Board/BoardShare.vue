@@ -29,12 +29,6 @@
           <qrcode :value="boardUrl" />
         </div>
         <div>
-          you can also play against an super AI!
-          <button class="button is-light" @click="$emit('play-against-ai')">
-            play against AI
-          </button>
-        </div>
-        <div>
           Or train AI
           <button class="button is-light" @click="$emit('train-ai')">
             train AI

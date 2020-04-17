@@ -7,6 +7,17 @@
         >display training</router-link
       >
     </div>
+    <section class="hero is-primary is-bold">
+      <div class="hero-body">
+        <div class="container">
+          <h1 class="title">
+            Play against Zhuge Liang?
+          </h1>
+          <!-- <img src="../assets/zhuge-liang.jpg" alt="" /> -->
+          <BoardNew :play-against-a-i="true" />
+        </div>
+      </div>
+    </section>
     <BoardUserList />
   </div>
 </template>
