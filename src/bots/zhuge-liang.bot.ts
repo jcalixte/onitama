@@ -134,14 +134,17 @@ const buildDecisionTrees = (
     if (!newBoard) {
       return []
     }
-    const nodes = getWinner(newBoard)
-      ? []
-      : buildDecisionTrees(newBoard.turn, newBoard, depth + 1)
+
+    const score = getMoveScore(player, move)
+
     const decisionTree: DecisionTree = {
       depth,
-      score: getMoveScore(player, move),
+      score,
       move,
-      nodes
+      nodes:
+        getWinner(newBoard) || score === VICTORY_SCORE
+          ? []
+          : buildDecisionTrees(newBoard.turn, newBoard, depth + 1)
     }
     decisionTrees.push(decisionTree)
   }

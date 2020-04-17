@@ -322,34 +322,41 @@ export const getWinner = (board: Board | null) => {
   if (!board) {
     return null
   }
-  const player1WayoftheStone = !board.grid.some((row) =>
-    row.some(
-      (cell) =>
-        cell.piece?.player === Player.Player2 &&
-        cell.piece.type === PieceType.Master
-    )
+  const flattenGrid = board.grid.flat()
+  const player1WayoftheStone = !flattenGrid.some(
+    (cell) =>
+      cell.piece?.player === Player.Player2 &&
+      cell.piece.type === PieceType.Master
   )
-  const player1WayoftheStream =
-    board.grid[0][Column.C].piece?.player === Player.Player1 &&
-    board.grid[0][Column.C].piece?.type === PieceType.Master
-  const hasPlayer1Won = player1WayoftheStone || player1WayoftheStream
-  if (hasPlayer1Won) {
+
+  if (player1WayoftheStone) {
     return Player.Player1
   }
 
-  const player2WayoftheStone = !board.grid.some((row) =>
-    row.some(
-      (cell) =>
-        cell.piece?.player === Player.Player1 &&
-        cell.piece.type === PieceType.Master
-    )
+  const player1WayoftheStream =
+    board.grid[0][Column.C].piece?.player === Player.Player1 &&
+    board.grid[0][Column.C].piece?.type === PieceType.Master
+
+  if (player1WayoftheStream) {
+    return Player.Player1
+  }
+
+  const player2WayoftheStone = !flattenGrid.some(
+    (cell) =>
+      cell.piece?.player === Player.Player1 &&
+      cell.piece.type === PieceType.Master
   )
+
+  if (player2WayoftheStone) {
+    return Player.Player2
+  }
+
   const player2WayoftheStream =
     board.grid[board.grid.length - 1][Column.C].piece?.player ===
       Player.Player2 &&
     board.grid[board.grid.length - 1][Column.C].piece?.type === PieceType.Master
-  const hasPlayer2Won = player2WayoftheStone || player2WayoftheStream
-  if (hasPlayer2Won) {
+
+  if (player2WayoftheStream) {
     return Player.Player2
   }
 
