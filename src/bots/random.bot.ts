@@ -6,7 +6,7 @@ import { getMovesFromAnimal } from '@/services/card.service'
 import { getPlayerPieces } from '@/services/grid.service'
 import { getRandomItemFromArray } from './utils'
 
-export const giveMove = async (
+export const randomMove = async (
   player: Player,
   board: Board
 ): Promise<MovePiece> => {

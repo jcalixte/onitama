@@ -56,7 +56,8 @@ class Repository {
     try {
       const result = await this.db.query('board-view/training-data', {
         include_docs: true,
-        descending: true
+        descending: true,
+        limit: 30
       })
       return result.rows.map((row) => row.doc) as Board[]
     } catch (error) {
@@ -69,7 +70,8 @@ class Repository {
       const result = await this.db.query('board-view/user-board', {
         key: userId,
         include_docs: true,
-        descending: true
+        descending: true,
+        limit: 30
       })
       return result.rows.map((row) => row.doc) as Board[]
     } catch (error) {

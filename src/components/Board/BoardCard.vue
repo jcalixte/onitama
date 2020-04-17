@@ -16,8 +16,8 @@
           :class="isNeutralClass"
           :card="card"
           :selectable="isSelectable"
-          :skipable="isNeutral && mustSkipTurn"
-          @skip="!isNeutral && skip"
+          :skipable="!winner && !isNeutral && mustSkipTurn"
+          @skip="skip"
           :player="player"
           :full="full"
         />

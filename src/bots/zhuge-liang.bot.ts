@@ -12,10 +12,10 @@ import {
 } from '@/services/board.service'
 import { getMovesFromAnimal } from '@/services/card.service'
 import { areCellEquals, getPlayerPieces } from '@/services/grid.service'
-import { giveMove } from './random.bot'
+import { randomMove } from './random.bot'
 import { getVisibleMove } from './utils'
 
-const MAX_DEPTH = 3
+const MAX_DEPTH = 4
 const VICTORY_SCORE = 1000
 
 interface MoveScore {
@@ -77,17 +77,45 @@ const getMoveScore = (player: Player, move: MovePiece) => {
   return 0
 }
 
-const getBestScore = (player: Player, tree: DecisionTree, mul = 1): number => {
-  let bestNodeScore = 0
+const getBestScore = (player: Player, tree: DecisionTree): number => {
+  const mul = tree.depth % 2 === 0 ? 1 : -1
+  const malus = tree.depth % 2 === 0 ? -tree.depth : tree.depth
+  if (tree.nodes.length) {
+    if (tree.depth % 2 === 0) {
+      let worstNodeScore = Infinity
 
-  for (const node of tree.nodes) {
-    const nodeScore = getBestScore(player, node, -mul)
-    if (nodeScore > bestNodeScore) {
-      bestNodeScore = nodeScore
+      for (const node of tree.nodes) {
+        const nodeScore = getBestScore(player, node)
+        // console.log('node score', nodeScore)
+        if (nodeScore < worstNodeScore) {
+          worstNodeScore = nodeScore
+        }
+      }
+
+      const best = mul * tree.score + malus + worstNodeScore
+
+      // console.log(best, mul * tree.score + malus, worstNodeScore)
+
+      return best
+    } else {
+      let bestNodeScore = -Infinity
+
+      for (const node of tree.nodes) {
+        const nodeScore = getBestScore(player, node)
+        // console.log('node score', nodeScore)
+        if (nodeScore > bestNodeScore) {
+          bestNodeScore = nodeScore
+        }
+      }
+
+      const best = mul * tree.score + malus + bestNodeScore
+
+      // console.log(best, mul * tree.score + malus, bestNodeScore)
+
+      return best
     }
   }
-
-  return mul * tree.score - -mul * tree.depth + bestNodeScore
+  return mul * tree.score + malus
 }
 
 const buildDecisionTrees = (
@@ -129,7 +157,9 @@ export const ZhugeMove = async (
   player: Player,
   board: Board
 ): Promise<MovePiece> => {
-  const decisionTrees = [...buildDecisionTrees(player, board)]
+  const decisionTrees = [...buildDecisionTrees(player, board)].sort((a, b) =>
+    a.score < b.score ? -1 : 1
+  )
 
   const decisions: MoveScore[] = decisionTrees
     .map((tree) => ({
@@ -140,7 +170,9 @@ export const ZhugeMove = async (
     .sort((a, b) => (a.score < b.score ? -1 : 1))
 
   console.table(decisions)
-  const bestDecision = decisions.pop()
+  const bestTree = decisionTrees.pop()
+  console.log(bestTree)
 
-  return bestDecision?.move || (await giveMove(player, board))
+  const bestDecision = decisions.pop()
+  return bestDecision?.move || (await randomMove(player, board))
 }
