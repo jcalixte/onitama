@@ -1,6 +1,8 @@
 <template>
   <div class="home">
-    <h1 class="title is-1">onitama</h1>
+    <h1 class="title is-1">
+      <span class="onitama">Onitama</span>
+    </h1>
     <div class="buttons is-centered">
       <BoardNew />
     </div>

@@ -1,11 +1,12 @@
 <template>
   <div class="play-rules">
-    <h1 class="title is-1">Onitama's rules</h1>
+    <h1 class="title is-1"><span class="onitama">Onitama</span>'s rules</h1>
     <div class="columns is-centered">
       <div class="column is-half">
         <p>
-          Onitama is an elegant and simple game which captures the essence of
-          martial arts.. Each game is quick, usually 15 minutes in length.
+          <span class="onitama">Onitama</span> is an elegant and simple game
+          which captures the essence of martial arts.. Each game is quick,
+          usually 15 minutes in length.
         </p>
       </div>
     </div>
