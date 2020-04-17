@@ -318,11 +318,8 @@ export const exchangeCardAndSave = async (
   return await repository.saveLocal(newBoard)
 }
 
-export const getWinner = (board: Board | null) => {
-  if (!board) {
-    return null
-  }
-  const flattenGrid = board.grid.flat()
+export const getWinner = (grid: Grid) => {
+  const flattenGrid = grid.flat()
   const player1WayoftheStone = !flattenGrid.some(
     (cell) =>
       cell.piece?.player === Player.Player2 &&
@@ -334,8 +331,8 @@ export const getWinner = (board: Board | null) => {
   }
 
   const player1WayoftheStream =
-    board.grid[0][Column.C].piece?.player === Player.Player1 &&
-    board.grid[0][Column.C].piece?.type === PieceType.Master
+    grid[0][Column.C].piece?.player === Player.Player1 &&
+    grid[0][Column.C].piece?.type === PieceType.Master
 
   if (player1WayoftheStream) {
     return Player.Player1
@@ -352,9 +349,8 @@ export const getWinner = (board: Board | null) => {
   }
 
   const player2WayoftheStream =
-    board.grid[board.grid.length - 1][Column.C].piece?.player ===
-      Player.Player2 &&
-    board.grid[board.grid.length - 1][Column.C].piece?.type === PieceType.Master
+    grid[grid.length - 1][Column.C].piece?.player === Player.Player2 &&
+    grid[grid.length - 1][Column.C].piece?.type === PieceType.Master
 
   if (player2WayoftheStream) {
     return Player.Player2

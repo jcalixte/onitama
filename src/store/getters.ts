@@ -51,7 +51,7 @@ export const getters: GetterTree<State, State> = {
       board.animals.find((animal) => !animalPlayers.includes(animal)) ?? null
     )
   },
-  winner: ({ board }): Player | null => getWinner(board),
+  winner: ({ board }): Player | null => (board ? getWinner(board?.grid) : null),
   mustSkipTurn: (
     { board },
     { userPlayer }: { userPlayer: Player | null }

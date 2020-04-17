@@ -88,7 +88,7 @@ export default class BoardTraining extends Vue {
     }
     board.training = 'hunt'
 
-    while (!getWinner(board)) {
+    while (board && !getWinner(board.grid)) {
       if (!board) {
         break
       }

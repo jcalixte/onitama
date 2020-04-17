@@ -142,7 +142,7 @@ const buildDecisionTrees = (
       score,
       move,
       nodes:
-        getWinner(newBoard) || score === VICTORY_SCORE
+        getWinner(newBoard.grid) || score === VICTORY_SCORE
           ? []
           : buildDecisionTrees(newBoard.turn, newBoard, depth + 1)
     }
