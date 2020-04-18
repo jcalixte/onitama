@@ -89,7 +89,7 @@ const getMoveScore = (player: Player, move: MovePiece) => {
 
 const getBestScore = (player: Player, tree: DecisionTree): number => {
   const mul = tree.depth % 2 === 0 ? 1 : -1
-  const malus = tree.depth % 2 === 0 ? -tree.depth : tree.depth
+
   if (tree.nodes.length) {
     if (tree.depth % 2 === 0) {
       let worstNodeScore = Infinity
@@ -101,7 +101,7 @@ const getBestScore = (player: Player, tree: DecisionTree): number => {
         }
       }
 
-      const best = mul * tree.score + malus + worstNodeScore
+      const best = mul * tree.score + worstNodeScore
 
       return best
     } else {
@@ -114,12 +114,12 @@ const getBestScore = (player: Player, tree: DecisionTree): number => {
         }
       }
 
-      const best = mul * tree.score + malus + bestNodeScore
+      const best = mul * tree.score + bestNodeScore
 
       return best
     }
   }
-  return mul * tree.score + malus
+  return mul * tree.score
 }
 
 const buildDecisionTrees = (
@@ -160,22 +160,47 @@ const buildDecisionTrees = (
   return decisionTrees
 }
 
+const getMinimalDepth = (tree: DecisionTree): number => {
+  if (!tree.nodes.length) {
+    return 0
+  }
+
+  return Math.min(...tree.nodes.map((node) => getMinimalDepth(node) + 1))
+}
+
+const getShortestTree = (trees: DecisionTree[]): DecisionTree | null => {
+  const treesWithDepth = trees.map((tree) => ({
+    tree,
+    depth: getMinimalDepth(tree)
+  }))
+  const minDepth = Math.min(
+    ...treesWithDepth.map((treeWithDepth) => treeWithDepth.depth)
+  )
+
+  return (
+    treesWithDepth.find((treeWithDepth) => treeWithDepth.depth === minDepth)
+      ?.tree ?? null
+  )
+}
+
 export const ZhugeMove = async (
   player: Player,
   board: Board
 ): Promise<MovePiece> => {
   const decisionTrees = buildDecisionTrees(player, board)
 
-  const decisions: MoveScore[] = decisionTrees
-    .map((tree) => ({
-      visibleMove: getVisibleMove(tree.move),
-      score: getBestScore(player, tree),
-      move: tree.move
-    }))
-    .sort((a, b) => (a.score > b.score ? -1 : 1))
+  let maxScore = -Infinity
 
-  console.table(decisions)
+  for (const tree of decisionTrees) {
+    tree.score = getBestScore(player, tree)
+    if (tree.score > maxScore) {
+      maxScore = tree.score
+    }
+  }
 
-  const bestDecision = decisions[0]
+  const bestDecision = getShortestTree(
+    decisionTrees.filter((tree) => tree.score === maxScore)
+  )
+
   return bestDecision?.move || (await randomMove(player, board))
 }
