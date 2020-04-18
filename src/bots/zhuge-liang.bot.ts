@@ -144,9 +144,7 @@ const buildDecisionTrees = (
     }
 
     const score = getMoveScore(player, move)
-    const needNodeComputation = !(
-      getWinner(newBoard.grid) || score === VICTORY_SCORE
-    )
+    const needNodeComputation = !(score >= VICTORY_SCORE)
 
     const decisionTree: DecisionTree = {
       depth,
