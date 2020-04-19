@@ -12,6 +12,7 @@
           <BoardCell
             :cell="cell"
             :is-valid-move="isValidMove(cell)"
+            :display-last-move="displayLastMove"
             @move="callToMovePiece"
           />
         </td>
@@ -53,6 +54,8 @@ export default class BoardGrid extends Vue {
   private trainAI!: boolean
   @Prop({ type: Boolean, default: false })
   private displayNumbers!: boolean
+  @Prop({ type: Boolean, default: false })
+  private displayLastMove!: boolean
   @Getter
   private board!: Board | null
   @Getter

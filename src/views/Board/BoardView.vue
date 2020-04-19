@@ -34,7 +34,7 @@
         </h3>
         <h3 v-else-if="turn" class="subtitle is-4">{{ turnLabel }}'s turn</h3>
         <BoardHistory />
-        <BoardGrid :train-a-i="trainAI" :key="id" />
+        <BoardGrid :train-a-i="trainAI" :key="id" :display-last-move="true" />
       </div>
       <div class="column is-half neutral-card-column" v-if="!isPlayer1">
         <h5 class="subtitle is-5 card-owner">Neutral card</h5>

@@ -25,6 +25,8 @@ export default class BoardCell extends Vue {
   private cell!: Cell
   @Prop({ type: Boolean, required: true })
   private isValidMove!: boolean
+  @Prop({ type: Boolean, default: false })
+  private displayLastMove!: boolean
   @Getter
   private selectedCell!: Cell | null
   @Getter
@@ -66,8 +68,8 @@ export default class BoardCell extends Vue {
       'is-selected': this.cell === this.selectedCell,
       'is-valid-move': this.isValidMove,
       'is-stream-cell': this.isStreamCell,
-      'is-start-last-turn': this.isStartLastTurn,
-      'is-end-last-turn': this.isEndLastTurn
+      'is-start-last-turn': this.displayLastMove && this.isStartLastTurn,
+      'is-end-last-turn': this.displayLastMove && this.isEndLastTurn
     }
   }
 
@@ -97,7 +99,7 @@ export default class BoardCell extends Vue {
 </script>
 
 <style scoped lang="scss">
-$cell-size: 50px;
+$cell-size: 40px;
 
 .board-cell {
   width: $cell-size;

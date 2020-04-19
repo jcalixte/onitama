@@ -26,7 +26,6 @@
         <BoardCard :player="player1" :full="false" />
       </div>
     </div>
-    <hr />
     <div class="columns">
       <div class="column">
         <nav

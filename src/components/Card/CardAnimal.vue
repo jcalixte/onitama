@@ -31,8 +31,8 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { Card } from '@/models/Card'
 import { Animal } from '@/enums/Animal'
-import CardGridMove from '@/components/Card/CardGridMove.vue'
 import { Player } from '@/enums/Player'
+import CardGridMove from '@/components/Card/CardGridMove.vue'
 
 @Component({
   components: {
@@ -89,6 +89,7 @@ export default class CardAnimal extends Vue {
 
 .card {
   padding: 5px;
+  margin: 0 0 5px;
   border-radius: 5px;
 }
 
@@ -105,8 +106,8 @@ export default class CardAnimal extends Vue {
     }
   }
   .animal {
-    font-size: 2rem;
-    text-align: left;
+    font-size: 1.3rem;
+    margin: 0 5px;
   }
   .card-content {
     display: flex;
