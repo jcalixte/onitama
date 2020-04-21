@@ -17,12 +17,6 @@ import { randomMove } from './random.bot'
 const MAX_DEPTH = 4
 const VICTORY_SCORE = 100
 
-interface MoveScore {
-  move: MovePiece
-  visibleMove: string
-  score: number
-}
-
 const cardMovesFromAnimals: { [key: string]: CardMove[] } = {}
 
 const getPlayerMoves = (player: Player, board: Board): MovePiece[] => {
@@ -87,45 +81,23 @@ const getTreeScore = (
   player: Player,
   tree: DecisionTree,
   alpha = -Infinity,
-  beta = Infinity
+  beta = Infinity,
+  color = 1
 ): number => {
   if (!tree.nodes.length) {
-    const mul = tree.depth % 2 === 0 ? 1 : -1
-    return mul * tree.score
+    return color * tree.score
+  }
+  let best = -Infinity
+
+  for (const node of tree.nodes) {
+    best = Math.max(best, -getTreeScore(player, node, -beta, -alpha, -color))
+    alpha = Math.max(alpha, best)
+    if (alpha >= beta) {
+      break
+    }
   }
 
-  // Minimal
-  if (tree.depth % 2 === 0) {
-    let worstNodeScore = Infinity
-
-    for (const node of tree.nodes) {
-      worstNodeScore = Math.min(
-        worstNodeScore,
-        getTreeScore(player, node, alpha, beta)
-      )
-      if (alpha >= worstNodeScore) {
-        return worstNodeScore
-      }
-      beta = Math.min(beta, worstNodeScore)
-    }
-
-    return worstNodeScore
-  } else {
-    let bestNodeScore = -Infinity
-
-    for (const node of tree.nodes) {
-      bestNodeScore = Math.max(
-        bestNodeScore,
-        getTreeScore(player, node, alpha, beta)
-      )
-      if (bestNodeScore >= beta) {
-        return bestNodeScore
-      }
-      alpha = Math.max(alpha, bestNodeScore)
-    }
-
-    return bestNodeScore
-  }
+  return best
 }
 
 const buildDecisionTrees = (
@@ -166,44 +138,6 @@ const buildDecisionTrees = (
   return decisionTrees
 }
 
-const getMinimalDepth = (tree: DecisionTree): number => {
-  if (!tree.nodes.length) {
-    return 0
-  }
-
-  return Math.min(...tree.nodes.map((node) => getMinimalDepth(node) + 1))
-}
-
-const getLongestTree = (trees: DecisionTree[]): DecisionTree | null => {
-  const treesWithDepth = trees.map((tree) => ({
-    tree,
-    depth: getMinimalDepth(tree)
-  }))
-  const maxDepth = Math.max(
-    ...treesWithDepth.map((treeWithDepth) => treeWithDepth.depth)
-  )
-
-  return (
-    treesWithDepth.find((treeWithDepth) => treeWithDepth.depth === maxDepth)
-      ?.tree ?? null
-  )
-}
-
-const getShortestTree = (trees: DecisionTree[]): DecisionTree | null => {
-  const treesWithDepth = trees.map((tree) => ({
-    tree,
-    depth: getMinimalDepth(tree)
-  }))
-  const minDepth = Math.min(
-    ...treesWithDepth.map((treeWithDepth) => treeWithDepth.depth)
-  )
-
-  return (
-    treesWithDepth.find((treeWithDepth) => treeWithDepth.depth === minDepth)
-      ?.tree ?? null
-  )
-}
-
 export const ZhugeMove = async (
   player: Player,
   board: Board
@@ -227,10 +161,7 @@ export const ZhugeMove = async (
 
   console.table(bestDecisionTrees)
 
-  const bestDecision =
-    maxScore < 0
-      ? getLongestTree(bestDecisionTrees) // Delay defeat
-      : getShortestTree(bestDecisionTrees) // Shorten victory
+  const bestDecision = bestDecisionTrees.pop()
 
   return bestDecision?.move || (await randomMove(player, board))
 }
