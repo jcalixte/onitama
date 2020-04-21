@@ -83,36 +83,49 @@ const getMoveScore = (player: Player, move: MovePiece) => {
   return 0
 }
 
-const getTreeScore = (player: Player, tree: DecisionTree): number => {
-  if (tree.nodes.length) {
-    // Minimal
-    if (tree.depth % 2 === 0) {
-      let worstNodeScore = Infinity
-
-      for (const node of tree.nodes) {
-        const nodeScore = getTreeScore(player, node)
-        if (nodeScore < worstNodeScore) {
-          worstNodeScore = nodeScore
-        }
-      }
-
-      return tree.score + worstNodeScore
-    } else {
-      let bestNodeScore = -Infinity
-
-      for (const node of tree.nodes) {
-        const nodeScore = getTreeScore(player, node)
-        if (nodeScore > bestNodeScore) {
-          bestNodeScore = nodeScore
-        }
-      }
-
-      return -tree.score + bestNodeScore
-    }
+const getTreeScore = (
+  player: Player,
+  tree: DecisionTree,
+  alpha = -Infinity,
+  beta = Infinity
+): number => {
+  if (!tree.nodes.length) {
+    const mul = tree.depth % 2 === 0 ? 1 : -1
+    return mul * tree.score
   }
 
-  const mul = tree.depth % 2 === 0 ? 1 : -1
-  return mul * tree.score
+  // Minimal
+  if (tree.depth % 2 === 0) {
+    let worstNodeScore = Infinity
+
+    for (const node of tree.nodes) {
+      worstNodeScore = Math.min(
+        worstNodeScore,
+        getTreeScore(player, node, alpha, beta)
+      )
+      if (alpha >= worstNodeScore) {
+        return worstNodeScore
+      }
+      beta = Math.min(beta, worstNodeScore)
+    }
+
+    return worstNodeScore
+  } else {
+    let bestNodeScore = -Infinity
+
+    for (const node of tree.nodes) {
+      bestNodeScore = Math.max(
+        bestNodeScore,
+        getTreeScore(player, node, alpha, beta)
+      )
+      if (bestNodeScore >= beta) {
+        return bestNodeScore
+      }
+      alpha = Math.max(alpha, bestNodeScore)
+    }
+
+    return bestNodeScore
+  }
 }
 
 const buildDecisionTrees = (
