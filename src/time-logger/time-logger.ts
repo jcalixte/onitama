@@ -3,7 +3,7 @@ function getCurrentTime() {
 }
 
 export class TimeLogger {
-  private identifier = ''
+  private readonly identifier: string
   private refTime = 0
   private time = 0
   private innerTimes: Map<string, TimeLogger> = new Map<string, TimeLogger>()
@@ -17,25 +17,34 @@ export class TimeLogger {
   }
 
   public addInnerLogger(identifier: string): TimeLogger {
-    const innerLogger: TimeLogger = new TimeLogger(identifier)
-    this.innerTimes.set(identifier, innerLogger)
-    return innerLogger
+    if (!this.innerTimes.has(identifier)) {
+      this.innerTimes.set(identifier, new TimeLogger(identifier))
+    }
+    return this.innerTimes.get(identifier) as TimeLogger
   }
 
   public addTime(): void {
-    this.time = this.time + getCurrentTime()
+    this.time = this.time + getCurrentTime() - this.refTime
   }
 
-  public logAllTimes(refTime?: number) {
+  public logAllTimes(refTime?: number, level = 0) {
     const globalTime = refTime ? refTime : this.time
-    this.logTime(this.time)
+    this.logTime(globalTime, level)
     this.innerTimes.forEach((value: TimeLogger) => {
-      value.logAllTimes(globalTime)
+      value.logAllTimes(globalTime, level + 1)
     })
   }
 
-  public logTime(refTime: number) {
+  public logTime(refTime: number, level: number) {
     const percentage: string = ((this.time / refTime) * 100).toFixed(2) + '%'
-    console.log(this.identifier, this.time, percentage)
+    const toPrint =
+      ' '.repeat(level) +
+      ' ' +
+      this.identifier +
+      ' ' +
+      this.time +
+      ' ' +
+      percentage
+    console.log(toPrint)
   }
 }

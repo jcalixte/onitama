@@ -20,7 +20,7 @@ const cardMovesFromAnimals: { [key: string]: CardMove[] } = {}
 
 class ZhugeMove {
   @MainLogMethod
-  @MonitorTime
+  @MonitorTime()
   public async move(player: Player, board: Board): Promise<MovePiece> {
     const decisionTrees = this.buildDecisionTrees(player, board)
 
@@ -139,7 +139,7 @@ class ZhugeMove {
     return mul * tree.score
   }
 
-  //@MonitorTime
+  @MonitorTime('move')
   private buildDecisionTrees(
     player: Player,
     board: Board,
