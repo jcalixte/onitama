@@ -4,19 +4,14 @@ import { Board } from '@/models/Board'
 import { CardMove } from '@/models/CardMove'
 import { DecisionTree } from '@/models/DecisionTree'
 import { MovePiece } from '@/models/MovePiece'
-import {
-  exchangeCard,
-  getCellStream,
-  getPossibleCellsFromMovesAndGrid,
-  movePieceInBoard
-} from '@/services/board.service'
 import { getMovesFromAnimal } from '@/services/card.service'
-import { areCellEquals, getPlayerPieces } from '@/services/grid.service'
 import { randomMove } from './random.bot'
 import {
   MainLogMethod,
   MonitorTime
 } from '@/time-logger/performance-intercepor'
+import { gridService } from '@/services/grid.service'
+import { boardService } from '@/services/board.service'
 
 const MAX_DEPTH = 4
 const VICTORY_SCORE = 100
@@ -56,7 +51,7 @@ class ZhugeMove {
 
   private getPlayerMoves = (player: Player, board: Board): MovePiece[] => {
     const animals = board.playerAnimals[player]
-    const pieces = getPlayerPieces(player, board.grid)
+    const pieces = gridService.getPlayerPieces(player, board.grid)
 
     const playerMoves: MovePiece[] = []
 
@@ -69,7 +64,7 @@ class ZhugeMove {
       }
 
       for (const piece of pieces) {
-        const possibleCells = getPossibleCellsFromMovesAndGrid(
+        const possibleCells = boardService.getPossibleCellsFromMovesAndGrid(
           piece,
           board.grid,
           ...moves
@@ -103,8 +98,8 @@ class ZhugeMove {
 
     // Way of Stream
     if (move.start?.piece?.type === PieceType.Master) {
-      const streamCell = getCellStream(player)
-      if (areCellEquals(move.end, streamCell)) {
+      const streamCell = boardService.getCellStream(player)
+      if (gridService.areCellEquals(move.end, streamCell)) {
         return VICTORY_SCORE
       }
     }
@@ -160,8 +155,8 @@ class ZhugeMove {
     for (const move of moves) {
       const newBoard =
         !move.start || !move.end
-          ? exchangeCard(board, move)
-          : movePieceInBoard(board, move)
+          ? boardService.exchangeCard(board, move)
+          : boardService.movePieceInBoard(board, move)
       if (!newBoard) {
         return []
       }

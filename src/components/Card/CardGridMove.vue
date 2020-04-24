@@ -19,8 +19,8 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { CardMove } from '@/models/CardMove'
 import { Grid, Cell } from '@/models/Cell'
-import { getPossibleCellsFromMoves } from '@/services/board.service'
-import { createGrid, areCellEquals } from '@/services/grid.service'
+import { boardService } from '@/services/board.service'
+import { gridService } from '@/services/grid.service'
 import { Row } from '@/enums/Row'
 import { Column } from '@/enums/Column'
 
@@ -28,7 +28,7 @@ import { Column } from '@/enums/Column'
 export default class CardGridMove extends Vue {
   @Prop({ type: Array, required: true })
   private moves!: CardMove[]
-  private grid: Grid = createGrid(false)
+  private grid: Grid = gridService.createGrid(false)
 
   private isCenter(cell: Cell) {
     return cell.row === Row.Three && cell.column === Column.C
@@ -36,12 +36,12 @@ export default class CardGridMove extends Vue {
 
   private isPossibleMoveCell(cell: Cell): boolean {
     return this.possibleMoveCells.some((moveCell) =>
-      areCellEquals(cell, moveCell)
+      gridService.areCellEquals(cell, moveCell)
     )
   }
 
   private get possibleMoveCells(): Cell[] {
-    return getPossibleCellsFromMoves(
+    return boardService.getPossibleCellsFromMoves(
       {
         row: Row.Three,
         column: Column.C,

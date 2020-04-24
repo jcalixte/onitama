@@ -2,15 +2,7 @@ import { Animal } from '@/enums/Animal'
 import { Board } from '@/models/Board'
 import { Cell } from '@/models/Cell'
 import { MovePiece } from '@/models/MovePiece'
-import {
-  initBoardAndLocalSave,
-  joinBoard,
-  movePieceAndSave,
-  exchangeCardAndSave,
-  saveLocalBoard,
-  cloneBoard,
-  saveBoard
-} from '@/services/board.service'
+import { boardService } from '@/services/board.service'
 import {
   INIT_USER,
   SELECT_ANIMAL,
@@ -27,7 +19,7 @@ export const actions: ActionTree<State, State> = {
     if (!state.user) {
       commit(INIT_USER, userId)
     }
-    const board = await initBoardAndLocalSave(userId)
+    const board = await boardService.initBoardAndLocalSave(userId)
     if (board) {
       commit(UPDATE_BOARD, board)
     }
@@ -40,7 +32,7 @@ export const actions: ActionTree<State, State> = {
     if (!state.user) {
       commit(INIT_USER, userId)
     }
-    const board = await joinBoard(id, state.user)
+    const board = await boardService.joinBoard(id, state.user)
     commit(UPDATE_BOARD, board)
   },
   updateBoard({ commit }, board: Board) {
@@ -55,29 +47,29 @@ export const actions: ActionTree<State, State> = {
   async movePiece({ state, commit }, pieceToMove: MovePiece) {
     const board =
       !pieceToMove.start || !pieceToMove.end
-        ? await exchangeCardAndSave(state.board, pieceToMove)
-        : await movePieceAndSave(state.board, pieceToMove)
+        ? await boardService.exchangeCardAndSave(state.board, pieceToMove)
+        : await boardService.movePieceAndSave(state.board, pieceToMove)
 
     if (board) {
       commit(UPDATE_BOARD, board)
     }
   },
   async trainingData({ state, commit }) {
-    const board = cloneBoard(state.board)
+    const board = boardService.cloneBoard(state.board)
     if (!board) {
       return
     }
     board.training = 'hunt'
-    const newBoard = await saveLocalBoard(board)
+    const newBoard = await boardService.saveLocalBoard(board)
     commit(UPDATE_BOARD, newBoard)
   },
   async askRevenge({ state, commit }, ask: boolean) {
-    const board = cloneBoard(state.board)
+    const board = boardService.cloneBoard(state.board)
     if (!board) {
       return
     }
     board.revenge.ask = ask
-    const newBoard = await saveLocalBoard(board)
+    const newBoard = await boardService.saveLocalBoard(board)
     if (newBoard) {
       commit(UPDATE_BOARD, newBoard)
     }
@@ -86,12 +78,12 @@ export const actions: ActionTree<State, State> = {
     { state },
     { answer, nextBoardId }: { answer: boolean; nextBoardId: string | null }
   ) {
-    const board = cloneBoard(state.board)
+    const board = boardService.cloneBoard(state.board)
     if (!board) {
       return
     }
     board.revenge.answer = answer
     board.revenge.nextBoardId = nextBoardId
-    await saveBoard(board)
+    await boardService.saveBoard(board)
   }
 }

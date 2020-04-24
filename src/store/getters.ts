@@ -1,8 +1,8 @@
 import { Player } from '@/enums/Player'
 import { Revenge } from '@/models/Revenge'
-import { getPossibleCellsFromMoves, getWinner } from '@/services/board.service'
+import { boardService } from '@/services/board.service'
 import { getMovesFromAnimal } from '@/services/card.service'
-import { getPlayerCells } from '@/services/grid.service'
+import { gridService } from '@/services/grid.service'
 import { GetterTree } from 'vuex'
 import { State } from './state'
 
@@ -51,7 +51,8 @@ export const getters: GetterTree<State, State> = {
       board.animals.find((animal) => !animalPlayers.includes(animal)) ?? null
     )
   },
-  winner: ({ board }): Player | null => (board ? getWinner(board?.grid) : null),
+  winner: ({ board }): Player | null =>
+    board ? boardService.getWinner(board?.grid) : null,
   mustSkipTurn: (
     { board },
     { userPlayer }: { userPlayer: Player | null }
@@ -63,9 +64,12 @@ export const getters: GetterTree<State, State> = {
     const moves = animals
       .map((animal) => getMovesFromAnimal(animal, userPlayer))
       .flat()
-    const pieces = getPlayerCells(userPlayer, board.grid)
+    const pieces = gridService.getPlayerCells(userPlayer, board.grid)
     for (const piece of pieces) {
-      const possibleMoves = getPossibleCellsFromMoves(piece, ...moves)
+      const possibleMoves = boardService.getPossibleCellsFromMoves(
+        piece,
+        ...moves
+      )
       if (possibleMoves.length) {
         return false
       }

@@ -98,11 +98,7 @@ import { players } from '@/data/players'
 import { Player } from '@/enums/Player'
 import { Board } from '@/models/Board'
 import { repository } from '@/services/repository'
-import {
-  rewindMovePiece,
-  initFromBoard,
-  getWinner
-} from '@/services/board.service'
+import { boardService } from '@/services/board.service'
 import BoardGrid from '@/components/Board/BoardGrid.vue'
 import BoardCard from '@/components/Board/BoardCard.vue'
 import BoardEffect from '@/components/Board/BoardEffect.vue'
@@ -136,8 +132,8 @@ export default class BoardReview extends Vue {
   private async mounted() {
     const board = await repository.get(this.id)
     if (board) {
-      this.winner = getWinner(board.grid)
-      const initialBoard = initFromBoard(board)
+      this.winner = boardService.getWinner(board.grid)
+      const initialBoard = boardService.initFromBoard(board)
       this.reviewBoard(initialBoard)
     }
     window.addEventListener('keydown', this.changeTurn)
@@ -165,7 +161,11 @@ export default class BoardReview extends Vue {
     if (toTurn < -1 || toTurn > this.board.turns.length - 1) {
       return
     }
-    const newBoard = rewindMovePiece(this.current, toTurn, this.board)
+    const newBoard = boardService.rewindMovePiece(
+      this.current,
+      toTurn,
+      this.board
+    )
     if (newBoard) {
       this.reviewBoard(newBoard)
       this.current = toTurn

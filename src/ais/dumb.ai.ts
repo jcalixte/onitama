@@ -1,9 +1,9 @@
 import { Player } from '@/enums/Player'
 import { Board } from '@/models/Board'
 import { MovePiece } from '@/models/MovePiece'
-import { getPossibleCellsFromMovesAndGrid } from '@/services/board.service'
+import { boardService } from '@/services/board.service'
 import { getMovesFromAnimal } from '@/services/card.service'
-import { getPlayerPieces } from '@/services/grid.service'
+import { gridService } from '@/services/grid.service'
 import { getRandomItemFromArray } from './utils'
 
 export const giveMove = (player: Player, board: Board): MovePiece => {
@@ -14,13 +14,13 @@ export const giveMove = (player: Player, board: Board): MovePiece => {
     animals = newAnimals
     const playerMoves = getMovesFromAnimal(animal, player)
 
-    let playerPieces = [...getPlayerPieces(player, board.grid)]
+    let playerPieces = [...gridService.getPlayerPieces(player, board.grid)]
 
     while (playerPieces.length) {
       const [start, newPlayerPieces] = getRandomItemFromArray(playerPieces)
       playerPieces = newPlayerPieces
 
-      const possibleMoves = getPossibleCellsFromMovesAndGrid(
+      const possibleMoves = boardService.getPossibleCellsFromMovesAndGrid(
         start,
         board.grid,
         ...playerMoves

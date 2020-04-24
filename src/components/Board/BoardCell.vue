@@ -13,7 +13,7 @@ import { Row } from '@/enums/Row'
 import { Column } from '@/enums/Column'
 import PieceImage from '@/components/PieceImage.vue'
 import { MovePiece } from '@/models/MovePiece'
-import { areCellEquals } from '@/services/grid.service'
+import { gridService } from '@/services/grid.service'
 
 @Component({
   components: {
@@ -78,7 +78,7 @@ export default class BoardCell extends Vue {
     if (!lastTurn || !lastTurn.start) {
       return false
     }
-    return areCellEquals(this.cell, lastTurn.start)
+    return gridService.areCellEquals(this.cell, lastTurn.start)
   }
 
   private get isEndLastTurn() {
@@ -86,7 +86,7 @@ export default class BoardCell extends Vue {
     if (!lastTurn || !lastTurn.end) {
       return false
     }
-    return areCellEquals(this.cell, lastTurn.end)
+    return gridService.areCellEquals(this.cell, lastTurn.end)
   }
 
   private get isStreamCell() {
