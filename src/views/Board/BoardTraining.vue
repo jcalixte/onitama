@@ -43,7 +43,7 @@ import { boardService } from '@/services/board.service'
 import { repository } from '@/services/repository'
 import { Board } from '@/models/Board'
 import { MovePiece } from '@/models/MovePiece'
-import { zhugeMove, ZhugeMove } from '@/bots/zhuge-liang.bot'
+import { zhugeMove } from '@/bots/zhuge-liang.bot'
 
 @Component({
   components: {

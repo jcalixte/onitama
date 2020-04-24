@@ -67,6 +67,7 @@ class GridService {
       ]
     ]
   }
+
   public getPlayerPieces(player: Player, grid: Grid): Cell[] {
     return grid.flat().filter((cell) => cell.piece?.player === player)
   }
@@ -88,7 +89,9 @@ class GridService {
   public getCellFromGrid(cell: Cell, grid: Grid) {
     for (const row of grid) {
       for (const c of row) {
-        return c
+        if (this.areCellEquals(cell, c)) {
+          return c
+        }
       }
     }
 

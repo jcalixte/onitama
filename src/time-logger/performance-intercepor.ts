@@ -3,7 +3,7 @@ import { TimeLogger } from '@/time-logger/time-logger'
 const timeLoggers: Map<string, TimeLogger> = new Map<string, TimeLogger>()
 
 export function MainLogMethod(
-  target: any,
+  _target: unknown,
   name: string,
   descriptor: PropertyDescriptor
 ) {
@@ -22,7 +22,7 @@ export function MainLogMethod(
 }
 
 export function MonitorTime(
-  target: any,
+  _target: unknown,
   name: string,
   descriptor: PropertyDescriptor
 ) {
