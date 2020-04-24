@@ -18,7 +18,65 @@ class BoardService {
     if (!board) {
       return null
     }
-    return JSON.parse(JSON.stringify(board))
+
+    return {
+      turns: board.turns.map((movePiece: MovePiece) => {
+        return {
+          player: movePiece.player,
+          start: movePiece.start
+            ? {
+                row: movePiece.start.row,
+                column: movePiece.start.column,
+                piece: movePiece.start.piece
+                  ? {
+                      type: movePiece.start.piece.type,
+                      player: movePiece.start.piece.player
+                    }
+                  : null
+              }
+            : null,
+          end: movePiece.end
+            ? {
+                row: movePiece.end.row,
+                column: movePiece.end.column,
+                piece: movePiece.end.piece
+                  ? {
+                      type: movePiece.end.piece.type,
+                      player: movePiece.end.piece.player
+                    }
+                  : null
+              }
+            : null,
+          animal: movePiece.animal
+        }
+      }),
+      date: board.date,
+      users: {
+        [Player.Player1]: board.users[Player.Player1],
+        [Player.Player2]: board.users[Player.Player2]
+      },
+      revenge: {
+        ask: board.revenge.ask,
+        answer: board.revenge.answer,
+        nextBoardId: board.revenge.nextBoardId
+      },
+      training: board.training,
+      grid: board.grid.map((line: Cell[]) => {
+        return line.map((cell: Cell) => {
+          return {
+            row: cell.row,
+            column: cell.column,
+            piece: cell.piece
+          }
+        })
+      }),
+      turn: board.turn,
+      animals: [...board.animals],
+      playerAnimals: {
+        [Player.Player1]: [...board.playerAnimals[Player.Player1]],
+        [Player.Player2]: [...board.playerAnimals[Player.Player2]]
+      }
+    }
   }
 
   public initFromBoard(board: Board): Board {
@@ -73,6 +131,7 @@ class BoardService {
   public async initBoardAndLocalSave(user: string): Promise<Board | null> {
     return await repository.saveLocal(this.initBoard(user))
   }
+
   public async initBoardAndSave(user: string): Promise<Board | null> {
     return await repository.save(this.initBoard(user))
   }
@@ -201,6 +260,7 @@ class BoardService {
     })
     return possibleCells
   }
+
   /**
    * Move piece in the board givent in parameters,
    * handles all side effects.

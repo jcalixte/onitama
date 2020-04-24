@@ -4,6 +4,7 @@ import { Player } from '@/enums/Player'
 import { Row } from '@/enums/Row'
 import { Cell, Grid } from '@/models/Cell'
 import { Piece } from '@/models/Piece'
+import { MonitorTime } from '@/time-logger/performance-intercepor'
 
 class GridService {
   public newCell(row: Row, column: Column, addPiece = true): Cell {
@@ -72,6 +73,7 @@ class GridService {
     return grid.flat().filter((cell) => cell.piece?.player === player)
   }
 
+  @MonitorTime('movePieceInBoard')
   public getPieceFromGrid(row: Row, column: Column, grid: Grid) {
     const cell =
       grid.flat().find((cell) => cell.row === row && cell.column === column) ??
@@ -86,6 +88,7 @@ class GridService {
     return a.row === b.row && a.column === b.column
   }
 
+  @MonitorTime('movePieceInBoard')
   public getCellFromGrid(cell: Cell, grid: Grid) {
     for (const row of grid) {
       for (const c of row) {
