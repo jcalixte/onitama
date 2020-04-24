@@ -3,13 +3,13 @@ import { TimeLogger } from '@/time-logger/time-logger'
 const timeLoggers: Map<string, TimeLogger> = new Map<string, TimeLogger>()
 
 export function MainLogMethod(
-  target: any,
+  target: unknown,
   name: string,
   descriptor: PropertyDescriptor
 ) {
   const original = descriptor.value
   if (typeof original === 'function') {
-    descriptor.value = function(...args: Array<any>) {
+    descriptor.value = function(...args: Array<unknown>) {
       try {
         return original.apply(this, args)
       } finally {
@@ -22,10 +22,10 @@ export function MainLogMethod(
 }
 
 export function MonitorTime(parent?: string) {
-  return (target: any, name: string, descriptor: PropertyDescriptor) => {
+  return (target: unknown, name: string, descriptor: PropertyDescriptor) => {
     const original = descriptor.value
     if (typeof original === 'function') {
-      descriptor.value = function(...args: Array<any>) {
+      descriptor.value = function(...args: Array<unknown>) {
         let newTimeLogger
         if (parent && timeLoggers.has(parent)) {
           const parentLogger: TimeLogger = timeLoggers.get(parent) as TimeLogger
