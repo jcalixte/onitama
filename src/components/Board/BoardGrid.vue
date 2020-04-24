@@ -30,7 +30,7 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { Grid, Cell } from '@/models/Cell'
+import { Cell, Grid } from '@/models/Cell'
 import BoardCell from '@/components/Board/BoardCell.vue'
 import { getPossibleCellsFromMovesAndGrid } from '@/services/board.service'
 import { getMovesFromAnimal } from '@/services/card.service'
@@ -40,7 +40,7 @@ import { MovePiece } from '@/models/MovePiece'
 import { Column } from '@/enums/Column'
 import { Player } from '@/enums/Player'
 import { Board } from '@/models/Board'
-import { ZhugeMove } from '@/bots/zhuge-liang.bot'
+import { zhugeMove } from '@/bots/zhuge-liang.bot'
 
 @Component({
   components: {
@@ -80,7 +80,7 @@ export default class BoardGrid extends Vue {
   private async zhuge() {
     this.zhugeThinking = true
     if (!this.winner && this.turn && this.board) {
-      const nextMove = await ZhugeMove(this.turn, this.board)
+      const nextMove = await zhugeMove.move(this.turn, this.board)
       await this.movePiece(nextMove)
     }
     this.zhugeThinking = false

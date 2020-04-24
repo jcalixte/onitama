@@ -47,8 +47,8 @@ import {
 } from '@/services/board.service'
 import { repository } from '@/services/repository'
 import { Board } from '@/models/Board'
-import { ZhugeMove } from '@/bots/zhuge-liang.bot'
-import { MovePiece } from '../../models/MovePiece'
+import { MovePiece } from '@/models/MovePiece'
+import { zhugeMove, ZhugeMove } from '@/bots/zhuge-liang.bot'
 
 @Component({
   components: {
@@ -92,7 +92,7 @@ export default class BoardTraining extends Vue {
       if (!board) {
         break
       }
-      const pieceToMove: MovePiece = await ZhugeMove(board.turn, board)
+      const pieceToMove: MovePiece = await zhugeMove.move(board.turn, board)
       board =
         !pieceToMove.start || !pieceToMove.end
           ? exchangeCard(board, pieceToMove)
