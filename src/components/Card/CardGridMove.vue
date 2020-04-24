@@ -19,7 +19,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { CardMove } from '@/models/CardMove'
 import { Grid, Cell } from '@/models/Cell'
-import { getPossibleCellsFromMoves } from '@/services/board.service'
+import { boardService } from '@/services/board.service'
 import { createGrid, areCellEquals } from '@/services/grid.service'
 import { Row } from '@/enums/Row'
 import { Column } from '@/enums/Column'
@@ -41,7 +41,7 @@ export default class CardGridMove extends Vue {
   }
 
   private get possibleMoveCells(): Cell[] {
-    return getPossibleCellsFromMoves(
+    return boardService.getPossibleCellsFromMoves(
       {
         row: Row.Three,
         column: Column.C,

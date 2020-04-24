@@ -39,12 +39,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import BoardTrainingList from '@/components/Board/BoardTrainingList.vue'
-import {
-  initBoard,
-  getWinner,
-  exchangeCard,
-  movePieceInBoard
-} from '@/services/board.service'
+import { boardService } from '@/services/board.service'
 import { repository } from '@/services/repository'
 import { Board } from '@/models/Board'
 import { ZhugeMove } from '@/bots/zhuge-liang.bot'
@@ -82,21 +77,21 @@ export default class BoardTraining extends Vue {
   }
 
   private async trainOneBoard() {
-    let board: Board | null = initBoard(this.user)
+    let board: Board | null = boardService.initBoard(this.user)
     if (!board) {
       return
     }
     board.training = 'hunt'
 
-    while (board && !getWinner(board.grid)) {
+    while (board && !boardService.getWinner(board.grid)) {
       if (!board) {
         break
       }
       const pieceToMove: MovePiece = await ZhugeMove(board.turn, board)
       board =
         !pieceToMove.start || !pieceToMove.end
-          ? exchangeCard(board, pieceToMove)
-          : movePieceInBoard(board, pieceToMove)
+          ? boardService.exchangeCard(board, pieceToMove)
+          : boardService.movePieceInBoard(board, pieceToMove)
     }
     if (board) {
       await repository.save(board)

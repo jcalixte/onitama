@@ -32,7 +32,7 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { Grid, Cell } from '@/models/Cell'
 import BoardCell from '@/components/Board/BoardCell.vue'
-import { getPossibleCellsFromMovesAndGrid } from '@/services/board.service'
+import { boardService } from '@/services/board.service'
 import { getMovesFromAnimal } from '@/services/card.service'
 import { areCellEquals } from '@/services/grid.service'
 import { Animal } from '@/enums/Animal'
@@ -113,7 +113,7 @@ export default class BoardGrid extends Vue {
       return []
     }
     const moves = getMovesFromAnimal(this.selectedAnimal, this.turn)
-    return getPossibleCellsFromMovesAndGrid(
+    return boardService.getPossibleCellsFromMovesAndGrid(
       this.selectedCell,
       this.grid,
       ...moves

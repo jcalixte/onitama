@@ -66,7 +66,7 @@ import { Component, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { Player } from '@/enums/Player'
 import { Revenge } from '@/models/Revenge'
-import { initBoardAndSave } from '@/services/board.service'
+import { boardService } from '@/services/board.service'
 
 @Component
 export default class BoardRevenge extends Vue {
@@ -94,7 +94,7 @@ export default class BoardRevenge extends Vue {
   private async answer(answer: boolean) {
     let nextBoardId: string | null = null
     if (answer) {
-      const nextBoard = await initBoardAndSave(this.user)
+      const nextBoard = await boardService.initBoardAndSave(this.user)
       if (nextBoard) {
         nextBoardId = nextBoard._id || null
       }

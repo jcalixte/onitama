@@ -4,12 +4,7 @@ import { Board } from '@/models/Board'
 import { CardMove } from '@/models/CardMove'
 import { DecisionTree } from '@/models/DecisionTree'
 import { MovePiece } from '@/models/MovePiece'
-import {
-  exchangeCard,
-  getCellStream,
-  getPossibleCellsFromMovesAndGrid,
-  movePieceInBoard
-} from '@/services/board.service'
+import { boardService } from '@/services/board.service'
 import { getMovesFromAnimal } from '@/services/card.service'
 import { areCellEquals, getPlayerPieces } from '@/services/grid.service'
 import { randomMove } from './random.bot'
@@ -40,7 +35,7 @@ const getPlayerMoves = (player: Player, board: Board): MovePiece[] => {
     }
 
     for (const piece of pieces) {
-      const possibleCells = getPossibleCellsFromMovesAndGrid(
+      const possibleCells = boardService.getPossibleCellsFromMovesAndGrid(
         piece,
         board.grid,
         ...moves
@@ -74,7 +69,7 @@ const getMoveScore = (player: Player, move: MovePiece) => {
 
   // Way of Stream
   if (move.start?.piece?.type === PieceType.Master) {
-    const streamCell = getCellStream(player)
+    const streamCell = boardService.getCellStream(player)
     if (areCellEquals(move.end, streamCell)) {
       return VICTORY_SCORE
     }
@@ -130,8 +125,8 @@ const buildDecisionTrees = (
   for (const move of moves) {
     const newBoard =
       !move.start || !move.end
-        ? exchangeCard(board, move)
-        : movePieceInBoard(board, move)
+        ? boardService.exchangeCard(board, move)
+        : boardService.movePieceInBoard(board, move)
     if (!newBoard) {
       return []
     }
