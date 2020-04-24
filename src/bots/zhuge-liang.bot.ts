@@ -6,7 +6,7 @@ import { DecisionTree } from '@/models/DecisionTree'
 import { MovePiece } from '@/models/MovePiece'
 import { boardService } from '@/services/board.service'
 import { getMovesFromAnimal } from '@/services/card.service'
-import { areCellEquals, getPlayerPieces } from '@/services/grid.service'
+import { gridService } from '@/services/grid.service'
 import { randomMove } from './random.bot'
 
 const MAX_DEPTH = 4
@@ -22,7 +22,7 @@ const cardMovesFromAnimals: { [key: string]: CardMove[] } = {}
 
 const getPlayerMoves = (player: Player, board: Board): MovePiece[] => {
   const animals = board.playerAnimals[player]
-  const pieces = getPlayerPieces(player, board.grid)
+  const pieces = gridService.getPlayerPieces(player, board.grid)
 
   const playerMoves: MovePiece[] = []
 
@@ -70,7 +70,7 @@ const getMoveScore = (player: Player, move: MovePiece) => {
   // Way of Stream
   if (move.start?.piece?.type === PieceType.Master) {
     const streamCell = boardService.getCellStream(player)
-    if (areCellEquals(move.end, streamCell)) {
+    if (gridService.areCellEquals(move.end, streamCell)) {
       return VICTORY_SCORE
     }
   }

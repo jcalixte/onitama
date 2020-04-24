@@ -8,11 +8,7 @@ import { CardMove } from '@/models/CardMove'
 import { Cell, Grid } from '@/models/Cell'
 import { MovePiece } from '@/models/MovePiece'
 import { getCardFromAnimal, selectAnimals } from '@/services/card.service'
-import {
-  createGrid,
-  getPieceFromGrid,
-  getCellFromGrid
-} from '@/services/grid.service'
+import { gridService } from '@/services/grid.service'
 import { repository } from '@/services/repository'
 
 class BoardService {
@@ -24,7 +20,7 @@ class BoardService {
   }
 
   public initFromBoard(board: Board): Board {
-    const grid = createGrid()
+    const grid = gridService.createGrid()
     const cards = board.animals.map(getCardFromAnimal) as Card[]
     const [firstCard, secondCard, thirdCard, fourthCard, neutralCard] = cards
     const player1Animals = [firstCard, secondCard].map((card) => card.animal)
@@ -42,7 +38,7 @@ class BoardService {
   }
 
   public initBoard(user: string): Board {
-    const grid = createGrid()
+    const grid = gridService.createGrid()
 
     const cards = selectAnimals()
     const [firstCard, secondCard, thirdCard, fourthCard, neutralCard] = cards
@@ -214,7 +210,7 @@ class BoardService {
     board = this.cloneBoard(board) as Board
     if (movePiece.start && movePiece.end) {
       if (!movePiece.start.piece) {
-        const piece = getPieceFromGrid(
+        const piece = gridService.getPieceFromGrid(
           movePiece.start.row,
           movePiece.start.column,
           board.grid
@@ -234,8 +230,14 @@ class BoardService {
       }
       // Otherwise we can move the piece and swap the player card with
       // the neutral card
-      const startCellFromGrid = getCellFromGrid(movePiece.start, board.grid)
-      const endCellFromGrid = getCellFromGrid(movePiece.end, board.grid)
+      const startCellFromGrid = gridService.getCellFromGrid(
+        movePiece.start,
+        board.grid
+      )
+      const endCellFromGrid = gridService.getCellFromGrid(
+        movePiece.end,
+        board.grid
+      )
 
       if (!startCellFromGrid || !endCellFromGrid) {
         return null

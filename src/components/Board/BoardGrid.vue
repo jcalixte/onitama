@@ -34,7 +34,7 @@ import { Grid, Cell } from '@/models/Cell'
 import BoardCell from '@/components/Board/BoardCell.vue'
 import { boardService } from '@/services/board.service'
 import { getMovesFromAnimal } from '@/services/card.service'
-import { areCellEquals } from '@/services/grid.service'
+import { gridService } from '@/services/grid.service'
 import { Animal } from '@/enums/Animal'
 import { MovePiece } from '@/models/MovePiece'
 import { Column } from '@/enums/Column'
@@ -104,7 +104,7 @@ export default class BoardGrid extends Vue {
 
   private isValidMove(cell: Cell): boolean {
     return this.validCellMoves.some((validCell) =>
-      areCellEquals(validCell, cell)
+      gridService.areCellEquals(validCell, cell)
     )
   }
 
