@@ -3,42 +3,48 @@ function getCurrentTime() {
 }
 
 export class TimeLogger {
-  private readonly identifier: string
+  public readonly identifier: string
+  private readonly parent: TimeLogger | null
   private refTime = 0
   private time = 0
   private innerTimes: Map<string, TimeLogger> = new Map<string, TimeLogger>()
 
-  constructor(identifier: string) {
+  constructor(identifier: string, parent: TimeLogger | null) {
     this.identifier = identifier
+    this.parent = parent
   }
 
   public initTime(): void {
     this.refTime = getCurrentTime()
   }
 
-  public addInnerLogger(identifier: string): TimeLogger {
-    if (!this.innerTimes.has(identifier)) {
-      this.innerTimes.set(identifier, new TimeLogger(identifier))
+  public addInnerLogger(childIdentifier: string): TimeLogger {
+    if (!this.innerTimes.has(childIdentifier)) {
+      this.innerTimes.set(
+        childIdentifier,
+        new TimeLogger(childIdentifier, this)
+      )
     }
-    return this.innerTimes.get(identifier) as TimeLogger
+    return this.innerTimes.get(childIdentifier) as TimeLogger
   }
 
   public addTime(): void {
-    this.time = this.time + getCurrentTime() - this.refTime
+    this.time += getCurrentTime() - this.refTime
   }
 
-  public logAllTimes(refTime?: number, level = 0) {
+  public logAllTimes(refTime?: number) {
     const globalTime = refTime ? refTime : this.time
-    this.logTime(globalTime, level)
+    this.logTime(globalTime)
     this.innerTimes.forEach((value: TimeLogger) => {
-      value.logAllTimes(globalTime, level + 1)
+      value.logAllTimes(globalTime)
     })
   }
 
-  public logTime(refTime: number, level: number) {
+  public logTime(refTime: number) {
     const percentage: string = ((this.time / refTime) * 100).toFixed(2) + '%'
+    const level = this.getLevel()
     const toPrint =
-      ' '.repeat(level) +
+      '  '.repeat(level) +
       ' ' +
       this.identifier +
       ' ' +
@@ -46,5 +52,21 @@ export class TimeLogger {
       ' ' +
       percentage
     console.log(toPrint)
+  }
+
+  public getCompleteIdentifier(): string {
+    if (this.parent) {
+      return this.parent?.getCompleteIdentifier() + '.' + this.identifier
+    } else {
+      return this.identifier
+    }
+  }
+
+  public getLevel(): number {
+    if (this.parent) {
+      return this.parent?.getLevel() + 1
+    } else {
+      return 0
+    }
   }
 }

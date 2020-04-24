@@ -21,25 +21,31 @@ export function MainLogMethod(
   return descriptor
 }
 
-export function MonitorTime(parent?: string) {
-  return (target: unknown, name: string, descriptor: PropertyDescriptor) => {
+export function MonitorTime(parentMethod = '') {
+  return (
+    target: unknown,
+    currentMethod: string,
+    descriptor: PropertyDescriptor
+  ) => {
     const original = descriptor.value
     if (typeof original === 'function') {
       descriptor.value = function(...args: Array<unknown>) {
         let newTimeLogger
-        if (parent && timeLoggers.has(parent)) {
-          const parentLogger: TimeLogger = timeLoggers.get(parent) as TimeLogger
-          newTimeLogger = parentLogger.addInnerLogger(name)
-        } else {
-          newTimeLogger = new TimeLogger(name)
-        }
-        if (!timeLoggers.has(name)) {
-          timeLoggers.set(name, newTimeLogger)
+        if (!timeLoggers.has(currentMethod)) {
+          if (parentMethod && timeLoggers.has(parentMethod)) {
+            const parentLogger: TimeLogger = timeLoggers.get(
+              parentMethod
+            ) as TimeLogger
+            newTimeLogger = parentLogger.addInnerLogger(currentMethod)
+          } else {
+            newTimeLogger = new TimeLogger(currentMethod, null)
+          }
+          timeLoggers.set(currentMethod, newTimeLogger)
         }
 
-        timeLoggers.get(name)?.initTime()
+        timeLoggers.get(currentMethod)?.initTime()
         const res = original.apply(this, args)
-        timeLoggers.get(name)?.addTime()
+        timeLoggers.get(currentMethod)?.addTime()
         return res
       }
     }

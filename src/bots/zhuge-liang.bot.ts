@@ -39,8 +39,6 @@ class ZhugeMove {
       (tree) => tree.score === maxScore
     )
 
-    //console.table(bestDecisionTrees)
-
     const bestDecision =
       maxScore < 0
         ? this.getLongestTree(bestDecisionTrees) // Delay defeat
@@ -81,7 +79,8 @@ class ZhugeMove {
     return playerMoves
   }
 
-  private getMoveScore = (player: Player, move: MovePiece) => {
+  @MonitorTime('buildDecisionTrees')
+  private getMoveScore(player: Player, move: MovePiece) {
     if (!move.end) {
       return 0
     }
@@ -107,7 +106,8 @@ class ZhugeMove {
     return 0
   }
 
-  private getTreeScore = (player: Player, tree: DecisionTree): number => {
+  @MonitorTime('move')
+  private getTreeScore(player: Player, tree: DecisionTree): number {
     if (tree.nodes.length) {
       // Minimal
       if (tree.depth % 2 === 0) {
@@ -186,7 +186,8 @@ class ZhugeMove {
     return Math.min(...tree.nodes.map((node) => this.getMinimalDepth(node) + 1))
   }
 
-  private getLongestTree = (trees: DecisionTree[]): DecisionTree | null => {
+  @MonitorTime('move')
+  private getLongestTree(trees: DecisionTree[]): DecisionTree | null {
     const treesWithDepth = trees.map((tree) => ({
       tree,
       depth: this.getMinimalDepth(tree)
@@ -201,7 +202,8 @@ class ZhugeMove {
     )
   }
 
-  private getShortestTree = (trees: DecisionTree[]): DecisionTree | null => {
+  @MonitorTime('move')
+  private getShortestTree(trees: DecisionTree[]): DecisionTree | null {
     const treesWithDepth = trees.map((tree) => ({
       tree,
       depth: this.getMinimalDepth(tree)
@@ -216,4 +218,5 @@ class ZhugeMove {
     )
   }
 }
+
 export const zhugeMove = new ZhugeMove()

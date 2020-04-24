@@ -10,8 +10,10 @@ import { MovePiece } from '@/models/MovePiece'
 import { getCardFromAnimal, selectAnimals } from '@/services/card.service'
 import { gridService } from '@/services/grid.service'
 import { repository } from '@/services/repository'
+import { MonitorTime } from '@/time-logger/performance-intercepor'
 
 class BoardService {
+  @MonitorTime('movePieceInBoard')
   public cloneBoard(board: Board | null): Board | null {
     if (!board) {
       return null
@@ -206,6 +208,7 @@ class BoardService {
    * @param movePiece desired move to do
    * @param force useful when the player is forced to skip. Also for rewind.
    */
+  @MonitorTime('buildDecisionTrees')
   public movePieceInBoard(board: Board, movePiece: MovePiece, force = false) {
     board = this.cloneBoard(board) as Board
     if (movePiece.start && movePiece.end) {
