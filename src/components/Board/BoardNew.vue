@@ -15,8 +15,8 @@ import { Board } from '../../models/Board'
 
 @Component
 export default class BoardNew extends Vue {
-  @Prop({ type: Boolean, default: false })
-  private playAgainstAI!: boolean
+  @Prop({ type: String, default: '' })
+  private playAgainstAI!: 'zhuge' | 'sima' | ''
   @Action
   private initNewBoard!: () => Promise<void>
   @Getter
@@ -28,12 +28,24 @@ export default class BoardNew extends Vue {
       return
     }
     if (this.playAgainstAI) {
-      this.$router.push({
-        name: 'BoardZhuge',
-        params: {
-          id: this.board._id
-        }
-      })
+      switch (this.playAgainstAI) {
+        case 'zhuge':
+          this.$router.push({
+            name: 'BoardZhuge',
+            params: {
+              id: this.board._id
+            }
+          })
+          break
+        case 'sima':
+          this.$router.push({
+            name: 'BoardSima',
+            params: {
+              id: this.board._id
+            }
+          })
+          break
+      }
     } else {
       this.$router.push({
         name: 'Board',

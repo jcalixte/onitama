@@ -86,6 +86,10 @@ class GridService {
     return cell.piece
   }
 
+  public getDistanceBetweenCells(a: Cell, b: Cell) {
+    return Math.abs(a.columnIndex - b.columnIndex + a.rowIndex - b.rowIndex)
+  }
+
   public areCellEquals(a: Cell, b: Cell) {
     return a.rowIndex === b.rowIndex && a.columnIndex === b.columnIndex
   }

@@ -12,6 +12,8 @@ export class BoardUtils {
     }
 
     return {
+      _id: board._id,
+      _rev: board._rev,
       turns: board.turns.map((movePiece: MovePiece) => {
         return {
           player: movePiece.player,

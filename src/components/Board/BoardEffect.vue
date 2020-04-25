@@ -54,8 +54,8 @@ export default class BoardEffect extends Vue {
   private readonly displayModal!: boolean
   @Prop({ type: Boolean, default: true })
   private readonly endSound!: boolean
-  @Prop({ type: Boolean, default: false })
-  private readonly bot!: boolean
+  @Prop({ type: String, default: '' })
+  private readonly bot!: 'zhuge' | 'sima' | ''
   @Getter
   private readonly turns!: MovePiece[]
   @Getter
