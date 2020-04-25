@@ -11,74 +11,9 @@ import { getCardFromAnimal, selectAnimals } from '@/services/card.service'
 import { gridService } from '@/services/grid.service'
 import { repository } from '@/services/repository'
 import { MonitorTime } from '@/time-logger/performance-intercepor'
+import { BoarUtils } from '@/utils/board.utils'
 
 class BoardService {
-  @MonitorTime('movePieceInBoard')
-  public cloneBoard(board: Board | null): Board | null {
-    if (!board) {
-      return null
-    }
-
-    return {
-      turns: board.turns.map((movePiece: MovePiece) => {
-        return {
-          player: movePiece.player,
-          start: movePiece.start
-            ? {
-                row: movePiece.start.row,
-                column: movePiece.start.column,
-                piece: movePiece.start.piece
-                  ? {
-                      type: movePiece.start.piece.type,
-                      player: movePiece.start.piece.player
-                    }
-                  : null
-              }
-            : null,
-          end: movePiece.end
-            ? {
-                row: movePiece.end.row,
-                column: movePiece.end.column,
-                piece: movePiece.end.piece
-                  ? {
-                      type: movePiece.end.piece.type,
-                      player: movePiece.end.piece.player
-                    }
-                  : null
-              }
-            : null,
-          animal: movePiece.animal
-        }
-      }),
-      date: board.date,
-      users: {
-        [Player.Player1]: board.users[Player.Player1],
-        [Player.Player2]: board.users[Player.Player2]
-      },
-      revenge: {
-        ask: board.revenge.ask,
-        answer: board.revenge.answer,
-        nextBoardId: board.revenge.nextBoardId
-      },
-      training: board.training,
-      grid: board.grid.map((line: Cell[]) => {
-        return line.map((cell: Cell) => {
-          return {
-            row: cell.row,
-            column: cell.column,
-            piece: cell.piece
-          }
-        })
-      }),
-      turn: board.turn,
-      animals: [...board.animals],
-      playerAnimals: {
-        [Player.Player1]: [...board.playerAnimals[Player.Player1]],
-        [Player.Player2]: [...board.playerAnimals[Player.Player2]]
-      }
-    }
-  }
-
   public initFromBoard(board: Board): Board {
     const grid = gridService.createGrid()
     const cards = board.animals.map(getCardFromAnimal) as Card[]
@@ -176,7 +111,7 @@ class BoardService {
     movePiece: MovePiece,
     force = false
   ): Board | null {
-    board = this.cloneBoard(board)
+    board = BoarUtils.cloneBoard(board)
     if (!board) {
       return null
     }
@@ -270,7 +205,7 @@ class BoardService {
    */
   @MonitorTime('buildDecisionTrees')
   public movePieceInBoard(board: Board, movePiece: MovePiece, force = false) {
-    board = this.cloneBoard(board) as Board
+    board = BoarUtils.cloneBoard(board) as Board
     if (movePiece.start && movePiece.end) {
       if (!movePiece.start.piece) {
         const piece = gridService.getPieceFromGrid(

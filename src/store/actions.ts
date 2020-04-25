@@ -10,6 +10,7 @@ import {
   UPDATE_BOARD
 } from '@/store/mutations'
 import { State } from '@/store/state'
+import { BoarUtils } from '@/utils/board.utils'
 import { v4 as uuid } from 'uuid'
 import { ActionTree } from 'vuex'
 
@@ -55,7 +56,7 @@ export const actions: ActionTree<State, State> = {
     }
   },
   async trainingData({ state, commit }) {
-    const board = boardService.cloneBoard(state.board)
+    const board = BoarUtils.cloneBoard(state.board)
     if (!board) {
       return
     }
@@ -64,7 +65,7 @@ export const actions: ActionTree<State, State> = {
     commit(UPDATE_BOARD, newBoard)
   },
   async askRevenge({ state, commit }, ask: boolean) {
-    const board = boardService.cloneBoard(state.board)
+    const board = BoarUtils.cloneBoard(state.board)
     if (!board) {
       return
     }
@@ -78,7 +79,7 @@ export const actions: ActionTree<State, State> = {
     { state },
     { answer, nextBoardId }: { answer: boolean; nextBoardId: string | null }
   ) {
-    const board = boardService.cloneBoard(state.board)
+    const board = BoarUtils.cloneBoard(state.board)
     if (!board) {
       return
     }
