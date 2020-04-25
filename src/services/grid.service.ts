@@ -26,7 +26,7 @@ class GridService {
       }
     }
 
-    return { row, column, piece }
+    return { rowIndex: row, columnIndex: column, piece }
   }
 
   public createGrid(addPiece = true): Grid {
@@ -74,9 +74,11 @@ class GridService {
   }
 
   @MonitorTime('movePieceInBoard')
-  public getPieceFromGrid(row: Row, column: Column, grid: Grid) {
+  public getPieceFromGrid(row: number, column: number, grid: Grid) {
     const cell =
-      grid.flat().find((cell) => cell.row === row && cell.column === column) ??
+      grid
+        .flat()
+        .find((cell) => cell.rowIndex === row && cell.columnIndex === column) ??
       null
     if (!cell) {
       return null
@@ -85,20 +87,12 @@ class GridService {
   }
 
   public areCellEquals(a: Cell, b: Cell) {
-    return a.row === b.row && a.column === b.column
+    return a.rowIndex === b.rowIndex && a.columnIndex === b.columnIndex
   }
 
   @MonitorTime('movePieceInBoard')
   public getCellFromGrid(cell: Cell, grid: Grid) {
-    for (const row of grid) {
-      for (const c of row) {
-        if (this.areCellEquals(cell, c)) {
-          return c
-        }
-      }
-    }
-
-    return null
+    return grid[cell.rowIndex][cell.columnIndex]
   }
 
   public getPlayerCells(player: Player, grid: Grid) {

@@ -91,8 +91,8 @@ export default class BoardCell extends Vue {
 
   private get isStreamCell() {
     return (
-      (this.cell.row === Row.One || this.cell.row === Row.Five) &&
-      this.cell.column === Column.C
+      (this.cell.rowIndex === Row.One || this.cell.rowIndex === Row.Five) &&
+      this.cell.columnIndex === Column.C
     )
   }
 }

@@ -1,7 +1,7 @@
 export enum Row {
-  One,
-  Two,
-  Three,
+  Five,
   Four,
-  Five
+  Three,
+  Two,
+  One
 }

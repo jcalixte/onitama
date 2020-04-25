@@ -1,11 +1,12 @@
-import { Row } from '@/enums/Row'
-import { Column } from '@/enums/Column'
 import { Piece } from '@/models/Piece'
+
+export const MAX_COLUMN = 4
+export const MAX_ROW = 4
 
 export type Grid = Cell[][]
 
 export interface Cell {
-  row: Row
-  column: Column
+  rowIndex: number
+  columnIndex: number
   piece: Piece | null
 }

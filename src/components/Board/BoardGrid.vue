@@ -6,7 +6,7 @@
     <table>
       <tr v-for="(row, r) in grid" :key="r">
         <td v-if="true" class="cell-number">
-          {{ row[0].row + 1 }}
+          {{ row.length - row[0].rowIndex }}
         </td>
         <td v-for="(cell, c) in row" :key="c">
           <BoardCell
@@ -20,7 +20,7 @@
       <tr v-if="true">
         <td></td>
         <td v-for="(cell, c) in grid[0]" :key="c" class="cell-number">
-          {{ column[cell.column] }}
+          {{ column[cell.columnIndex] }}
         </td>
       </tr>
     </table>

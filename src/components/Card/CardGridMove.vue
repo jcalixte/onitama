@@ -31,7 +31,7 @@ export default class CardGridMove extends Vue {
   private grid: Grid = gridService.createGrid(false)
 
   private isCenter(cell: Cell) {
-    return cell.row === Row.Three && cell.column === Column.C
+    return cell.rowIndex === Row.Three && cell.columnIndex === Column.C
   }
 
   private isPossibleMoveCell(cell: Cell): boolean {
@@ -43,8 +43,8 @@ export default class CardGridMove extends Vue {
   private get possibleMoveCells(): Cell[] {
     return boardService.getPossibleCellsFromMoves(
       {
-        row: Row.Three,
-        column: Column.C,
+        rowIndex: Row.Three,
+        columnIndex: Column.C,
         piece: null
       },
       ...this.moves

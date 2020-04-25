@@ -9,9 +9,11 @@ export const getRandomItemFromArray = <T>(array: T[]): [T, T[]] => {
 
 export const getVisibleMove = (move: MovePiece): string => {
   const start = move.start
-    ? `${Column[move.start.column]}${move.start.row + 1}`
+    ? `${Column[move.start.columnIndex]}${move.start.rowIndex + 1}`
     : ''
-  const end = move.end ? `${Column[move.end.column]}${move.end.row + 1}` : ''
+  const end = move.end
+    ? `${Column[move.end.columnIndex]}${move.end.rowIndex + 1}`
+    : ''
 
   return `${start} ${end}`
 }

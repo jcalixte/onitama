@@ -5,7 +5,7 @@ import { Row } from '@/enums/Row'
 import { Board } from '@/models/Board'
 import { Card } from '@/models/Card'
 import { CardMove } from '@/models/CardMove'
-import { Cell, Grid } from '@/models/Cell'
+import { Cell, Grid, MAX_COLUMN, MAX_ROW } from '@/models/Cell'
 import { MovePiece } from '@/models/MovePiece'
 import { getCardFromAnimal, selectAnimals } from '@/services/card.service'
 import { gridService } from '@/services/grid.service'
@@ -25,8 +25,8 @@ class BoardService {
           player: movePiece.player,
           start: movePiece.start
             ? {
-                row: movePiece.start.row,
-                column: movePiece.start.column,
+                rowIndex: movePiece.start.rowIndex,
+                columnIndex: movePiece.start.columnIndex,
                 piece: movePiece.start.piece
                   ? {
                       type: movePiece.start.piece.type,
@@ -37,8 +37,8 @@ class BoardService {
             : null,
           end: movePiece.end
             ? {
-                row: movePiece.end.row,
-                column: movePiece.end.column,
+                rowIndex: movePiece.end.rowIndex,
+                columnIndex: movePiece.end.columnIndex,
                 piece: movePiece.end.piece
                   ? {
                       type: movePiece.end.piece.type,
@@ -64,8 +64,8 @@ class BoardService {
       grid: board.grid.map((line: Cell[]) => {
         return line.map((cell: Cell) => {
           return {
-            row: cell.row,
-            column: cell.column,
+            rowIndex: cell.rowIndex,
+            columnIndex: cell.columnIndex,
             piece: cell.piece
           }
         })
@@ -164,19 +164,23 @@ class BoardService {
 
   public isInBoard(cell: Cell) {
     return (
-      cell.column >= Column.A &&
-      cell.column <= Column.E &&
-      cell.row >= Row.One &&
-      cell.row <= Row.Five
+      cell.columnIndex >= 0 &&
+      cell.columnIndex <= MAX_COLUMN &&
+      cell.rowIndex >= 0 &&
+      cell.rowIndex <= MAX_ROW
     )
   }
 
+  @MonitorTime('movePieceInBoard')
   public exchangeCard(
     board: Board | null,
     movePiece: MovePiece,
-    force = false
+    force = false,
+    pure = true
   ): Board | null {
-    board = this.cloneBoard(board)
+    if (pure) {
+      board = this.cloneBoard(board)
+    }
     if (!board) {
       return null
     }
@@ -217,8 +221,8 @@ class BoardService {
     const possibleCells: Cell[] = []
     moves.forEach((move) => {
       const possibleCell: Cell =
-        grid[Row.Five - startCell.row - move.vertical]?.[
-          startCell.column + move.horizontal
+        grid[startCell.rowIndex + move.vertical]?.[
+          startCell.columnIndex + move.horizontal
         ]
 
       if (!possibleCell) {
@@ -242,10 +246,10 @@ class BoardService {
     ...moves: CardMove[]
   ): Cell[] {
     const possibleCells: Cell[] = []
-    moves.forEach((move) => {
+    moves.forEach((move: CardMove) => {
       const possibleCell: Cell = {
-        column: startCell.column + move.horizontal,
-        row: startCell.row + move.vertical,
+        columnIndex: startCell.columnIndex + move.horizontal,
+        rowIndex: startCell.rowIndex + move.vertical,
         piece: null
       }
 
@@ -274,8 +278,8 @@ class BoardService {
     if (movePiece.start && movePiece.end) {
       if (!movePiece.start.piece) {
         const piece = gridService.getPieceFromGrid(
-          movePiece.start.row,
-          movePiece.start.column,
+          movePiece.start.rowIndex,
+          movePiece.start.columnIndex,
           board.grid
         )
         if (piece) {
@@ -309,7 +313,7 @@ class BoardService {
       startCellFromGrid.piece = null
     }
 
-    return this.exchangeCard(board, movePiece, force)
+    return this.exchangeCard(board, movePiece, force, false)
   }
 
   public rewindMovePiece(
@@ -425,14 +429,14 @@ class BoardService {
     switch (player) {
       case Player.Player1:
         return {
-          column: Column.C,
-          row: Row.Five,
+          columnIndex: Column.C,
+          rowIndex: Row.One,
           piece: null
         }
       case Player.Player2:
         return {
-          column: Column.C,
-          row: Row.One,
+          columnIndex: Column.C,
+          rowIndex: Row.Five,
           piece: null
         }
     }
