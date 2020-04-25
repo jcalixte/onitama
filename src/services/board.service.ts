@@ -109,9 +109,12 @@ class BoardService {
   public exchangeCard(
     board: Board | null,
     movePiece: MovePiece,
-    force = false
+    force = false,
+    pure = true
   ): Board | null {
-    board = BoarUtils.cloneBoard(board)
+    if (pure) {
+      board = BoarUtils.cloneBoard(board)
+    }
     if (!board) {
       return null
     }
@@ -244,7 +247,7 @@ class BoardService {
       startCellFromGrid.piece = null
     }
 
-    return this.exchangeCard(board, movePiece, force)
+    return this.exchangeCard(board, movePiece, force, false)
   }
 
   public rewindMovePiece(
