@@ -1,5 +1,5 @@
 <template>
-  <div class="board-zhuge" v-if="board" :key="id">
+  <div class="board-sima" v-if="board" :key="id">
     <router-link
       v-if="winner"
       class="button is-primary is-light"
@@ -10,7 +10,7 @@
     <br />
     <div class="columns card-board">
       <div class="column">
-        <BoardCard :player="player2" label="Zhuge Liang's" />
+        <BoardCard :player="player2" label="Sima Yi's" />
       </div>
     </div>
     <div class="columns play-board">
@@ -23,7 +23,7 @@
         </h3>
         <h3 v-else-if="turn" class="subtitle is-4">{{ turnLabel }}'s turn</h3>
         <BoardHistory />
-        <BoardGrid play-against-a-i="zhuge" :key="id" />
+        <BoardGrid play-against-a-i="sima" :key="id" />
       </div>
       <div class="column is-half neutral-card-column" v-if="!isPlayer1">
         <h5 class="subtitle is-5 card-owner">Neutral card</h5>
@@ -35,7 +35,7 @@
         <BoardCard :player="player1" />
       </div>
     </div>
-    <BoardEffect bot="zhuge" />
+    <BoardEffect bot="sima" />
   </div>
 </template>
 
@@ -61,7 +61,7 @@ import { busService } from '@/services/bus.service'
     BoardEffect
   }
 })
-export default class BoardZhuge extends Vue {
+export default class BoardSima extends Vue {
   @Prop({ type: String, required: true })
   private id!: string
   @Getter
@@ -117,7 +117,7 @@ export default class BoardZhuge extends Vue {
 </script>
 
 <style scoped lang="scss">
-.board-zhuge {
+.board-sima {
   .neutral-card-column {
     display: flex;
     flex-direction: column;

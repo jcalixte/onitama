@@ -49,7 +49,12 @@ export const actions: ActionTree<State, State> = {
     const board =
       !pieceToMove.start || !pieceToMove.end
         ? await boardService.exchangeCardAndSave(state.board, pieceToMove)
-        : await boardService.movePieceAndSave(state.board, pieceToMove)
+        : await boardService.movePieceAndSave(
+            state.board,
+            pieceToMove,
+            false,
+            false
+          )
 
     if (board) {
       commit(UPDATE_BOARD, board)

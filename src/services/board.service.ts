@@ -293,8 +293,12 @@ class BoardService {
   public async movePieceAndSave(
     board: Board | null,
     movePiece: MovePiece,
-    force = false
+    force = false,
+    pure = true
   ): Promise<Board | null> {
+    if (!pure) {
+      board = BoardUtils.cloneBoard(board)
+    }
     if (!board) {
       return null
     }

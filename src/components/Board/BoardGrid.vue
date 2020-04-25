@@ -1,6 +1,6 @@
 <template>
   <div class="board-grid" v-if="grid">
-    <div v-if="zhugeThinking" class="loading">
+    <div v-if="botThinking" class="loading">
       <i class="gg-loadbar-alt"></i>
     </div>
     <table>
@@ -40,7 +40,8 @@ import { MovePiece } from '@/models/MovePiece'
 import { Column } from '@/enums/Column'
 import { Player } from '@/enums/Player'
 import { Board } from '@/models/Board'
-import { zhugeMove } from '@/bots/zhuge-liang.bot'
+import { zhugeLiang } from '@/bots/zhuge-liang.bot'
+import { simaYi } from '@/bots/sima-yi.bot'
 
 @Component({
   components: {
@@ -48,8 +49,8 @@ import { zhugeMove } from '@/bots/zhuge-liang.bot'
   }
 })
 export default class BoardGrid extends Vue {
-  @Prop({ type: Boolean, default: false })
-  private playAgainstAI!: boolean
+  @Prop({ type: String, default: '' })
+  private playAgainstAI!: 'zhuge' | 'sima' | ''
   @Prop({ type: Boolean, default: false })
   private trainAI!: boolean
   @Prop({ type: Boolean, default: false })
@@ -74,16 +75,36 @@ export default class BoardGrid extends Vue {
   private movePiece!: (props: MovePiece) => Promise<void>
   @Action
   private trainingData!: () => Promise<void>
-  private zhugeThinking = false
+  private botThinking = false
   private column = Column
 
+  private async playBot() {
+    switch (this.playAgainstAI) {
+      case 'zhuge':
+        await this.zhuge()
+        break
+      case 'sima':
+        await this.sima()
+        break
+    }
+  }
+
   private async zhuge() {
-    this.zhugeThinking = true
+    this.botThinking = true
     if (!this.winner && this.turn && this.board) {
-      const nextMove = await zhugeMove.move(this.turn, this.board)
+      const nextMove = await zhugeLiang.move(this.turn, this.board)
       await this.movePiece(nextMove)
     }
-    this.zhugeThinking = false
+    this.botThinking = false
+  }
+
+  private async sima() {
+    this.botThinking = true
+    if (!this.winner && this.turn && this.board) {
+      const nextMove = await simaYi.move(this.turn, this.board)
+      await this.movePiece(nextMove)
+    }
+    this.botThinking = false
   }
 
   private async callToMovePiece(end: Cell) {
@@ -98,7 +119,7 @@ export default class BoardGrid extends Vue {
     }
     await this.movePiece(pieceToMove)
     if (this.playAgainstAI) {
-      await this.zhuge()
+      await this.playBot()
     }
   }
 
@@ -126,7 +147,7 @@ export default class BoardGrid extends Vue {
       return
     }
     if (playAgainstAI && this.turn !== this.userPlayer) {
-      this.zhuge()
+      await this.playBot()
     }
   }
 
@@ -136,7 +157,7 @@ export default class BoardGrid extends Vue {
       await this.trainingData()
 
       while (!this.winner) {
-        await this.zhuge()
+        await this.playBot()
       }
     }
   }

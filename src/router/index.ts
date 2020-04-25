@@ -27,6 +27,15 @@ const routes: Array<RouteConfig> = [
       )
   },
   {
+    path: '/board/sima-yi/:id',
+    name: 'BoardSima',
+    props: true,
+    component: () =>
+      import(
+        /* webpackChunkName: "board-sima-yi" */ '@/views/Board/BoardSima.vue'
+      )
+  },
+  {
     path: '/board-review/:id',
     name: 'BoardReview',
     props: true,

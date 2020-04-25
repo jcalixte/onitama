@@ -100,6 +100,9 @@ class Repository {
         const document = change.docs.find((doc) => doc._id === id)
         busService.emit('update', document)
       })
+      .on('error', (error) => {
+        console.error(error)
+      })
   }
 
   private resetLive() {
