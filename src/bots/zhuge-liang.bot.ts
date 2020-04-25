@@ -27,7 +27,7 @@ class ZhugeMove {
     let maxScore = -Infinity
 
     for (const tree of decisionTrees) {
-      tree.score = this.getTreeScore(player, tree)
+      tree.score = this.getTreeScore(tree)
       if (tree.score > maxScore) {
         maxScore = tree.score
       }
@@ -106,18 +106,84 @@ class ZhugeMove {
     return 0
   }
 
+  // function negamax(node, depth, α, β, color) is
+  //   if depth = 0 or node is a terminal node then
+  //       return color × the heuristic best of node
+
+  //   childNodes := generateMoves(node)
+  //   childNodes := orderMoves(childNodes)
+  //   best := −∞
+  //   foreach child in childNodes do
+  //       best := max(best, −negamax(child, depth − 1, −β, −α, −color))
+  //       α := max(α, best)
+  //       if α ≥ β then
+  //           break (* cut-off *)
+  //   return best
   @MonitorTime('move')
-  private getTreeScore(player: Player, tree: DecisionTree): number {
+  public getNegamaxTreeScoreAlphaBeta(
+    tree: DecisionTree,
+    alpha = -Infinity,
+    beta = Infinity,
+    color = 1
+  ): number {
+    if (!tree.nodes.length) {
+      return color * tree.score
+    }
+    let best = -Infinity
+
+    for (const node of tree.nodes) {
+      best = Math.max(
+        best,
+        -this.getNegamaxTreeScoreAlphaBeta(node, -beta, -alpha, -color)
+      )
+      alpha = Math.max(alpha, best)
+      if (alpha >= beta) {
+        break
+      }
+    }
+
+    return best
+  }
+
+  // fonction alphabeta(nœud, α, β) /* α est toujours inférieur à β */
+  //  si nœud est une feuille alors
+  //      retourner la valeur de nœud
+  //  sinon si nœud est de type Min alors
+  //          v = +∞
+  //          pour tout fils de nœud faire
+  //              v = min(v, alphabeta(fils, α, β))
+  //              si α ≥ v alors  /* coupure alpha */
+  //                  retourner v
+  //              β = Min(β, v)
+  //   sinon
+  //          v = -∞
+  //          pour tout fils de nœud faire
+  //              v = max(v, alphabeta(fils, α, β))
+  //              si v ≥ β alors /* coupure beta */
+  //                  retourner v
+  //              α = Max(α, v)
+  //   retourner v
+
+  @MonitorTime('move')
+  public getTreeScore(
+    tree: DecisionTree,
+    alpha = -Infinity,
+    beta = Infinity
+  ): number {
     if (tree.nodes.length) {
       // Minimal
       if (tree.depth % 2 === 0) {
         let worstNodeScore = Infinity
 
         for (const node of tree.nodes) {
-          const nodeScore = this.getTreeScore(player, node)
-          if (nodeScore < worstNodeScore) {
-            worstNodeScore = nodeScore
+          worstNodeScore = Math.min(
+            worstNodeScore,
+            this.getTreeScore(node, alpha, beta)
+          )
+          if (alpha >= worstNodeScore) {
+            return worstNodeScore
           }
+          beta = Math.min(beta, worstNodeScore)
         }
 
         return tree.score + worstNodeScore
@@ -125,10 +191,14 @@ class ZhugeMove {
         let bestNodeScore = -Infinity
 
         for (const node of tree.nodes) {
-          const nodeScore = this.getTreeScore(player, node)
-          if (nodeScore > bestNodeScore) {
-            bestNodeScore = nodeScore
+          bestNodeScore = Math.max(
+            bestNodeScore,
+            this.getTreeScore(node, alpha, beta)
+          )
+          if (bestNodeScore >= beta) {
+            return bestNodeScore
           }
+          alpha = Math.max(alpha, bestNodeScore)
         }
 
         return -tree.score + bestNodeScore
