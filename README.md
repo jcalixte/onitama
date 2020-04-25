@@ -8,6 +8,10 @@
 yarn install
 ```
 
+## Set your .env.local file
+
+Copy and rename `.env.local.sample` to `.env.local` and insert your CouchDB URL in it.
+
 ### Compiles and hot-reloads for development
 
 ```

@@ -6,7 +6,7 @@
     <table>
       <tr v-for="(row, r) in grid" :key="r">
         <td v-if="true" class="cell-number">
-          {{ row[0].row + 1 }}
+          {{ row.length - row[0].rowIndex }}
         </td>
         <td v-for="(cell, c) in row" :key="c">
           <BoardCell
@@ -20,7 +20,7 @@
       <tr v-if="true">
         <td></td>
         <td v-for="(cell, c) in grid[0]" :key="c" class="cell-number">
-          {{ column[cell.column] }}
+          {{ column[cell.columnIndex] }}
         </td>
       </tr>
     </table>
@@ -30,17 +30,17 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { Grid, Cell } from '@/models/Cell'
+import { Cell, Grid } from '@/models/Cell'
 import BoardCell from '@/components/Board/BoardCell.vue'
-import { getPossibleCellsFromMovesAndGrid } from '@/services/board.service'
+import { boardService } from '@/services/board.service'
 import { getMovesFromAnimal } from '@/services/card.service'
-import { areCellEquals } from '@/services/grid.service'
+import { gridService } from '@/services/grid.service'
 import { Animal } from '@/enums/Animal'
 import { MovePiece } from '@/models/MovePiece'
 import { Column } from '@/enums/Column'
 import { Player } from '@/enums/Player'
 import { Board } from '@/models/Board'
-import { ZhugeMove } from '@/bots/zhuge-liang.bot'
+import { zhugeMove } from '@/bots/zhuge-liang.bot'
 
 @Component({
   components: {
@@ -80,7 +80,7 @@ export default class BoardGrid extends Vue {
   private async zhuge() {
     this.zhugeThinking = true
     if (!this.winner && this.turn && this.board) {
-      const nextMove = await ZhugeMove(this.turn, this.board)
+      const nextMove = await zhugeMove.move(this.turn, this.board)
       await this.movePiece(nextMove)
     }
     this.zhugeThinking = false
@@ -104,7 +104,7 @@ export default class BoardGrid extends Vue {
 
   private isValidMove(cell: Cell): boolean {
     return this.validCellMoves.some((validCell) =>
-      areCellEquals(validCell, cell)
+      gridService.areCellEquals(validCell, cell)
     )
   }
 
@@ -113,7 +113,7 @@ export default class BoardGrid extends Vue {
       return []
     }
     const moves = getMovesFromAnimal(this.selectedAnimal, this.turn)
-    return getPossibleCellsFromMovesAndGrid(
+    return boardService.getPossibleCellsFromMovesAndGrid(
       this.selectedCell,
       this.grid,
       ...moves
