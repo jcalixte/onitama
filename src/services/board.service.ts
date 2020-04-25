@@ -106,18 +106,14 @@ class BoardService {
     )
   }
 
-  @MonitorTime('movePieceInBoard')
-  public exchangeCard(
+  //@MonitorTime('movePieceInMutatedBoard')
+  public exchangeCardInMutatedBoard(
     board: Board | null,
     movePiece: MovePiece,
-    force = false,
-    pure = true
-  ): Board | null {
-    if (pure) {
-      board = BoardUtils.cloneBoard(board)
-    }
+    force = false
+  ): boolean {
     if (!board) {
-      return null
+      return false
     }
     const playersCards = Object.values(board.playerAnimals).flat()
     const neutralAnimal = board.animals.find(
@@ -125,7 +121,7 @@ class BoardService {
     )
 
     if (!neutralAnimal) {
-      return null
+      return false
     }
     const playerCards = board.playerAnimals[movePiece.player]
     const indexCard = playerCards.findIndex((card) => card === movePiece.animal)
@@ -145,7 +141,7 @@ class BoardService {
       board.turns.push(movePiece)
     }
 
-    return board
+    return true
   }
 
   public getPossibleCellsFromMovesAndGrid(
@@ -207,9 +203,12 @@ class BoardService {
    * @param movePiece desired move to do
    * @param force useful when the player is forced to skip. Also for rewind.
    */
-  @MonitorTime('buildDecisionTrees')
-  public movePieceInBoard(board: Board, movePiece: MovePiece, force = false) {
-    board = BoardUtils.cloneBoard(board) as Board
+  //@MonitorTime('buildDecisionTrees')
+  public movePieceInMutatedBoard(
+    board: Board,
+    movePiece: MovePiece,
+    force = false
+  ): boolean {
     if (movePiece.start && movePiece.end) {
       if (!movePiece.start.piece) {
         const piece = gridService.getPieceFromGrid(
@@ -220,7 +219,7 @@ class BoardService {
         if (piece) {
           movePiece.start.piece = piece
         } else {
-          return null
+          return false
         }
       }
       // if there is already a ally piece, we stop
@@ -228,7 +227,7 @@ class BoardService {
         !force &&
         movePiece.end.piece?.player === movePiece.start.piece?.player
       ) {
-        return null
+        return false
       }
       // Otherwise we can move the piece and swap the player card with
       // the neutral card
@@ -242,13 +241,13 @@ class BoardService {
       )
 
       if (!startCellFromGrid || !endCellFromGrid) {
-        return null
+        return false
       }
       endCellFromGrid.piece = startCellFromGrid.piece
       startCellFromGrid.piece = null
     }
-
-    return this.exchangeCard(board, movePiece, force, false)
+    this.exchangeCardInMutatedBoard(board, movePiece, force)
+    return true
   }
 
   public rewindMovePiece(
@@ -266,17 +265,10 @@ class BoardService {
       return boardFromTurn
     }
 
-    let boardToTurn = boardFromTurn
+    const boardToTurn = boardFromTurn
 
     for (let turn = fromTurn + 1; turn <= toTurn; turn++) {
-      const board = this.movePieceInBoard(
-        boardToTurn,
-        boardFromTurn.turns[turn],
-        true
-      )
-      if (board) {
-        boardToTurn = board
-      }
+      this.movePieceInMutatedBoard(boardToTurn, boardFromTurn.turns[turn], true)
     }
 
     return boardToTurn
@@ -298,8 +290,13 @@ class BoardService {
     if (!board) {
       return null
     }
-    const newBoard = this.movePieceInBoard(board, movePiece, force)
-    if (!newBoard) {
+    const newBoard = BoardUtils.cloneBoard(board)
+    const isBoardMutated = this.movePieceInMutatedBoard(
+      newBoard,
+      movePiece,
+      force
+    )
+    if (!isBoardMutated) {
       return null
     }
     return await this.saveLocalBoard(newBoard)
@@ -312,8 +309,9 @@ class BoardService {
     if (!board) {
       return null
     }
-    const newBoard = this.exchangeCard(board, movePiece)
-    if (!newBoard) {
+    const newBoard = BoardUtils.cloneBoard(board)
+    const isBoardMutated = this.exchangeCardInMutatedBoard(newBoard, movePiece)
+    if (!isBoardMutated) {
       return null
     }
     return await repository.saveLocal(newBoard)

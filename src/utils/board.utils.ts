@@ -5,12 +5,8 @@ import { MovePiece } from '@/models/MovePiece'
 import { MonitorTime } from '@/time-logger/performance-intercepor'
 
 export class BoardUtils {
-  @MonitorTime('movePieceInBoard')
-  public static cloneBoard(board: Board | null): Board | null {
-    if (!board) {
-      return null
-    }
-
+  //@MonitorTime('buildDecisionTrees')
+  public static cloneBoard(board: Board): Board {
     return {
       turns: board.turns.map((movePiece: MovePiece) => {
         return {

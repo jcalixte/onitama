@@ -56,17 +56,22 @@ export const actions: ActionTree<State, State> = {
     }
   },
   async trainingData({ state, commit }) {
-    const board = BoardUtils.cloneBoard(state.board)
-    if (!board) {
+    let board
+    if (state.board) {
+      board = BoardUtils.cloneBoard(state.board)
+    } else {
       return
     }
+
     board.training = 'hunt'
     const newBoard = await boardService.saveLocalBoard(board)
     commit(UPDATE_BOARD, newBoard)
   },
   async askRevenge({ state, commit }, ask: boolean) {
-    const board = BoardUtils.cloneBoard(state.board)
-    if (!board) {
+    let board
+    if (state.board) {
+      board = BoardUtils.cloneBoard(state.board)
+    } else {
       return
     }
     board.revenge.ask = ask
@@ -79,8 +84,10 @@ export const actions: ActionTree<State, State> = {
     { state },
     { answer, nextBoardId }: { answer: boolean; nextBoardId: string | null }
   ) {
-    const board = BoardUtils.cloneBoard(state.board)
-    if (!board) {
+    let board
+    if (state.board) {
+      board = BoardUtils.cloneBoard(state.board)
+    } else {
       return
     }
     board.revenge.answer = answer

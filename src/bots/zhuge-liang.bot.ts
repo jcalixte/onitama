@@ -12,6 +12,7 @@ import {
 } from '@/time-logger/performance-intercepor'
 import { gridService } from '@/services/grid.service'
 import { boardService } from '@/services/board.service'
+import { BoardUtils } from '@/utils/board.utils'
 
 const MAX_DEPTH = 4
 const VICTORY_SCORE = 100
@@ -79,7 +80,7 @@ class ZhugeMove {
     return playerMoves
   }
 
-  @MonitorTime('buildDecisionTrees')
+  //@MonitorTime('buildDecisionTrees')
   private getMoveScore(player: Player, move: MovePiece) {
     if (!move.end) {
       return 0
@@ -119,7 +120,7 @@ class ZhugeMove {
   //       if α ≥ β then
   //           break (* cut-off *)
   //   return best
-  @MonitorTime('move')
+  //@MonitorTime('move')
   public getNegamaxTreeScoreAlphaBeta(
     tree: DecisionTree,
     alpha = -Infinity,
@@ -164,7 +165,7 @@ class ZhugeMove {
   //              α = Max(α, v)
   //   retourner v
 
-  @MonitorTime('move')
+  //@MonitorTime('move')
   public getTreeScore(
     tree: DecisionTree,
     alpha = -Infinity,
@@ -209,7 +210,7 @@ class ZhugeMove {
     return mul * tree.score
   }
 
-  @MonitorTime('move')
+  //@MonitorTime('move')
   private buildDecisionTrees(
     player: Player,
     board: Board,
@@ -223,11 +224,17 @@ class ZhugeMove {
     const decisionTrees = []
 
     for (const move of moves) {
-      const newBoard =
-        !move.start || !move.end
-          ? boardService.exchangeCard(board, move)
-          : boardService.movePieceInBoard(board, move)
-      if (!newBoard) {
+      const newBoard = BoardUtils.cloneBoard(board)
+      let boardMutated = false
+      if (!move.start || !move.end) {
+        boardMutated =
+          boardService.exchangeCardInMutatedBoard(newBoard, move) ||
+          boardMutated
+      } else {
+        boardMutated =
+          boardService.movePieceInMutatedBoard(newBoard, move) || boardMutated
+      }
+      if (!boardMutated) {
         return []
       }
 
@@ -256,7 +263,7 @@ class ZhugeMove {
     return Math.min(...tree.nodes.map((node) => this.getMinimalDepth(node) + 1))
   }
 
-  @MonitorTime('move')
+  //@MonitorTime('move')
   private getLongestTree(trees: DecisionTree[]): DecisionTree | null {
     const treesWithDepth = trees.map((tree) => ({
       tree,
@@ -272,7 +279,7 @@ class ZhugeMove {
     )
   }
 
-  @MonitorTime('move')
+  //@MonitorTime('move')
   private getShortestTree(trees: DecisionTree[]): DecisionTree | null {
     const treesWithDepth = trees.map((tree) => ({
       tree,

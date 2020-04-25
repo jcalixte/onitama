@@ -13,7 +13,7 @@ export function MainLogMethod(
       try {
         return original.apply(this, args)
       } finally {
-        timeLoggers.get(name)?.logAllTimes()
+        timeLoggers.forEach((logger: TimeLogger) => logger.logAllTimes())
         timeLoggers.clear()
       }
     }
@@ -43,12 +43,36 @@ export function MonitorTime(parentMethod = '') {
           timeLoggers.set(currentMethod, newTimeLogger)
         }
 
-        timeLoggers.get(currentMethod)?.initTime()
+        const addingKey: number | undefined = timeLoggers
+          .get(currentMethod)
+          ?.initTime()
         const res = original.apply(this, args)
-        timeLoggers.get(currentMethod)?.addTime()
+        timeLoggers.get(currentMethod)?.addTime(addingKey as number)
         return res
       }
     }
     return descriptor
   }
+}
+
+export function BasicMonitorTime(
+  target: unknown,
+  currentMethod: string,
+  descriptor: PropertyDescriptor
+) {
+  const original = descriptor.value
+  if (typeof original === 'function') {
+    descriptor.value = function(...args: Array<unknown>) {
+      if (!timeLoggers.has(currentMethod)) {
+        timeLoggers.set(currentMethod, new TimeLogger(currentMethod, null))
+      }
+      const addingKey: number | undefined = timeLoggers
+        .get(currentMethod)
+        ?.initTime()
+      const res = original.apply(this, args)
+      timeLoggers.get(currentMethod)?.addTime(addingKey as number)
+      return res
+    }
+  }
+  return descriptor
 }

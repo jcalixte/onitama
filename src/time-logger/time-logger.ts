@@ -5,7 +5,8 @@ function getCurrentTime() {
 export class TimeLogger {
   public readonly identifier: string
   private readonly parent: TimeLogger | null
-  private refTime = 0
+  private mapUniqueKey = 0
+  private readonly refTimeMap: Map<number, number> = new Map<number, number>()
   private time = 0
   private innerTimes: Map<string, TimeLogger> = new Map<string, TimeLogger>()
 
@@ -14,8 +15,10 @@ export class TimeLogger {
     this.parent = parent
   }
 
-  public initTime(): void {
-    this.refTime = getCurrentTime()
+  public initTime(): number {
+    this.mapUniqueKey += 1
+    this.refTimeMap.set(this.mapUniqueKey, getCurrentTime())
+    return this.mapUniqueKey
   }
 
   public addInnerLogger(childIdentifier: string): TimeLogger {
@@ -28,8 +31,9 @@ export class TimeLogger {
     return this.innerTimes.get(childIdentifier) as TimeLogger
   }
 
-  public addTime(): void {
-    this.time += getCurrentTime() - this.refTime
+  public addTime(referenceKey: number): void {
+    this.time +=
+      getCurrentTime() - (this.refTimeMap.get(referenceKey) as number)
   }
 
   public logAllTimes(refTime?: number) {

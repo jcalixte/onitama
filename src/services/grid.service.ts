@@ -73,24 +73,19 @@ class GridService {
     return grid.flat().filter((cell) => cell.piece?.player === player)
   }
 
-  @MonitorTime('movePieceInBoard')
+  //@MonitorTime('movePieceInMutatedBoard')
   public getPieceFromGrid(row: number, column: number, grid: Grid) {
-    const cell =
-      grid
-        .flat()
-        .find((cell) => cell.rowIndex === row && cell.columnIndex === column) ??
-      null
+    const cell: Cell = grid[row][column]
     if (!cell) {
       return null
     }
-    return cell.piece
   }
 
   public areCellEquals(a: Cell, b: Cell) {
     return a.rowIndex === b.rowIndex && a.columnIndex === b.columnIndex
   }
 
-  @MonitorTime('movePieceInBoard')
+  //@MonitorTime('movePieceInMutatedBoard')
   public getCellFromGrid(cell: Cell, grid: Grid) {
     return grid[cell.rowIndex][cell.columnIndex]
   }
