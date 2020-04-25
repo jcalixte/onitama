@@ -53,8 +53,8 @@ export class BoarUtils {
         nextBoardId: board.revenge.nextBoardId
       },
       training: board.training,
-      grid: board.grid.map((line: Cell[]) => {
-        return line.map((cell: Cell) => {
+      grid: board.grid.map((row: Cell[]) => {
+        return row.map((cell: Cell) => {
           return {
             row: cell.row,
             column: cell.column,
