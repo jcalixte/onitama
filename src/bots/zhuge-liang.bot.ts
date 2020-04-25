@@ -107,7 +107,34 @@ class ZhugeMove {
   }
 
   @MonitorTime('move')
-  private getTreeScore(player: Player, tree: DecisionTree): number {
+  private getTreeScoreAlphaBeta(
+    player: Player,
+    tree: DecisionTree,
+    alpha = -Infinity,
+    beta = Infinity,
+    color = 1
+  ): number {
+    if (!tree.nodes.length) {
+      return color * tree.score
+    }
+    let best = -Infinity
+
+    for (const node of tree.nodes) {
+      best = Math.max(
+        best,
+        -this.getTreeScoreAlphaBeta(player, node, -beta, -alpha, -color)
+      )
+      alpha = Math.max(alpha, best)
+      if (alpha >= beta) {
+        break
+      }
+    }
+
+    return best
+  }
+
+  @MonitorTime('move')
+  public getTreeScore(player: Player, tree: DecisionTree): number {
     if (tree.nodes.length) {
       // Minimal
       if (tree.depth % 2 === 0) {
