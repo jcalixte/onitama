@@ -60,7 +60,7 @@ export default class CardAnimal extends Vue {
   }
 
   private get moves() {
-    return this.player !== Player.Player2
+    return this.player !== Player.Player1
       ? this.card.moves
       : this.card.reverseMoves
   }

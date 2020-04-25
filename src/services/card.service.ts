@@ -15,7 +15,7 @@ export const getMovesFromAnimal = (
     return []
   }
   const card = cards.find((card) => card.animal === animal)
-  return player === Player.Player1
+  return player !== Player.Player1
     ? card?.moves || []
     : card?.reverseMoves || []
 }
