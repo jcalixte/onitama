@@ -4,7 +4,7 @@
     class="board-new button is-primary"
     :class="playAgainstAI ? 'is-danger' : 'is-primary'"
   >
-    new play
+    play
   </button>
 </template>
 
