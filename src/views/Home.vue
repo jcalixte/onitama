@@ -22,7 +22,7 @@
         </div>
       </div>
     </section>
-    <section class="hero is-danger is-bold">
+    <section class="hero is-warning is-bold">
       <div class="hero-body">
         <div class="container">
           <h1 class="title">
