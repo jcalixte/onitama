@@ -11,7 +11,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { Board } from '../../models/Board'
+import { Board } from '@/models/Board'
 
 @Component
 export default class BoardNew extends Vue {
