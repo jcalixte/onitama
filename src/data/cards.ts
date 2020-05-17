@@ -343,6 +343,337 @@ const partialCards: PartialCard[] = [
         vertical: -1
       }
     ]
+  },
+  {
+    animal: Animal.Fox,
+    description: `Harry your opponent through your Art,
+    give him no time think, less time to act.`,
+    player: Player.Player2,
+    moves: [
+      {
+        horizontal: -1,
+        vertical: 1
+      },
+      {
+        horizontal: -1,
+        vertical: 0
+      },
+      {
+        horizontal: -1,
+        vertical: -1
+      }
+    ]
+  },
+  {
+    animal: Animal.Dog,
+    description: `Deny your opponent his Art. Once you have blocked his attack,
+    do not let him go, but instead, relentlessly hamper his momentum.`,
+    player: Player.Player1,
+    moves: [
+      {
+        horizontal: 1,
+        vertical: 1
+      },
+      {
+        horizontal: 1,
+        vertical: 0
+      },
+      {
+        horizontal: 1,
+        vertical: -1
+      }
+    ]
+  },
+  {
+    animal: Animal.Giraffe,
+    description: `Project your power, vaulting at opponent's who believe themselves
+    safely out of range. Aggression is subservient to suprise.`,
+    player: Player.Player1,
+    moves: [
+      {
+        horizontal: -2,
+        vertical: 1
+      },
+      {
+        horizontal: 2,
+        vertical: 1
+      },
+      {
+        horizontal: 0,
+        vertical: -1
+      }
+    ]
+  },
+  {
+    animal: Animal.Panda,
+    description: `Your opponent watches for your complacency, so show it to him.
+    Lull him in an attack, then unleash your Art when he has already commited to his attack`,
+    player: Player.Player2,
+    moves: [
+      {
+        horizontal: 0,
+        vertical: 1
+      },
+      {
+        horizontal: -1,
+        vertical: 1
+      },
+      {
+        horizontal: 1,
+        vertical: -1
+      }
+    ]
+  },
+  {
+    animal: Animal.Bear,
+    description: `Defend your ground. Do not be like those fools who
+    are quick to run to attack from another position. They have lost the fight
+    because they have already run from it.`,
+    player: Player.Player1,
+    moves: [
+      {
+        horizontal: 1,
+        vertical: 1
+      },
+      {
+        horizontal: 0,
+        vertical: 1
+      },
+      {
+        horizontal: -1,
+        vertical: -1
+      }
+    ]
+  },
+  {
+    animal: Animal.Kirin,
+    description: `There is Art in grace, Art in discernment, Art in sensing the truth.
+    Pierce the veil of the shadow, and strike your opponent from a place of enlightenment.`,
+    player: Player.Player2,
+    moves: [
+      {
+        horizontal: 1,
+        vertical: 2
+      },
+      {
+        horizontal: -1,
+        vertical: 2
+      },
+      {
+        horizontal: 0,
+        vertical: -2
+      }
+    ]
+  },
+  {
+    animal: Animal.SeaSnake,
+    description: `There is no movement or opportunity wasted.
+    Strike where you are not expected, flow where your opponent
+    believes you can not`,
+    player: Player.Player1,
+    moves: [
+      {
+        horizontal: 0,
+        vertical: 1
+      },
+      {
+        horizontal: -2,
+        vertical: 0
+      },
+      {
+        horizontal: 1,
+        vertical: -1
+      }
+    ]
+  },
+  {
+    animal: Animal.Viper,
+    description: `The Art of the Viper is to strike in the Moment. This is the true Art.`,
+    player: Player.Player2,
+    moves: [
+      {
+        horizontal: 0,
+        vertical: 1
+      },
+      {
+        horizontal: 2,
+        vertical: 0
+      },
+      {
+        horizontal: -1,
+        vertical: -1
+      }
+    ]
+  },
+  {
+    animal: Animal.Phoenix,
+    description: `No opponent expects that which he believes is not there.
+    Harness the shadows, bend the sun, strike as the wind – from a place unseen.`,
+    player: Player.Player1,
+    moves: [
+      {
+        horizontal: 2,
+        vertical: 0
+      },
+      {
+        horizontal: 1,
+        vertical: 1
+      },
+      {
+        horizontal: -1,
+        vertical: 1
+      },
+      {
+        horizontal: -2,
+        vertical: 0
+      }
+    ]
+  },
+  {
+    animal: Animal.Mouse,
+    description: `All opponents have a hole in their Art, an opening of weakness.
+    The Art of the Mouse si to find that opening, enter it, and strike`,
+    player: Player.Player1,
+    moves: [
+      {
+        horizontal: 0,
+        vertical: 1
+      },
+      {
+        horizontal: -1,
+        vertical: 0
+      },
+      {
+        horizontal: 1,
+        vertical: -1
+      }
+    ]
+  },
+  {
+    animal: Animal.Rat,
+    description: `Your opponent cannot attack what he cannot predict.
+    Let your movements be immediate, your attacks be unexpected.`,
+    player: Player.Player2,
+    moves: [
+      {
+        horizontal: 0,
+        vertical: 1
+      },
+      {
+        horizontal: 1,
+        vertical: 0
+      },
+      {
+        horizontal: -1,
+        vertical: -1
+      }
+    ]
+  },
+  {
+    animal: Animal.Turtle,
+    description: `Within your sphere of power, your Art remains supreme.
+    Engage your opponent, and deflect his strikes.`,
+    player: Player.Player2,
+    moves: [
+      {
+        horizontal: 2,
+        vertical: 0
+      },
+      {
+        horizontal: 1,
+        vertical: -1
+      },
+      {
+        horizontal: -1,
+        vertical: -1
+      },
+      {
+        horizontal: -2,
+        vertical: 0
+      }
+    ]
+  },
+  {
+    animal: Animal.Tanuki,
+    description: `The Art of the Tanuki is the art of opportunity.
+    Patience will open the door to the perfect angle of your strike.`,
+    player: Player.Player1,
+    moves: [
+      {
+        horizontal: 0,
+        vertical: 1
+      },
+      {
+        horizontal: -2,
+        vertical: 1
+      },
+      {
+        horizontal: 1,
+        vertical: -1
+      }
+    ]
+  },
+  {
+    animal: Animal.Iguana,
+    description: `While your opponent wears himself out with
+    unnecessary movement, you will gather your strength.
+    A devastating sweep or fatal punch is the pinnacle of the Art.`,
+    player: Player.Player2,
+    moves: [
+      {
+        horizontal: 2,
+        vertical: 1
+      },
+      {
+        horizontal: 0,
+        vertical: 1
+      },
+      {
+        horizontal: -1,
+        vertical: -1
+      }
+    ]
+  },
+  {
+    animal: Animal.Sable,
+    description: `Be fluid, and control the battlefield with constant
+    movement and precision strikes.`,
+    player: Player.Player1,
+    moves: [
+      {
+        horizontal: -1,
+        vertical: 1
+      },
+      {
+        horizontal: 2,
+        vertical: 0
+      },
+      {
+        horizontal: 1,
+        vertical: -1
+      }
+    ]
+  },
+  {
+    animal: Animal.Otter,
+    description: `Who can stop the flowing stream? The Art of the Otter is
+    the Art of Power, knocking away the advances of the opponent through
+    sustained, powerful strikes.`,
+    player: Player.Player2,
+    moves: [
+      {
+        horizontal: 1,
+        vertical: 1
+      },
+      {
+        horizontal: -2,
+        vertical: 0
+      },
+      {
+        horizontal: -1,
+        vertical: -1
+      }
+    ]
   }
 ]
 

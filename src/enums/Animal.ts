@@ -14,5 +14,21 @@ export enum Animal {
   Crane = 'Crane',
   Boar = 'Boar',
   Eel = 'Eel',
-  Cobra = 'Cobra'
+  Cobra = 'Cobra',
+  Fox = 'Fox',
+  Dog = 'Dog',
+  Giraffe = 'Giraffe',
+  Panda = 'Panda',
+  Bear = 'Bear',
+  Kirin = 'Kirin',
+  SeaSnake = 'SeaSnake',
+  Viper = 'Viper',
+  Phoenix = 'Phoenix',
+  Mouse = 'Mouse',
+  Rat = 'Rat',
+  Turtle = 'Turtle',
+  Tanuki = 'Tanuki',
+  Iguana = 'Iguana',
+  Sable = 'Sable',
+  Otter = 'Otter'
 }
