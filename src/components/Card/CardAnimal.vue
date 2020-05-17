@@ -54,15 +54,17 @@ export default class CardAnimal extends Vue {
   private selectAnimal!: (card: Animal) => void
   @Getter
   private selectedAnimal!: Animal | null
+  @Getter
+  private userPlayer!: Player | null
 
   private skip() {
     this.$emit('skip', this.card.animal)
   }
 
   private get moves() {
-    return this.player !== Player.Player1
-      ? this.card.moves
-      : this.card.reverseMoves
+    const player = this.player === 'neutral' ? this.userPlayer : this.player
+
+    return player === Player.Player1 ? this.card.reverseMoves : this.card.moves
   }
 
   private get color() {
