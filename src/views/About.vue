@@ -11,7 +11,15 @@
         Juju
       </a>
       with
-      <code>&lt;3</code>
+      <code>&lt;3</code>. The repo is available
+      <a
+        href="https://github.com/jcalixte/onitama"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        here
+      </a>
+      .
     </p>
     <p>
       Icons made by
