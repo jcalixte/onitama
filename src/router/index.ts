@@ -44,15 +44,15 @@ const routes: Array<RouteConfig> = [
         /* webpackChunkName: "board-review" */ '@/views/Board/BoardReview.vue'
       )
   },
-  {
-    path: '/board-training',
-    name: 'BoardTraining',
-    props: true,
-    component: () =>
-      import(
-        /* webpackChunkName: "board-training" */ '@/views/Board/BoardTraining.vue'
-      )
-  },
+  // {
+  //   path: '/board-training',
+  //   name: 'BoardTraining',
+  //   props: true,
+  //   component: () =>
+  //     import(
+  //       /* webpackChunkName: "board-training" */ '@/views/Board/BoardTraining.vue'
+  //     )
+  // },
   {
     path: '/about',
     name: 'About',

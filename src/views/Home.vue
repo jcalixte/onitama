@@ -6,13 +6,13 @@
     <div class="buttons is-centered">
       <BoardNew />
     </div>
-    <div class="columns">
-      <div class="column">
+    <div class="columns is-centered">
+      <div class="column is-one-third">
         <section class="hero is-primary is-bold">
           <div class="hero-body">
             <div class="container">
               <h1 class="title">
-                Zhuge Liang
+                Play against Zhuge Liang
               </h1>
               <!-- <img src="../assets/zhuge-liang.jpg" alt="" /> -->
               <div class="buttons is-centered">
@@ -22,12 +22,12 @@
           </div>
         </section>
       </div>
-      <div class="column">
+      <div class="column is-one-third">
         <section class="hero is-warning is-bold">
           <div class="hero-body">
             <div class="container">
               <h1 class="title">
-                Sima Yi
+                Play against Sima Yi
               </h1>
               <div class="buttons is-centered">
                 <BoardNew play-against-a-i="sima" />
@@ -37,9 +37,9 @@
         </section>
       </div>
     </div>
-    <router-link class="button is-primary is-light" to="/board-training">
+    <!-- <router-link class="button is-primary is-light" to="/board-training">
       display bot training
-    </router-link>
+    </router-link> -->
     <BoardUserList />
   </div>
 </template>

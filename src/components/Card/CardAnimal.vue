@@ -115,7 +115,7 @@ export default class CardAnimal extends Vue {
     display: flex;
     flex: 1;
     justify-content: center;
-    align-items: flex-end;
+    align-items: center;
     padding: 0 1rem;
   }
   .card-description {
