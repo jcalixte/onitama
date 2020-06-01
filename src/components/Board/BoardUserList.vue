@@ -1,6 +1,6 @@
 <template>
   <div class="board-user-list" v-if="boards.length">
-    <h3 class="subtitle is-3">boards played</h3>
+    <h3 class="subtitle is-3">plays</h3>
     <ul v-for="[date, boards] in boardByDate" :key="date">
       <h4 class="title is-4">{{ date }}</h4>
       <ul class="board-user-list">
