@@ -38,28 +38,82 @@
             @click="goTo(-1)"
             :disabled="current === -1"
           >
-            <i class="gg-arrow-long-left-l"></i>
+            <svg
+              viewBox="0 0 24 24"
+              width="24"
+              height="24"
+              stroke="currentColor"
+              stroke-width="2"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="css-i6dzq1"
+            >
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 8 8 12 12 16"></polyline>
+              <line x1="16" y1="12" x2="8" y2="12"></line>
+            </svg>
           </a>
           <a
             class="pagination-previous"
             @click="goTo(current - 1)"
             :disabled="current === -1"
           >
-            <i class="gg-arrow-long-left"></i>
+            <svg
+              viewBox="0 0 24 24"
+              width="24"
+              height="24"
+              stroke="currentColor"
+              stroke-width="2"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="css-i6dzq1"
+            >
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
           </a>
           <a
             class="pagination-next"
             @click="goTo(current + 1)"
             :disabled="current === board.turns.length - 1"
           >
-            <i class="gg-arrow-long-right"></i>
+            <svg
+              viewBox="0 0 24 24"
+              width="24"
+              height="24"
+              stroke="currentColor"
+              stroke-width="2"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="css-i6dzq1"
+            >
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
           </a>
           <a
             class="pagination-next"
             @click="goTo(board ? board.turns.length - 1 : 0)"
             :disabled="current === board.turns.length - 1"
           >
-            <i class="gg-arrow-long-right-l"></i>
+            <svg
+              viewBox="0 0 24 24"
+              width="24"
+              height="24"
+              stroke="currentColor"
+              stroke-width="2"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="css-i6dzq1"
+            >
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 16 16 12 12 8"></polyline>
+              <line x1="8" y1="12" x2="16" y2="12"></line>
+            </svg>
           </a>
           <ul class="pagination-list">
             <li>
