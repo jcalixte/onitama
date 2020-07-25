@@ -28,12 +28,6 @@
           <p>or with this QR code:</p>
           <qrcode :value="boardUrl" />
         </div>
-        <div>
-          Or train AI
-          <button class="button is-light" @click="$emit('train-ai')">
-            train AI
-          </button>
-        </div>
       </div>
     </article>
   </div>
